@@ -1,3 +1,8 @@
+/*
+ * My Life Planner v20
+ * Code-quality release: duplicate top-level function declarations removed.
+ * Behaviour and saved-data format are unchanged from the stable v19 baseline.
+ */
 const dailyTasks = [
   { id: "wake", title: "Get up, wash and get dressed", time: "Around 7:00-8:00, depending on sleep and health" },
   { id: "coffee", title: "Coffee, breakfast and medication", time: "About 30 minutes" },
@@ -134,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "19";
+const APP_VERSION = "20";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -704,14 +709,6 @@ function openCleaningDialog() {
   openAddDialog("cleaning");
 }
 
-function completeCleaning(id) {
-  const task = data.cleaningTasks.find(item => item.id === id);
-  if (!task) return;
-  task.lastCompleted = new Date().toISOString().slice(0, 10);
-  task.nextDue = nextCleaningDate(task.nextDue || task.lastCompleted, task.frequency);
-  saveData();
-  renderAll();
-}
 
 function deleteCleaning(id) {
   data.cleaningTasks = data.cleaningTasks.filter(item => item.id !== id);
@@ -752,96 +749,8 @@ function renderCleaningToday() {
   });
 }
 
-function renderCleaning() {
-  const area = document.getElementById("cleaningArea");
-  area.innerHTML = "";
 
-  if (!data.cleaningTasks.length) {
-    area.innerHTML = `<div class="empty-state">No cleaning tasks yet. Add jobs such as dusting, changing sheets or a monthly deep clean.</div>`;
-    return;
-  }
 
-  [...data.cleaningTasks]
-    .sort((a,b) => dateOnly(a.nextDue) - dateOnly(b.nextDue))
-    .forEach(item => {
-      const dueNow = isDueTodayOrEarlier(item.nextDue);
-      const card = document.createElement("div");
-      card.className = `list-card cleaning-card ${dueNow ? "due-today" : ""}`;
-      card.innerHTML = `
-        <div class="card-top">
-          <div>
-            <div class="card-title">${escapeHtml(item.name)}</div>
-            <div class="card-meta">${escapeHtml(item.room || "General")}</div>
-            <div class="cleaning-frequency">${frequencyLabel(item.frequency)} - next due ${formatDate(item.nextDue)}</div>
-            <div class="card-details">${escapeHtml(item.details || "")}</div>
-          </div>
-          <span class="badge ${dueNow ? "due" : "ongoing"}">${dueNow ? "Due now" : "Scheduled"}</span>
-        </div>
-        <div class="card-actions">
-          <button type="button" data-list-action="complete-cleaning" data-id="${item.id}">Complete</button>
-          <button type="button" data-list-action="edit-cleaning" data-id="${item.id}">Edit</button>
-          <button type="button" class="danger-button" data-list-action="delete-cleaning" data-id="${item.id}">Delete</button>
-        </div>`;
-      area.appendChild(card);
-    });
-}
-
-function activeProjectDashboardItems() {
-  return data.projects.flatMap(project => {
-    if (project.completed) return [];
-    const steps = Array.isArray(project.steps) ? project.steps : [];
-    const nextStep = steps.find(step => !step.completed);
-    return nextStep
-      ? [{ ...nextStep, source: `Project: ${project.name}`, itemType: "step", parentId: project.id }]
-      : [];
-  });
-}
-
-function getWeeklyItems() {
-  const today = new Date(); today.setHours(12,0,0,0);
-  const end = new Date(today); end.setDate(end.getDate() + 7);
-
-  const ordinary = [
-    ...data.todos.map(item => ({ ...item, source: "To-do", itemType: "todo" })),
-    ...activeProjectDashboardItems(),
-    ...data.cleaningTasks.map(item => ({
-      id: item.id,
-      name: item.name,
-      details: item.details,
-      source: `Cleaning: ${item.room || "General"}`,
-      dueDate: item.nextDue,
-      leadDays: 0,
-      completed: false,
-      timingType: "date",
-      itemType: "cleaning"
-    }))
-  ].filter(item => !item.completed && item.dueDate)
-   .filter(item => {
-      const due = dateOnly(item.dueDate);
-      const lead = Number(item.leadDays || 7);
-      const scheduleDate = new Date(due); scheduleDate.setDate(scheduleDate.getDate() - lead);
-      return scheduleDate <= end;
-   });
-
-  const annual = data.annualDates.map(item => {
-    const occurrence = nextAnnualOccurrence(item.monthDay);
-    return {
-      ...item,
-      name: item.name,
-      source: item.kind || "Annual reminder",
-      dueDate: occurrence ? occurrence.toISOString().slice(0,10) : null,
-      annual: true
-    };
-  }).filter(item => {
-    if (!item.dueDate) return false;
-    const occurrence = dateOnly(item.dueDate);
-    const reminder = Number(item.reminderDays || 7);
-    const reminderDate = new Date(occurrence); reminderDate.setDate(reminderDate.getDate() - reminder);
-    return reminderDate <= end;
-  });
-
-  return [...ordinary, ...annual].sort((a,b) => dateOnly(a.dueDate) - dateOnly(b.dueDate));
-}
 
 
 function annualStatus(item) {
@@ -862,51 +771,8 @@ function annualStatus(item) {
   };
 }
 
-function getTodayReminderItems() {
-  const today = new Date();
-  today.setHours(12,0,0,0);
-
-  const dated = [
-    ...data.todos.map(item => ({ ...item, source: "To-do", itemType: "todo" })),
-    ...activeProjectDashboardItems()
-  ].filter(item => !item.completed && item.dueDate)
-   .filter(item => dateOnly(item.dueDate) <= today);
-
-  const annual = data.annualDates
-    .map(item => ({ item, status: annualStatus(item) }))
-    .filter(entry => entry.status && (entry.status.isToday || entry.status.inReminderWindow))
-    .map(entry => ({
-      id: entry.item.id,
-      name: entry.item.name,
-      details: entry.item.details,
-      source: entry.status.isToday ? "Annual date today" : "Annual reminder",
-      dueDate: entry.status.occurrence.toISOString().slice(0,10),
-      itemType: "annual"
-    }));
-
-  const cleaning = data.cleaningTasks
-    .filter(item => isDueTodayOrEarlier(item.nextDue))
-    .map(item => ({
-      id: item.id,
-      name: item.name,
-      details: item.details,
-      source: `Cleaning: ${item.room || "General"}`,
-      dueDate: item.nextDue,
-      itemType: "cleaning"
-    }));
-
-  return [...dated, ...annual, ...cleaning]
-    .sort((a,b) => dateOnly(a.dueDate) - dateOnly(b.dueDate));
-}
 
 
-function openReminderItem(item) {
-  if (item.itemType === "todo") editTodo(item.id);
-  else if (item.itemType === "project") editProject(item.id);
-  else if (item.itemType === "step") editStep(item.parentId, item.id);
-  else if (item.itemType === "cleaning") editCleaning(item.id);
-  else if (item.itemType === "annual" || item.annual) editAnnual(item.id);
-}
 
 function compactReminderRow(item, options = {}) {
   const row = document.createElement("div");
@@ -927,23 +793,6 @@ function compactReminderRow(item, options = {}) {
   return row;
 }
 
-function renderTodayReminders() {
-  const area = document.getElementById("todayRemindersArea");
-  const items = getTodayReminderItems();
-  area.innerHTML = "";
-  if (!items.length) { area.innerHTML = `<div class="empty-state">No dated reminders need attention today.</div>`; return; }
-  items.forEach(item => {
-    const overdue = item.itemType !== "annual" && dateOnly(item.dueDate) < new Date(new Date().setHours(0,0,0,0));
-    const meta = `${item.source} · ${formatDate(item.dueDate, item.itemType !== "annual")}${overdue ? " · OVERDUE" : ""}`;
-    const actionable = item.itemType !== "annual";
-    let onComplete = null;
-    if (item.itemType === "cleaning") onComplete = () => completeCleaning(item.id);
-    if (item.itemType === "todo") onComplete = () => toggleTodo(item.id);
-    if (item.itemType === "project") onComplete = () => toggleProject(item.id);
-    if (item.itemType === "step") onComplete = () => toggleStep(item.parentId,item.id);
-    area.appendChild(compactReminderRow(item,{meta,actionable,onComplete,clickable:true}));
-  });
-}
 
 function renderMainOverview() {
   const area = document.getElementById("mainOverviewArea");
@@ -957,130 +806,9 @@ function renderMainOverview() {
   `;
 }
 
-function renderWeekly() {
-  const area = document.getElementById("weeklyArea");
-  const items = getWeeklyItems();
-  area.innerHTML = "";
-  if (!items.length) { area.innerHTML = `<div class="empty-state">Nothing time-sensitive needs attention this week.</div>`; return; }
-  items.forEach(item => {
-    const displayItem = {...item,itemType:item.annual?"annual":item.itemType};
-    const overdue = !item.annual && dateOnly(item.dueDate) < new Date(new Date().setHours(0,0,0,0));
-    const meta = item.annual ? `${item.source} · ${formatDate(item.dueDate, false)}` : `${item.source} · ${formatDate(item.dueDate)}${overdue ? " · OVERDUE" : ""}`;
-    const actionable = !item.annual;
-    let onComplete = null;
-    if (item.itemType === "cleaning") onComplete = () => completeCleaning(item.id);
-    if (item.itemType === "todo") onComplete = () => toggleTodo(item.id);
-    if (item.itemType === "project") onComplete = () => toggleProject(item.id);
-    if (item.itemType === "step") onComplete = () => toggleStep(item.parentId,item.id);
-    area.appendChild(compactReminderRow(displayItem,{meta,actionable,onComplete,clickable:true}));
-  });
-}
 
-function renderTodos() {
-  const area = document.getElementById("todoArea");
-  area.innerHTML = "";
-  if (!data.todos.length) {
-    area.innerHTML = `<div class="empty-state">No to-do items yet. Use the + at the top of this section.</div>`;
-    return;
-  }
 
-  data.todos.sort(sortByDueDate).forEach(todo => {
-    const row = document.createElement("div");
-    row.className = `compact-manage-row ${todo.completed ? "completed-row" : ""}`;
-    const timing = getTimingText(todo);
-    row.innerHTML = `
-      <button type="button" class="compact-row-main" data-list-action="edit-todo" data-id="${todo.id}">
-        <span class="compact-row-title">${escapeHtml(todo.name)}</span>
-        <span class="compact-row-meta">${escapeHtml(timing)}</span>
-      </button>
-      <details class="item-menu">
-        <summary aria-label="Options for ${escapeHtml(todo.name)}">⋯</summary>
-        <div class="item-menu-popover">
-          <button type="button" onclick="editTodo('${todo.id}'); this.closest('details').removeAttribute('open')">Edit</button>
-          <button type="button" data-list-action="toggle-todo" data-id="${todo.id}">${todo.completed ? "Mark active" : "Complete"}</button>
-          <button type="button" class="danger-text" data-list-action="delete-todo" data-id="${todo.id}">Delete</button>
-        </div>
-      </details>`;
-    area.appendChild(row);
-  });
-}
 
-function renderAnnualDates() {
-  const area = document.getElementById("annualArea");
-  area.innerHTML = "";
-  if (!data.annualDates.length) {
-    area.innerHTML = `<div class="empty-state">No birthdays or annual dates yet.</div>`;
-    return;
-  }
-
-  [...data.annualDates].sort((a,b) => nextAnnualOccurrence(a.monthDay) - nextAnnualOccurrence(b.monthDay)).forEach(item => {
-    const next = nextAnnualOccurrence(item.monthDay);
-    const card = document.createElement("div");
-    card.className = "list-card";
-    card.innerHTML = `
-      <div class="card-top">
-        <div>
-          <div class="card-title">${escapeHtml(item.name)}</div>
-          <div class="card-meta">${escapeHtml(item.kind || "Annual reminder")} - ${next ? next.toLocaleDateString("en-GB",{day:"numeric",month:"long"}) : ""}</div>
-          <div class="card-details">${escapeHtml(item.details || "")}</div>
-        </div>
-        <span class="badge ongoing">Annual</span>
-      </div>
-      <div class="card-actions">
-        <button type="button" onclick="editAnnual('${item.id}')">Edit</button>
-        <button type="button" class="danger-button" onclick="deleteAnnual('${item.id}')">Delete</button>
-      </div>`;
-    area.appendChild(card);
-  });
-}
-
-function renderProjects() {
-  const area = document.getElementById("projectsArea");
-  area.innerHTML = "";
-  if (!data.projects.length) {
-    area.innerHTML = `<div class="empty-state">No projects yet. Use Add project.</div>`;
-    return;
-  }
-
-  data.projects.sort(sortByDueDate).forEach(project => {
-    const card = document.createElement("div");
-    card.className = `list-card ${project.completed ? "completed-card" : ""}`;
-    const badge = getBadge(project);
-    const stepsHtml = project.steps.length
-      ? project.steps.map(step => `
-        <div class="list-card">
-          <label class="step-row">
-            <input type="checkbox" ${step.completed ? "checked" : ""} data-list-action="toggle-step" data-parent-id="${project.id}" data-id="${step.id}">
-            <span>
-              <strong>${escapeHtml(step.name)}</strong><br>
-              <span class="card-meta">${escapeHtml(step.details || "")}${step.dueDate ? ` - Due ${formatDate(step.dueDate)}` : ""}</span>
-            </span>
-          </label>
-          <div class="card-actions">
-            <button type="button" data-list-action="edit-step" data-parent-id="${project.id}" data-id="${step.id}">Edit step</button>
-            <button type="button" class="danger-button" data-list-action="delete-step" data-parent-id="${project.id}" data-id="${step.id}">Delete step</button>
-          </div>
-        </div>`).join("")
-      : `<div class="card-meta">No steps added yet.</div>`;
-
-    card.innerHTML = `
-      <div class="card-top">
-        <div>
-          <div class="card-title">${escapeHtml(project.name)}</div>
-          <div class="card-details">${escapeHtml(project.details || "")}</div>
-        </div>
-        <span class="badge ${badge.cls}">${badge.text}</span>
-      </div>
-      <div class="steps-list">${stepsHtml}</div>
-      <div class="card-actions">
-        <button type="button" data-list-action="edit-project" data-id="${project.id}">Edit project</button>
-        <button type="button" data-list-action="add-step" data-id="${project.id}">Add step</button>
-        <button type="button" onclick="toggleProject('${project.id}')">${project.completed ? "Mark active" : "Complete project"}</button>
-        <button type="button" class="danger-button" data-list-action="delete-project" data-id="${project.id}">Delete</button>
-      </div>`;
-    area.appendChild(card);
-  });
-}
 
 function sortByDueDate(a,b) {
   if (a.completed !== b.completed) return a.completed ? 1 : -1;
@@ -1096,14 +824,6 @@ function toggleProject(id) { const item=data.projects.find(x=>x.id===id); if(ite
 function deleteProject(id) { data.projects=data.projects.filter(x=>x.id!==id); saveData(); renderAll(); }
 function deleteAnnual(id) { data.annualDates=data.annualDates.filter(x=>x.id!==id); saveData(); renderAll(); }
 
-function toggleStep(projectId,stepId) {
-  const project=data.projects.find(x=>x.id===projectId);
-  const step=project?.steps.find(x=>x.id===stepId);
-  if (!project || !step) return;
-  step.completed = !step.completed;
-  project.completed = project.steps.length > 0 && project.steps.every(item => item.completed);
-  saveData(); renderAll();
-}
 
 function deleteStep(projectId,stepId) {
   const project=data.projects.find(x=>x.id===projectId);
@@ -1442,7 +1162,7 @@ function applyAppUpdate() {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=19", { updateViaCache: "none" });
+      const registration = await navigator.serviceWorker.register(`./service-worker.js?v=${APP_VERSION}`, { updateViaCache: "none" });
       if (registration.waiting) {
         waitingServiceWorker = registration.waiting;
         document.getElementById("updateButton")?.classList.remove("hidden");
@@ -1585,9 +1305,7 @@ function showAnchoredMenu(button){
 document.addEventListener('click',e=>{if(activeAnchoredMenu&&!activeAnchoredMenu.contains(e.target)&&!e.target.closest('.item-menu-trigger'))closeAnchoredMenu();});
 window.addEventListener('scroll',closeAnchoredMenu,true); window.addEventListener('resize',closeAnchoredMenu);
 function compactMenu(actions,label){return `<span class="item-menu-anchor"><button type="button" class="item-menu-trigger" onclick="event.stopPropagation();showAnchoredMenu(this)" aria-label="Options for ${escapeHtml(label)}">⋯</button><span class="item-menu-template hidden">${actions}</span></span>`;}
-function renderTodos(){const area=document.getElementById("todoArea");area.innerHTML="";if(!data.todos.length){area.innerHTML='<div class="empty-state">No to-do items yet.</div>';return;}[...data.todos].sort(sortByDueDate).forEach(todo=>{const row=document.createElement('div');row.className=`compact-manage-row ${todo.completed?'completed-row':''}`;const next=(todo.steps||[]).find(s=>!s.completed);row.innerHTML=`<button class="compact-row-main" data-list-action="edit-todo" data-id="${todo.id}"><span class="compact-row-title">${escapeHtml(todo.name)}</span><span class="compact-row-meta">${next?`Next: ${escapeHtml(next.name)}${next.dueDate?` · ${formatDate(next.dueDate)}`:''}`:getTimingText(todo)}</span></button>${compactMenu(`<button onclick="closeAnchoredMenu();editTodo('${todo.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleTodo('${todo.id}')">${todo.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodo('${todo.id}')">Delete</button>`,todo.name)}`;area.appendChild(row);});}
 function renderAnnualDates(){const area=document.getElementById('annualArea');area.innerHTML='';if(!data.annualDates.length){area.innerHTML='<div class="empty-state">No birthdays or annual dates yet.</div>';return;}[...data.annualDates].sort((a,b)=>nextAnnualOccurrence(a.monthDay)-nextAnnualOccurrence(b.monthDay)).forEach(item=>{const next=nextAnnualOccurrence(item.monthDay),row=document.createElement('div');row.className='annual-manage-row';row.innerHTML=`<div><strong>${escapeHtml(item.name)}</strong><div class="card-meta">${next?next.toLocaleDateString('en-GB',{day:'numeric',month:'long'}):''}</div></div>${compactMenu(`<button onclick="closeAnchoredMenu();editAnnual('${item.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteAnnual('${item.id}')">Delete</button>`,item.name)}`;area.appendChild(row);});}
-function renderProjects(){const area=document.getElementById('projectsArea');area.innerHTML='';if(!data.projects.length){area.innerHTML='<div class="empty-state">No projects yet.</div>';return;}[...data.projects].sort(sortByDueDate).forEach(project=>{const card=document.createElement('div');card.className=`list-card ${project.completed?'completed-card':''}`;const steps=(project.steps||[]).map(step=>`<div class="step-compact-row"><label><input type="checkbox" ${step.completed?'checked':''} data-list-action="toggle-step" data-parent-id="${project.id}" data-id="${step.id}"> <strong>${escapeHtml(step.name)}</strong>${step.dueDate?` <span class="card-meta">${formatDate(step.dueDate)}</span>`:''}</label>${compactMenu(`<button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}')">${step.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}')">Delete</button>`,step.name)}</div>`).join('')||'<div class="card-meta">No steps added yet.</div>';card.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(project.name)}</div><div class="card-details">${escapeHtml(project.details||'')}</div></div>${compactMenu(`<button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();toggleProject('${project.id}')">${project.completed?'Mark active':'Complete project'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}')">Delete</button>`,project.name)}</div><div class="steps-list">${steps}</div>`;area.appendChild(card);});}
 
 function addStepBuilderRow(builderId, step={}){
  const box=document.getElementById(builderId); if(!box)return;
@@ -1654,7 +1372,6 @@ function saveCapture(targetType=''){
  saveData();closeCaptureDialog();renderAll();showSaved(targetType?`Saved as ${targetType==='waiting'?'Waiting For':targetType}`:'Saved');return true;
 }
 function saveCaptureAs(type){saveCapture(type);}
-function convertInbox(id,type){const x=data.inbox.find(x=>x.id===id);if(!x)return;data.inbox=data.inbox.filter(i=>i.id!==id);if(type==='todo')data.todos.unshift({id:uid(),name:x.name,details:x.note||'',timingType:'none',dueDate:'',completed:false,steps:[]});else if(type==='project')data.projects.unshift({id:uid(),name:x.name,details:x.note||'',timingType:'none',dueDate:'',completed:false,steps:[]});else if(type==='appointment'){data.inbox.unshift(x);openAppointmentDialog('',x.name,x.note||'');return;}else data.waiting.unshift({id:uid(),name:x.name,note:x.note||'',reviewDate:'',completed:false});saveData();renderAll();showSaved('Thought converted');}
 function renderInbox(){const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');[full,preview].forEach(area=>{if(!area)return;area.innerHTML='';const items=area===preview?data.inbox.slice(0,3):data.inbox;if(!items.length){area.innerHTML='<div class="empty-state">Nothing waiting in your inbox.</div>';return;}items.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.note||'Unsorted thought',open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)})));});}
 function renderWaiting(){const area=document.getElementById('waitingArea');if(!area)return;area.innerHTML='';if(!data.waiting.length){area.innerHTML='<div class="empty-state">Nothing being waited for.</div>';return;}data.waiting.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.reviewDate?`Review ${formatDate(x.reviewDate)}`:(x.note||'No review date'),dueDate:x.reviewDate,action:()=>completeWaiting(x.id),open:()=>editCapture('waiting',x.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('waiting','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();completeWaiting('${x.id}')">${x.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('waiting','${x.id}')">Delete</button>`,x.name)})));}
 function startVoiceCapture(type=''){
@@ -1762,9 +1479,8 @@ const closeAppointmentDialogCore=closeAppointmentDialog;
 closeAppointmentDialog=function(){pendingInboxAppointmentId='';closeAppointmentDialogCore();};
 
 
-/* ===== V15 authoritative Lists rebuild =====
-   The Lists view reads directly from the same live data objects used by Home.
-   These final declarations intentionally replace older renderers. */
+/* ===== Authoritative Lists renderers =====
+   Lists and Home read from the same live data objects. */
 function renderTodos() {
   const area = document.getElementById('todoArea');
   if (!area) return;
@@ -1891,7 +1607,7 @@ function renderCleaning() {
 }
 
 
-/* ===== V15 reliable Lists refresh ===== */
+/* ===== Lists refresh ===== */
 function refreshListsImmediately() {
   renderTodos();
   renderAppointments();

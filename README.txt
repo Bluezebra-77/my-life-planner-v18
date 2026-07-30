@@ -1,8 +1,10 @@
-My Life Planner V19 — Lists Runtime Fix
+My Life Planner V20 — Code Quality Release
 
-Changes in V19:
-- Fixed a JavaScript runtime error caused by renderCleaningToday trying to update a removed cleaningTodayArea element.
-- This error had stopped renderAll before the Lists renderers and button refreshes ran.
-- Added a safe guard so the obsolete renderer exits when its old element is absent.
-- Version references synchronised to V19.
-- No saved-data structure changed.
+Changes in V20:
+- Removed duplicate top-level JavaScript function declarations while retaining the stable V19 implementations.
+- Kept one authoritative renderer/action implementation for each feature.
+- Centralised the runtime version number through APP_VERSION.
+- Updated the app, manifest and service-worker cache references to V20.
+- No intentional changes to the interface, behaviour or saved-data format.
+
+Stable baseline: V19.
