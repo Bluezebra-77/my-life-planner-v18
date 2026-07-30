@@ -1,5 +1,5 @@
 /*
- * My Life Planner v36
+ * My Life Planner v37
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
