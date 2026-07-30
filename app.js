@@ -1,5 +1,5 @@
 /*
- * My Life Planner v42
+ * My Life Planner v45
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,14 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "44";
+const APP_VERSION = "45";
+const DATABASE_VERSION = "1";
+const MODULE_VERSIONS = Object.freeze({
+  brainCapture: "2.1",
+  attachments: "1.1",
+  appointments: "2.0",
+  quickActions: "1.0"
+});
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1118,7 +1125,50 @@ function getSettings() {
 }
 
 function openSettingsDialog() {
-  setTimeout(refreshBrainShortcutUrl,0); document.getElementById("settingsDialog")?.showModal(); applySettings(); previewSettings(); renderDailyBackups(); updateStorageStatus(); }
+  setTimeout(refreshBrainShortcutUrl,0);
+  document.getElementById("settingsDialog")?.showModal();
+  applySettings();
+  previewSettings();
+  renderDailyBackups();
+  updateStorageStatus();
+  refreshDeveloperDashboard();
+}
+function formatStorageBytes(bytes) {
+  const value=Number(bytes)||0;
+  if(value<1024)return `${value} B`;
+  if(value<1024*1024)return `${(value/1024).toFixed(1)} KB`;
+  if(value<1024*1024*1024)return `${(value/(1024*1024)).toFixed(1)} MB`;
+  return `${(value/(1024*1024*1024)).toFixed(1)} GB`;
+}
+
+async function refreshDeveloperDashboard() {
+  const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value ?? "—");};
+  setText("devPlannerVersion", `v${APP_VERSION}`);
+  setText("devCacheVersion", `my-life-planner-v${APP_VERSION}`);
+  setText("devManifestVersion", APP_VERSION);
+  setText("devDatabaseVersion", DATABASE_VERSION);
+  setText("devBrainModule", MODULE_VERSIONS.brainCapture);
+  setText("devAttachmentModule", MODULE_VERSIONS.attachments);
+  setText("devAppointmentModule", MODULE_VERSIONS.appointments);
+  setText("devQuickModule", MODULE_VERSIONS.quickActions);
+  setText("devAppointmentsCount", data.appointments.length);
+  setText("devTodosCount", data.todos.length);
+  setText("devInboxCount", data.inbox.length);
+  const backups=getDailyBackups();
+  const newest=backups.slice().sort((a,b)=>String(b.savedAt||"").localeCompare(String(a.savedAt||"")))[0];
+  setText("devLastBackup", newest?.savedAt ? new Date(newest.savedAt).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "No backup yet");
+  try {
+    const estimate=await navigator.storage?.estimate?.();
+    const used=Number(estimate?.usage)||0;
+    const quota=Number(estimate?.quota)||0;
+    setText("devStorageUsed", formatStorageBytes(used));
+    setText("devStorageQuota", quota ? formatStorageBytes(quota) : "Not reported");
+  } catch {
+    setText("devStorageUsed", "Not reported");
+    setText("devStorageQuota", "Not reported");
+  }
+}
+
 function closeSettingsDialog() { document.getElementById("settingsDialog")?.close(); }
 function previewSettings() {
   const theme=document.getElementById("themeChoice")?.value || "sage";

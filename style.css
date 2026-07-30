@@ -1137,3 +1137,6 @@ body:has(.lists-floating-wrap:not([hidden])) .app-shell{padding-bottom:105px!imp
 .appointment-repeat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
 .appointment-repeat-summary{margin:.65rem 0 0;font-weight:700}
 @media(max-width:560px){.appointment-repeat-grid{grid-template-columns:1fr}}
+
+/* v45 Developer Dashboard */
+.developer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin:.8rem 0}.developer-grid p{display:flex;justify-content:space-between;gap:1rem;margin:0;padding:.65rem .75rem;border:1px solid var(--line);border-radius:12px;background:var(--panel-soft)}.developer-grid span{text-align:right;font-weight:700;overflow-wrap:anywhere}@media(max-width:640px){.developer-grid{grid-template-columns:1fr}}

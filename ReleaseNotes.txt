@@ -1,0 +1,29 @@
+My Life Planner
+Version 45
+Date: 30 July 2026
+
+BUILT FROM
+- Last user-tested stable release: v42
+
+NEW
+- Automatic image resizing/compression for Brain Inbox images.
+- In-app image, PDF and text previews where supported.
+- Quick Actions with a generated Brain Inbox launch address.
+- Flexible appointment recurrence: every X days, weeks, months or years.
+- Repeat endings: never, after a chosen number, or on a chosen date.
+- Developer Dashboard showing release, module, data-count and storage information.
+- ReleaseNotes.txt and BuildReport.txt included in the package.
+
+IMPROVED
+- Photo and screenshot capture combined as Photo or image.
+- Clear preview versus download behaviour for attachments.
+- Version consistency across app header, About, JavaScript, manifest and service-worker cache.
+
+DATA COMPATIBILITY
+- Existing localStorage keys are unchanged.
+- Existing appointments and Brain Inbox records remain readable.
+- Existing non-repeating and legacy repeating appointments remain supported.
+
+KNOWN LIMITATIONS
+- Some document types cannot be previewed by Safari and will use Download copy.
+- Browser storage allowance varies by device and browser.
