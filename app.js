@@ -1,5 +1,5 @@
 /*
- * My Life Planner v22
+ * My Life Planner v23
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "22";
+const APP_VERSION = "23";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -676,7 +676,8 @@ async function installPlanner() {
   deferredInstallPrompt.prompt();
   await deferredInstallPrompt.userChoice;
   deferredInstallPrompt = null;
-  document.getElementById("installButton")?.classList.add("hidden");
+  const installButton = document.getElementById("installButton");
+  if (installButton) installButton.textContent = "Install app";
 }
 
 function frequencyLabel(value) {
@@ -1076,14 +1077,35 @@ function escapeHtml(value) {
 }
 
 function getSettingsFromAnyKey() {
-  const keys = ["lifePlannerSettings","lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
+  const keys = [SETTINGS_KEY, ...LEGACY_SETTINGS_KEYS];
+  const candidates = [];
+
   for (const key of keys) {
-    try { const raw=localStorage.getItem(key); if(raw) return JSON.parse(raw); } catch {}
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") candidates.push(parsed);
+    } catch {}
   }
-  return {};
+
+  if (!candidates.length) return {};
+
+  // Some older releases created a new default settings record while the user's
+  // actual colour/font remained in a legacy record. Prefer a genuinely
+  // customised value instead of allowing that default record to mask it.
+  const customised = candidates.find(item =>
+    (item.theme && item.theme !== "sage") ||
+    (item.font && item.font !== "clear") ||
+    (item.ownerName && String(item.ownerName).trim())
+  );
+
+  return customised || candidates[0];
 }
 function getSettings() {
-  return { ownerName:"", theme:"sage", font:"clear", ...getSettingsFromAnyKey() };
+  const settings = { ownerName:"", theme:"sage", font:"clear", ...getSettingsFromAnyKey() };
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch {}
+  return settings;
 }
 
 function openSettingsDialog() { document.getElementById("settingsDialog")?.showModal(); applySettings(); previewSettings(); renderDailyBackups(); updateStorageStatus(); }
