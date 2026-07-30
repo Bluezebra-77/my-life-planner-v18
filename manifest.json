@@ -1,8 +1,8 @@
 {
-  "name": "My Life Planner V30",
+  "name": "My Life Planner V31",
   "short_name": "Life Planner",
-  "description": "A calm personal planner with Brain Inbox capture and conversion, Focus Today, lists, projects, routines and appointments.",
-  "start_url": "./index.html?v=30",
+  "description": "A calm personal planner with a unified Timeline, Brain Inbox, lists, projects, routines and appointments.",
+  "start_url": "./index.html?v=31",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8ff",
@@ -23,5 +23,5 @@
     }
   ],
   "id": "./",
-  "version": "30"
+  "version": "31"
 }

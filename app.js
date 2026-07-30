@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "30";
+const APP_VERSION = "31";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1623,7 +1623,52 @@ function renderAppointments(){
     area.appendChild(row);
   });
 }
-function renderTimeline(){const area=document.getElementById('timelineArea');if(!area)return;area.innerHTML='';const now=new Date();const items=(data.appointments||[]).flatMap(a=>appointmentOccurrences(a,now,120).map(o=>({...a,occurrenceDate:o.date}))).sort((a,b)=>(a.occurrenceDate+a.time).localeCompare(b.occurrenceDate+b.time));if(!items.length){area.innerHTML='<div class="empty-state">No upcoming appointments.</div>';return;}items.forEach(a=>area.appendChild(makeV10Row({name:a.name,meta:`${formatDate(a.occurrenceDate)}${a.time?' · '+a.time:''}${a.location?' · '+a.location:''}${normaliseAppointmentLink(a.link||a.url||a.meetingLink||'')?' · link available':''}`,dueDate:a.occurrenceDate,open:()=>openAppointmentDialog(a.id)},{complete:false})));}
+let timelineRange='today';
+const TIMELINE_TYPES={
+  appointment:{icon:'📅',label:'Appointment'},todo:{icon:'✅',label:'To-do'},project:{icon:'📁',label:'Project'},
+  cleaning:{icon:'🧹',label:'Cleaning'},annual:{icon:'🎂',label:'Birthday / annual date'},waiting:{icon:'⏳',label:'Waiting For'}
+};
+function setTimelineRange(range,button){
+  timelineRange=range;
+  document.querySelectorAll('.timeline-filter').forEach(b=>b.classList.toggle('active',b.dataset.range===range));
+  if(button)button.classList.add('active');
+  renderTimeline();
+}
+function timelineDateBounds(range){
+  const today=dateOnly(localDateKey()),start=new Date(today),end=new Date(today);
+  if(range==='tomorrow'){start.setDate(start.getDate()+1);end.setDate(end.getDate()+1);}
+  else if(range==='week')end.setDate(end.getDate()+6);
+  else if(range==='month')end.setMonth(end.getMonth()+1,0);
+  else if(range==='all')end.setDate(end.getDate()+365);
+  return {start,end};
+}
+function timelineItems(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const items=[];
+  (data.appointments||[]).forEach(a=>appointmentOccurrences(a,today,365).forEach(o=>items.push({id:a.id,type:'appointment',name:a.name,date:o.date,time:a.time||'',detail:[a.endTime&&a.time?`${a.time}–${a.endTime}`:a.time,a.location].filter(Boolean).join(' · '),open:()=>openAppointmentDialog(a.id)})));
+  (data.todos||[]).filter(x=>!x.completed&&x.dueDate).forEach(x=>items.push({id:x.id,type:'todo',name:x.name,date:x.dueDate,detail:x.details||'',open:()=>editTodo(x.id)}));
+  (data.projects||[]).filter(x=>!x.completed&&x.dueDate).forEach(x=>items.push({id:x.id,type:'project',name:x.name,date:x.dueDate,detail:x.details||'',open:()=>editProject(x.id)}));
+  (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue).forEach(x=>items.push({id:x.id,type:'cleaning',name:x.name,date:x.nextDue,detail:x.room||'Home',open:()=>editCleaning(x.id)}));
+  (data.annualDates||[]).forEach(x=>{const d=nextAnnualOccurrence(x.monthDay);if(d)items.push({id:x.id,type:'annual',name:x.name,date:localDateKey(d),detail:x.details||'',open:()=>editAnnual(x.id)});});
+  (data.waiting||[]).filter(x=>!x.completed&&x.reviewDate).forEach(x=>items.push({id:x.id,type:'waiting',name:x.name,date:x.reviewDate,detail:x.note||'Review due',open:()=>editCapture('waiting',x.id)}));
+  return items.filter(x=>dateOnly(x.date)>=today).sort((a,b)=>(a.date+(a.time||'99:99')+a.name).localeCompare(b.date+(b.time||'99:99')+b.name));
+}
+function renderTimeline(){
+  const area=document.getElementById('timelineArea'),summary=document.getElementById('timelineSummary');if(!area)return;
+  const {start,end}=timelineDateBounds(timelineRange);
+  const items=timelineItems().filter(x=>{const d=dateOnly(x.date);return d>=start&&d<=end;});
+  area.innerHTML='';
+  const labels={today:'today',tomorrow:'tomorrow',week:'in the next 7 days',month:'this month',all:'in the next year'};
+  if(summary)summary.textContent=`${items.length} ${items.length===1?'item':'items'} ${labels[timelineRange]}.`;
+  if(!items.length){area.innerHTML='<div class="empty-state">Nothing dated for this period.</div>';return;}
+  let current='';
+  items.forEach(item=>{
+    if(item.date!==current){current=item.date;const h=document.createElement('h3');h.className='timeline-date-heading';h.textContent=formatDate(item.date);area.appendChild(h);}
+    const type=TIMELINE_TYPES[item.type],row=document.createElement('button');row.type='button';row.className=`timeline-item timeline-${item.type}`;row.onclick=item.open;
+    row.innerHTML=`<span class="timeline-icon" aria-hidden="true">${type.icon}</span><span class="timeline-copy"><strong>${escapeHtml(item.name)}</strong><span class="timeline-meta">${escapeHtml(type.label)}${item.time?' · '+escapeHtml(item.time):''}${item.detail?' · '+escapeHtml(item.detail):''}</span></span><span class="timeline-chevron" aria-hidden="true">›</span>`;
+    area.appendChild(row);
+  });
+}
 
 /* Safe Brain Inbox conversion: an inbox item is only removed after the destination is saved. */
 let pendingInboxAppointmentId='';

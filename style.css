@@ -843,3 +843,16 @@ body[data-font="spacious"]{font-family:Arial,Helvetica,sans-serif!important;lett
 
 /* v30 Brain Inbox core */
 .capture-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.convert-heading{margin:0;font-size:.76rem;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.processed-inbox-row{opacity:.62}.processed-inbox-row .v10-row-title{text-decoration:line-through}@media(max-width:560px){.capture-options{grid-template-columns:1fr}}
+
+
+/* v31 unified timeline */
+.timeline-filters{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:thin}
+.timeline-filter{flex:0 0 auto;padding:9px 12px;border-radius:999px;background:#f3f7f4;color:#425448;border:1px solid #b9c8bd;box-shadow:none;font-size:.86rem}
+.timeline-filter.active{background:#5f7d68;color:#fff;border-color:#5f7d68}
+.timeline-summary{margin:0 0 10px;color:#6d7b72;font-size:.92rem;font-weight:700}
+.timeline-list{display:grid;gap:8px}
+.timeline-date-heading{margin:14px 0 2px;padding-bottom:6px;border-bottom:1px solid #dce6de;font-size:1rem;color:#52645a}
+.timeline-item{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;text-align:left;padding:13px 12px;background:#fbfdfb;color:#243229;border:1px solid #dce6de;border-left:5px solid #8aa08f;box-shadow:none}
+.timeline-item:hover{background:#f3f7f4}
+.timeline-icon{font-size:1.35rem}.timeline-copy{display:grid;gap:3px;min-width:0}.timeline-copy strong{overflow-wrap:anywhere}.timeline-meta{font-size:.86rem;color:#6d7b72;font-weight:600}.timeline-chevron{font-size:1.6rem;color:#839188}
+.timeline-appointment{border-left-color:#4e84c4}.timeline-todo{border-left-color:#62a06f}.timeline-project{border-left-color:#8a6bb8}.timeline-cleaning{border-left-color:#d49a4d}.timeline-annual{border-left-color:#c66b89}.timeline-waiting{border-left-color:#688f95}
