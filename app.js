@@ -1,5 +1,5 @@
 /*
- * My Life Planner v37
+ * My Life Planner v38
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "35";
+const APP_VERSION = "38";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1559,6 +1559,14 @@ function openTimelineShortcut(){
 function scrollListsToTop(){
   document.querySelector('.lists-hub')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
+function toggleListsSideNav(force){
+ const wrap=document.querySelector('.lists-floating-wrap');
+ const toggle=document.querySelector('.lists-rail-toggle');
+ if(!wrap||!toggle)return;
+ const open=typeof force==='boolean'?force:!wrap.classList.contains('nav-open');
+ wrap.classList.toggle('nav-open',open);
+ toggle.setAttribute('aria-expanded',String(open));
+}
 function jumpToList(id){
  const el=document.getElementById(id);
  if(!el)return;
@@ -1570,7 +1578,11 @@ function jumpToList(id){
    applyListSectionState(el,false);
  }
  requestAnimationFrame(()=>{
-   el.scrollIntoView({behavior:'smooth',block:'start'});
+   const header=document.querySelector('.app-header');
+   const offset=(header?.getBoundingClientRect().height||0)+14;
+   const top=window.scrollY+el.getBoundingClientRect().top-offset;
+   window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+   toggleListsSideNav(false);
    el.classList.add('list-highlight');
    setTimeout(()=>el.classList.remove('list-highlight'),900);
  });
@@ -1845,17 +1857,19 @@ function openCustomListManager(listId=''){
   setTimeout(()=>name?.focus(),60);
 }
 function closeCustomListManager(){document.getElementById('customListDialog')?.close();activeCustomListId='';}
-function saveCustomListName(){
+function saveCustomListName(closeAfter=true){
   const name=document.getElementById('customListName')?.value.trim();
   if(!name){alert('Please give the list a name.');return;}
   let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
   if(!list){list={id:uid(),name,items:[]};data.customLists.unshift(list);activeCustomListId=list.id;}
   else list.name=name;
   saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();showSaved('Custom list saved');
+  if(closeAfter)closeCustomListManager();
 }
+
 function addCustomListItem(){
   let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
-  if(!list){saveCustomListName();list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);}
+  if(!list){saveCustomListName(false);list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);}
   if(!list)return;
   const input=document.getElementById('customListNewItem');const name=input?.value.trim();if(!name)return;
   list.items=list.items||[];list.items.push({id:uid(),name,completed:false});if(input)input.value='';saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();
