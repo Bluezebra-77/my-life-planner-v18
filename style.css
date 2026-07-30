@@ -884,3 +884,24 @@ body[data-font="spacious"]{font-family:Arial,Helvetica,sans-serif!important;lett
 .timeline-filters{-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;overscroll-behavior-x:contain}.timeline-filter{scroll-snap-align:start}
 @media(max-width:600px){.timeline-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;gap:7px}.timeline-filter{width:100%;white-space:normal;min-height:42px}.timeline-filter:last-child{grid-column:1/-1}.home-quick-actions{grid-template-columns:1fr 1fr}.home-quick-button{padding:11px 10px!important}.home-quick-button small{display:none}.lists-floating-nav{top:4px}.custom-list-add-row{grid-template-columns:1fr}.custom-list-add-row button{width:100%}.custom-list-name-actions{display:grid;grid-template-columns:1fr 1fr}.custom-list-name-actions button{width:100%}}
 @media(max-width:390px){.home-quick-actions{grid-template-columns:1fr}.home-quick-button small{display:block}}
+
+
+/* v36: compact Home shortcuts and permanently anchored Lists navigation */
+.home-quick-actions{display:flex!important;justify-content:center;gap:8px;margin:0 0 12px}
+.home-quick-button{width:auto!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:8px 12px!important;border-radius:12px!important;box-shadow:0 4px 12px rgba(24,43,34,.08)!important;font-size:.82rem!important;line-height:1!important}
+.home-quick-button>span:first-child{font-size:1rem!important}.home-quick-button strong{font-size:.82rem!important;white-space:nowrap}
+.lists-hub .list-hub-grid{display:none!important}
+.lists-floating-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:39;width:min(900px,calc(100% - 18px));padding:5px 8px 7px;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:17px;box-shadow:0 10px 34px rgba(24,43,34,.2)}
+.lists-floating-wrap[hidden]{display:none!important}
+.lists-nav-hint{display:none;text-align:right;padding:0 5px 3px;color:var(--muted);font-size:.64rem;font-weight:750;letter-spacing:.02em}
+.lists-floating-nav{position:static!important;top:auto!important;z-index:auto!important;display:flex!important;width:100%;gap:6px;overflow-x:auto!important;overflow-y:hidden;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.lists-floating-nav button{width:auto!important;min-width:88px!important;flex:0 0 auto!important;scroll-snap-align:start;white-space:nowrap!important;padding:8px 10px!important;font-size:.75rem!important}
+body:has(.lists-floating-wrap:not([hidden])) .app-shell{padding-bottom:165px}
+@media(max-width:600px){
+ .home-quick-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:360px;margin-left:auto;margin-right:auto}
+ .home-quick-button{width:100%!important;padding:8px 7px!important}
+ .lists-floating-wrap{bottom:82px;width:calc(100% - 12px);padding-left:6px;padding-right:6px}
+ .lists-nav-hint{display:block}
+ .lists-floating-nav button{min-width:94px!important}
+}
+@media(max-width:360px){.home-quick-button strong{font-size:.76rem!important}.home-quick-button{gap:5px!important}.lists-floating-nav button{min-width:88px!important}}
