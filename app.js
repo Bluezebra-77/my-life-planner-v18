@@ -1,5 +1,5 @@
 /*
- * My Life Planner v34
+ * My Life Planner v35
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "34";
+const APP_VERSION = "35";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1552,6 +1552,13 @@ function updateListHubCounts(){
  };
  Object.entries(statusCounts).forEach(([id,[active,done]])=>{const el=document.getElementById(id);if(el)el.textContent=done?`${active} active · ${done} completed`:`${active} ${active===1?'item':'items'}`;});
 }
+function openTimelineShortcut(){
+  showAppView('planner');
+  requestAnimationFrame(()=>document.querySelector('.timeline-panel')?.scrollIntoView({behavior:'smooth',block:'start'}));
+}
+function scrollListsToTop(){
+  document.querySelector('.lists-hub')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function jumpToList(id){
  const el=document.getElementById(id);
  if(!el)return;
@@ -1869,7 +1876,7 @@ function renderCustomLists(){
   const area=document.getElementById('customListsArea');if(!area)return;area.innerHTML='';
   const lists=data.customLists||[];
   if(!lists.length){area.innerHTML='<div class="empty-state">No custom lists yet. Create one for shopping, packing, ideas or anything else.</div>';return;}
-  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';const active=(list.items||[]).filter(x=>!x.completed).length;card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3><p class="card-meta">${active} active · ${(list.items||[]).length} total</p></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${(list.items||[]).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
+  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${(list.items||[]).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
 }
 
 /* ===== Lists refresh ===== */
