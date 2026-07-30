@@ -1,5 +1,5 @@
 /*
- * My Life Planner v39
+ * My Life Planner v40
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "38";
+const APP_VERSION = "40";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1568,6 +1568,18 @@ function toggleListsSideNav(force){
  wrap.classList.toggle('nav-open',open);
  toggle.setAttribute('aria-expanded',String(open));
 }
+let listsLayoutResetTimer;
+function resetListsNavigationLayout(){
+ clearTimeout(listsLayoutResetTimer);
+ listsLayoutResetTimer=setTimeout(()=>toggleListsSideNav(false),60);
+}
+window.addEventListener('resize',resetListsNavigationLayout,{passive:true});
+window.addEventListener('orientationchange',()=>{
+ toggleListsSideNav(false);
+ resetListsNavigationLayout();
+},{passive:true});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',resetListsNavigationLayout,{passive:true});
+
 document.addEventListener('pointerdown',event=>{
  const wrap=document.querySelector('.lists-floating-wrap');
  if(!wrap?.classList.contains('nav-open'))return;
