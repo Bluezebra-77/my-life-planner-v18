@@ -856,3 +856,19 @@ body[data-font="spacious"]{font-family:Arial,Helvetica,sans-serif!important;lett
 .timeline-item:hover{background:#f3f7f4}
 .timeline-icon{font-size:1.35rem}.timeline-copy{display:grid;gap:3px;min-width:0}.timeline-copy strong{overflow-wrap:anywhere}.timeline-meta{font-size:.86rem;color:#6d7b72;font-weight:600}.timeline-chevron{font-size:1.6rem;color:#839188}
 .timeline-appointment{border-left-color:#4e84c4}.timeline-todo{border-left-color:#62a06f}.timeline-project{border-left-color:#8a6bb8}.timeline-cleaning{border-left-color:#d49a4d}.timeline-annual{border-left-color:#c66b89}.timeline-waiting{border-left-color:#688f95}
+
+
+/* v34: consistent headings, left-aligned content and custom lists */
+.section-heading{position:relative;justify-content:center!important;align-items:center!important;min-height:42px}
+.section-heading>div:first-child{flex:1;text-align:center!important;padding-left:48px;padding-right:48px}
+.section-heading>.section-actions,.section-heading>.section-plus,.section-heading>.icon-button,.section-heading>.small-button{position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.section-heading .eyebrow,.section-heading h2{text-align:center!important}
+.compact-list,.stack-list,.checklist,.overview-grid,.timeline-list,.card-meta,.daily-decider,.decision-result{text-align:left!important}
+#inboxPreviewArea,#projectNextActionsArea,#todayRemindersArea,#weeklyArea{padding-left:0!important;margin-left:0!important}
+.custom-lists-grid{display:grid;gap:12px;text-align:left}
+.custom-list-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--surface)}
+.custom-list-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.custom-list-heading h3{margin:0;text-align:left}
+.custom-preview-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left!important;background:transparent!important;color:inherit!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;padding:9px 4px!important;box-shadow:none!important}
+.custom-preview-item:last-child{border-bottom:0!important}
+@media(max-width:520px){.section-heading>div:first-child{padding-left:42px;padding-right:42px}.custom-list-heading{align-items:flex-start}}

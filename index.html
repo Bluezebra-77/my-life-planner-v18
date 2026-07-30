@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=33">
-  <link rel="manifest" href="manifest.json?v=33">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="manifest" href="manifest.json?v=34">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
           <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
           <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
         </div>
-        <p class="header-version">v33</p>
+        <p class="header-version">v34</p>
         <p id="todayDate" class="date-line"></p>
       </div>
       <div class="compact-progress" aria-label="Daily progress">
@@ -80,6 +80,7 @@
         <button type="button" class="list-shortcut" onclick="jumpToList('appointmentsListSection')" title="Open Appointments" aria-label="Open Appointments"><span class="list-shortcut-icon" aria-hidden="true">📅</span><span class="list-shortcut-label">Appointments</span><small id="appointmentHubCount">0 items</small></button>
         <button type="button" class="list-shortcut" onclick="jumpToList('inboxListSection')" title="Open Brain Inbox" aria-label="Open Brain Inbox"><span class="list-shortcut-icon" aria-hidden="true">💡</span><span class="list-shortcut-label">Brain Inbox</span><small id="inboxHubCount">0 items</small></button>
         <button type="button" class="list-shortcut" onclick="jumpToList('waitingListSection')" title="Open Waiting For" aria-label="Open Waiting For"><span class="list-shortcut-icon" aria-hidden="true">⏳</span><span class="list-shortcut-label">Waiting For</span><small id="waitingHubCount">0 items</small></button>
+        <button type="button" class="list-shortcut" onclick="jumpToList('customListsSection')" title="Open Custom Lists" aria-label="Open Custom Lists"><span class="list-shortcut-icon" aria-hidden="true">📝</span><span class="list-shortcut-label">Custom Lists</span><small id="customHubCount">0 items</small></button>
       </div>
     </section>
 
@@ -150,6 +151,13 @@
       <div id="cleaningArea" class="stack-list"></div>
     </section>
 
+
+
+    <section id="customListsSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Custom Lists">
+      <div class="section-heading"><div><p class="eyebrow">Make it yours</p><h2>Custom lists</h2></div><button class="section-plus" type="button" onclick="openCustomListManager()" aria-label="Create custom list">+</button></div>
+      <p class="card-meta">Create lists for shopping, packing, ideas, places to visit or anything else.</p>
+      <div id="customListsArea" class="custom-lists-grid"></div>
+    </section>
 
     <section class="panel app-view-section timeline-panel" data-view="planner">
       <div class="section-heading"><div><p class="eyebrow">Everything in date order</p><h2>Timeline</h2></div><button class="section-plus" type="button" onclick="openAppointmentDialog()" aria-label="Add appointment">+</button></div>
@@ -223,7 +231,7 @@
         <details class="storage-details"><summary>Where can I find my backups?</summary><p><strong>Automatic daily backups:</strong> stored privately inside this browser on this device.</p><p><strong>Visible backup files:</strong> choose Save backup file or Share backup, then save to iCloud Drive, OneDrive or Files.</p></details>
         <div class="card-actions"><button type="button" onclick="exportPlanner()">Save backup file</button><button type="button" onclick="sharePlannerBackup()">Share backup</button><button type="button" class="secondary-button" onclick="document.getElementById('importFile').click()">Import backup</button><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importPlanner(event)"></div>
         <p id="storageStatus" class="storage-status"></p><p id="saveIndicator" class="save-indicator" aria-live="polite">Ready</p>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 33</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v33</strong> — Corrected the Timeline so its default Today view loads immediately whenever Planner opens.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 34</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
       </div>
     </dialog>
 
@@ -262,6 +270,16 @@
       </div>
       <div class="dialog-actions"><button type="button" class="secondary-button" onclick="closeAppointmentDialog()">Cancel</button><button type="submit">Save appointment</button></div>
     </form>
+  </dialog>
+
+
+  <dialog id="customListDialog" class="manager-dialog">
+    <div class="dialog-header"><div><p class="eyebrow">Your own collection</p><h2 id="customListDialogTitle">Create custom list</h2></div><button type="button" class="dialog-close" onclick="closeCustomListManager()" aria-label="Close">×</button></div>
+    <label>List name<input id="customListName" type="text" maxlength="80" placeholder="For example: Shopping list"></label>
+    <div class="card-actions"><button type="button" onclick="saveCustomListName()">Save list name</button><button id="deleteCustomListButton" type="button" class="secondary-button danger-text" onclick="deleteActiveCustomList()" hidden>Delete list</button></div>
+    <hr class="settings-divider">
+    <div class="capture-input-row"><input id="customListNewItem" type="text" maxlength="160" placeholder="Add an item" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomListItem()}"><button type="button" onclick="addCustomListItem()">Add</button></div>
+    <div id="customListDialogItems" class="stack-list"></div>
   </dialog>
 
   <dialog id="routineManagerDialog" class="manager-dialog">
@@ -410,6 +428,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=33"></script>
+  <script src="app.js?v=34"></script>
 </body>
 </html>

@@ -1,9 +1,13 @@
 /*
- * My Life Planner v33
+ * My Life Planner v34
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
 var timelineRange='today';
+var TIMELINE_TYPES={
+  appointment:{icon:'📅',label:'Appointment'},todo:{icon:'✅',label:'To-do'},project:{icon:'📁',label:'Project'},
+  cleaning:{icon:'🧹',label:'Cleaning'},annual:{icon:'🎂',label:'Birthday / annual date'},waiting:{icon:'⏳',label:'Waiting For'}
+};
 
 const dailyTasks = [
   { id: "wake", title: "Get up, wash and get dressed", time: "Around 7:00-8:00, depending on sleep and health" },
@@ -52,7 +56,8 @@ function normaliseLegacyShape(value = {}) {
     projects: source.projects || source.projectItems || [],
     annualDates: source.annualDates || source.birthdays || source.annualReminders || [],
     cleaningTasks: source.cleaningTasks || source.cleaning || source.cleaningJobs || source.householdTasks || [],
-    appointments: source.appointments || source.events || []
+    appointments: source.appointments || source.events || [],
+    customLists: Array.isArray(source.customLists) ? source.customLists : []
   };
 }
 
@@ -123,7 +128,8 @@ function getData() {
     cleaningTasks: mergeUniqueLists(candidates,"cleaningTasks"),
     appointments: mergeUniqueLists(candidates,"appointments"),
     inbox: mergeUniqueLists(candidates,"inbox"),
-    waiting: mergeUniqueLists(candidates,"waiting")
+    waiting: mergeUniqueLists(candidates,"waiting"),
+    customLists: mergeUniqueLists(candidates,"customLists")
   });
   try {
     localStorage.setItem("lifePlannerMigrationSafety", JSON.stringify({savedAt:new Date().toISOString(), sourceKeys:candidates.map(x=>x.key), data:merged}));
@@ -141,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "32";
+const APP_VERSION = "34";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -153,6 +159,7 @@ function normaliseData(loaded = {}) {
     appointments: Array.isArray(loaded.appointments) ? loaded.appointments : [],
     inbox: Array.isArray(loaded.inbox) ? loaded.inbox : [],
     waiting: Array.isArray(loaded.waiting) ? loaded.waiting : [],
+    customLists: Array.isArray(loaded.customLists) ? loaded.customLists.map(list => ({...list, items:Array.isArray(list.items)?list.items:[]})) : [],
     dailyTasks: Array.isArray(loaded.dailyTasks) ? loaded.dailyTasks : JSON.parse(JSON.stringify(dailyTasks)),
     eveningTasks: Array.isArray(loaded.eveningTasks) ? loaded.eveningTasks : JSON.parse(JSON.stringify(eveningTasks)),
     categoryTasks: loaded.categoryTasks && typeof loaded.categoryTasks === "object"
@@ -1175,6 +1182,7 @@ function renderAll() {
   renderAnnualDates();
   renderProjects();
   renderCleaning();
+  renderCustomLists();
   renderMainOverview();
   updateProgress();
   updateStorageStatus();
@@ -1534,7 +1542,7 @@ document.getElementById('captureForm')?.addEventListener('submit',e=>{e.preventD
 
 /* ===== Version 10.3 My Lists control centre ===== */
 function updateListHubCounts(){
- const simple={annualHubCount:data.annualDates.length,appointmentHubCount:(data.appointments||[]).length,inboxHubCount:(data.inbox||[]).length};
+ const simple={annualHubCount:data.annualDates.length,appointmentHubCount:(data.appointments||[]).length,inboxHubCount:(data.inbox||[]).length,customHubCount:(data.customLists||[]).reduce((sum,list)=>sum+(list.items||[]).length,0)};
  Object.entries(simple).forEach(([id,n])=>{const el=document.getElementById(id);if(el)el.textContent=`${n} ${n===1?'item':'items'}`;});
  const statusCounts={
    todoHubCount:[data.todos.filter(x=>!x.completed).length,data.todos.filter(x=>x.completed).length],
@@ -1631,11 +1639,7 @@ function renderAppointments(){
     area.appendChild(row);
   });
 }
-// timelineRange is declared before the initial render so Planner opens safely.
-const TIMELINE_TYPES={
-  appointment:{icon:'📅',label:'Appointment'},todo:{icon:'✅',label:'To-do'},project:{icon:'📁',label:'Project'},
-  cleaning:{icon:'🧹',label:'Cleaning'},annual:{icon:'🎂',label:'Birthday / annual date'},waiting:{icon:'⏳',label:'Waiting For'}
-};
+// Timeline controls. Constants are initialised at the top of the file before the first render.
 function setTimelineRange(range,button){
   timelineRange=range;
   document.querySelectorAll('.timeline-filter').forEach(b=>b.classList.toggle('active',b.dataset.range===range));
@@ -1817,6 +1821,57 @@ function renderCleaning() {
 }
 
 
+
+/* ===== Custom lists ===== */
+let activeCustomListId='';
+function openCustomListManager(listId=''){
+  activeCustomListId=String(listId||'');
+  const list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
+  const title=document.getElementById('customListDialogTitle');
+  const name=document.getElementById('customListName');
+  const item=document.getElementById('customListNewItem');
+  if(title)title.textContent=list?'Edit custom list':'Create custom list';
+  if(name)name.value=list?.name||'';
+  if(item)item.value='';
+  renderCustomListDialogItems();
+  document.getElementById('customListDialog')?.showModal();
+  setTimeout(()=>name?.focus(),60);
+}
+function closeCustomListManager(){document.getElementById('customListDialog')?.close();activeCustomListId='';}
+function saveCustomListName(){
+  const name=document.getElementById('customListName')?.value.trim();
+  if(!name){alert('Please give the list a name.');return;}
+  let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
+  if(!list){list={id:uid(),name,items:[]};data.customLists.unshift(list);activeCustomListId=list.id;}
+  else list.name=name;
+  saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();showSaved('Custom list saved');
+}
+function addCustomListItem(){
+  let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
+  if(!list){saveCustomListName();list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);}
+  if(!list)return;
+  const input=document.getElementById('customListNewItem');const name=input?.value.trim();if(!name)return;
+  list.items=list.items||[];list.items.push({id:uid(),name,completed:false});if(input)input.value='';saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();
+}
+function toggleCustomListItem(listId,itemId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));const item=list?.items?.find(x=>String(x.id)===String(itemId));if(!item)return;item.completed=!item.completed;saveData();renderCustomLists();renderCustomListDialogItems();}
+function deleteCustomListItem(listId,itemId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));if(!list)return;list.items=(list.items||[]).filter(x=>String(x.id)!==String(itemId));saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();}
+function deleteActiveCustomList(){deleteCustomList(activeCustomListId);}
+function deleteCustomList(listId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));if(!list||!confirm(`Delete the list “${list.name}”?`))return;data.customLists=(data.customLists||[]).filter(x=>String(x.id)!==String(listId));saveData();closeCustomListManager();renderCustomLists();updateListHubCounts();}
+function renderCustomListDialogItems(){
+  const area=document.getElementById('customListDialogItems');if(!area)return;area.innerHTML='';
+  const list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
+  const del=document.getElementById('deleteCustomListButton');if(del)del.hidden=!list;
+  if(!list){area.innerHTML='<div class="empty-state">Save the list name, then add items.</div>';return;}
+  if(!(list.items||[]).length){area.innerHTML='<div class="empty-state">No items yet.</div>';return;}
+  (list.items||[]).forEach(item=>{const row=document.createElement('div');row.className=`compact-manage-row ${item.completed?'completed-row':''}`;row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleCustomListItem('${list.id}','${item.id}')" aria-label="${item.completed?'Mark active':'Complete'}">${item.completed?'✓':''}</button><button type="button" class="compact-row-main" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span class="compact-row-title">${escapeHtml(item.name)}</span></button><button type="button" class="small-button danger-text" onclick="deleteCustomListItem('${list.id}','${item.id}')">Delete</button>`;area.appendChild(row);});
+}
+function renderCustomLists(){
+  const area=document.getElementById('customListsArea');if(!area)return;area.innerHTML='';
+  const lists=data.customLists||[];
+  if(!lists.length){area.innerHTML='<div class="empty-state">No custom lists yet. Create one for shopping, packing, ideas or anything else.</div>';return;}
+  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';const active=(list.items||[]).filter(x=>!x.completed).length;card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3><p class="card-meta">${active} active · ${(list.items||[]).length} total</p></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${(list.items||[]).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
+}
+
 /* ===== Lists refresh ===== */
 function refreshListsImmediately() {
   renderTodos();
@@ -1826,6 +1881,7 @@ function refreshListsImmediately() {
   renderAnnualDates();
   renderProjects();
   renderCleaning();
+  renderCustomLists();
   updateListHubCounts();
 }
 
