@@ -1,0 +1,26 @@
+{
+  "name": "My Life Planner V18",
+  "short_name": "Life Planner",
+  "description": "A calm personal planner with Focus Today, full My Lists management, projects, routines, thoughts and Waiting For.",
+  "start_url": "./index.html?v=18",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8ff",
+  "theme_color": "#1769c2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./"
+}
