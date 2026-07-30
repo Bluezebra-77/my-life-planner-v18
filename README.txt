@@ -1,4 +1,4 @@
-My Life Planner v28
+My Life Planner v29
 
 Corrective release based on stable v26.
 
@@ -17,7 +17,7 @@ Test:
 5. Leave the app on Lists or Planner, close it, and confirm it reopens on Home.
 
 
-v28 targeted checks:
+v29 targeted checks:
 - Lists shortcut buttons show their names as text.
 - Font options use visibly different families.
 - Returning to the installed app after it was hidden opens Home.

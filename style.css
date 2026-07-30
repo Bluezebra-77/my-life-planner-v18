@@ -796,3 +796,47 @@ body[data-font="spacious"]{font-family:Arial,Helvetica,sans-serif!important;lett
 .font-preview[data-font-preview="modern"]{font-family:"Courier New",Courier,monospace!important}
 .font-preview[data-font-preview="friendly"]{font-family:"Comic Sans MS","Comic Sans",cursive!important}
 .font-preview[data-font-preview="book"]{font-family:"Times New Roman",Times,serif!important}
+
+
+/* v29 permanent visible labels for Lists shortcuts */
+.list-hub-grid .list-shortcut{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:auto auto auto!important;
+  justify-items:center!important;
+  align-content:center!important;
+  gap:4px!important;
+  min-height:96px!important;
+  padding:12px 8px!important;
+  text-align:center!important;
+  overflow:visible!important;
+}
+.list-hub-grid .list-shortcut .list-shortcut-icon{
+  display:block!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  font-size:1.6rem!important;
+  line-height:1!important;
+}
+.list-hub-grid .list-shortcut .list-shortcut-label{
+  display:block!important;
+  grid-column:1!important;
+  grid-row:2!important;
+  width:100%!important;
+  color:#17345d!important;
+  font-size:.95rem!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+  white-space:normal!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.list-hub-grid .list-shortcut small{
+  display:block!important;
+  grid-column:1!important;
+  grid-row:3!important;
+  color:#64748b!important;
+  font-size:.75rem!important;
+  visibility:visible!important;
+  opacity:1!important;
+}

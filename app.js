@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "28";
+const APP_VERSION = "29";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
