@@ -1117,3 +1117,13 @@ body:has(.lists-floating-wrap:not([hidden])) .app-shell{padding-bottom:105px!imp
   .lists-floating-wrap.nav-open .lists-side-panel{width:min(235px,42vw)!important;min-height:0!important}
   .lists-nav-hint{padding-bottom:5px!important}
 }
+
+
+/* v42 Brain Inbox capture hub */
+.brain-capture-hub{display:grid;gap:10px;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--accent-soft)}
+.capture-hub-heading{margin:0;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.capture-hub-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.capture-hub-buttons button{min-height:58px;padding:8px!important;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;background:#fff!important;color:var(--ink)!important;border:1px solid var(--line)!important;font-size:.78rem!important}
+.capture-hub-buttons button span{font-size:1.25rem}.capture-storage-note{margin:0;font-size:.72rem;color:var(--muted)}
+.attachment-preview{display:grid;grid-template-columns:52px 1fr 34px;align-items:center;gap:10px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:12px}.attachment-preview img{width:52px;height:52px;object-fit:cover;border-radius:8px}.attachment-preview span{min-width:0;display:grid}.attachment-preview strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.attachment-preview small{color:var(--muted)}.attachment-preview button{width:32px;height:32px;padding:0!important;border-radius:50%!important}.attachment-file-icon{font-size:1.7rem;place-items:center}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:560px){.capture-hub-buttons{grid-template-columns:repeat(2,1fr)}}

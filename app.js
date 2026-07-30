@@ -1,5 +1,5 @@
 /*
- * My Life Planner v41
+ * My Life Planner v42
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -1362,7 +1362,7 @@ function returnPlannerToHome() {
 }
 
 // A newly loaded app always starts on Home.
-document.addEventListener('DOMContentLoaded', returnPlannerToHome);
+document.addEventListener('DOMContentLoaded', () => { if(!openRequestedLaunch()) returnPlannerToHome(); });
 
 // Installed PWAs commonly remain alive in the background instead of reloading.
 // Treat leaving and returning to the app as a fresh opening and return to Home.
@@ -1371,7 +1371,7 @@ document.addEventListener('visibilitychange', () => {
     plannerWasHidden = true;
   } else if (plannerWasHidden) {
     plannerWasHidden = false;
-    returnPlannerToHome();
+    if(!openRequestedLaunch()) returnPlannerToHome();
   }
 });
 
@@ -1496,17 +1496,19 @@ function openCaptureDialog(type='inbox',id=''){
  document.getElementById('captureTitle').textContent=type==='waiting'?(id?'Edit waiting item':'Add Waiting For'):(id?'Edit Brain Inbox item':'Capture to Brain Inbox');
  document.getElementById('captureName').value=item?.name||'';document.getElementById('captureNote').value=item?.note||'';document.getElementById('captureDate').value=item?.reviewDate||'';
  document.getElementById('captureCategory').value=item?.category||'';document.getElementById('captureStatus').value=item?.status||'new';
+ document.getElementById('captureUrl').value=item?.url||'';window.pendingBrainAttachment=item?.attachment||null;renderBrainAttachmentPreview();
  document.getElementById('waitingDateLabel').classList.toggle('hidden',type!=='waiting');
  document.getElementById('inboxCaptureOptions').classList.toggle('hidden',type!=='inbox');
+ document.getElementById('brainCaptureHub')?.classList.toggle('hidden',type!=='inbox');
  document.getElementById('captureConvertActions')?.classList.toggle('hidden',type!=='inbox');
  const saveBtn=document.querySelector('#captureForm .dialog-actions button:last-child');if(saveBtn)saveBtn.textContent=type==='waiting'?'Save item':'Save to Brain Inbox';
  document.getElementById('captureDialog').showModal();setTimeout(()=>document.getElementById('captureName').focus(),80);
 }
-function closeCaptureDialog(){document.getElementById('captureDialog')?.close();}
+function closeCaptureDialog(){window.pendingBrainAttachment=null;document.getElementById('captureDialog')?.close();}
 function editCapture(type,id){openCaptureDialog(type,id);}
 function deleteCapture(type,id){data[type]=data[type].filter(x=>x.id!==id);saveData();renderAll();showSaved('Deleted');}
 function completeWaiting(id){const x=data.waiting.find(x=>x.id===id);if(x)x.completed=!x.completed;saveData();renderAll();}
-function captureDraft(){return {type:document.getElementById('captureType').value,id:document.getElementById('captureId').value,name:document.getElementById('captureName').value.trim(),note:document.getElementById('captureNote').value.trim(),reviewDate:document.getElementById('captureDate').value,category:document.getElementById('captureCategory').value.trim(),status:document.getElementById('captureStatus').value};}
+function captureDraft(){return {type:document.getElementById('captureType').value,id:document.getElementById('captureId').value,name:document.getElementById('captureName').value.trim(),note:document.getElementById('captureNote').value.trim(),reviewDate:document.getElementById('captureDate').value,category:document.getElementById('captureCategory').value.trim(),status:document.getElementById('captureStatus').value,url:normaliseBrainUrl(document.getElementById('captureUrl')?.value||''),attachment:window.pendingBrainAttachment||null};}
 function saveCapture(targetType=''){
  const d=captureDraft(); if(!d.name){document.getElementById('captureName').focus();return false;}
  const sourceItem=d.id?(data[d.type]||[]).find(x=>x.id===d.id):null;
@@ -1518,16 +1520,27 @@ function saveCapture(targetType=''){
  const type=targetType||d.type;
  if(type==='todo')data.todos.unshift({id:uid(),name:d.name,details:d.note,timingType:'none',dueDate:'',completed:false,steps:[],createdAt:new Date().toISOString()});
  else if(type==='project')data.projects.unshift({id:uid(),name:d.name,details:d.note,timingType:'none',dueDate:'',completed:false,steps:[],createdAt:new Date().toISOString()});
- else {const list=data[type]||(data[type]=[]),existing=list.find(x=>x.id===d.id);const record={id:existing?.id||uid(),name:d.name,note:d.note,reviewDate:type==='waiting'?d.reviewDate:'',category:type==='inbox'?d.category:'',status:type==='inbox'?d.status:'new',completed:existing?.completed||false,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};if(existing)Object.assign(existing,record);else list.unshift(record);}
+ else {const list=data[type]||(data[type]=[]),existing=list.find(x=>x.id===d.id);const record={id:existing?.id||uid(),name:d.name,note:d.note,reviewDate:type==='waiting'?d.reviewDate:'',category:type==='inbox'?d.category:'',status:type==='inbox'?d.status:'new',url:type==='inbox'?d.url:'',attachment:type==='inbox'?d.attachment:null,completed:existing?.completed||false,createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};if(existing)Object.assign(existing,record);else list.unshift(record);}
  if(targetType&&d.type==='inbox'&&sourceItem)data.inbox=data.inbox.filter(x=>x.id!==d.id);
  saveData();closeCaptureDialog();renderAll();showSaved(targetType?`Saved as ${targetType==='waiting'?'Waiting For':targetType}`:'Saved');return true;
 }
 function saveCaptureAs(type){saveCapture(type);}
 function inboxStatusLabel(status){return status==='processed'?'Processed':status==='progress'?'In progress':'New';}
-function inboxMeta(x){const parts=[];parts.push(inboxStatusLabel(x.status));if(x.category)parts.push(x.category);if(x.createdAt)parts.push(`Captured ${new Date(x.createdAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}`);if(x.note)parts.push(x.note);return parts.join(' · ');}
+function inboxMeta(x){const parts=[];parts.push(inboxStatusLabel(x.status));if(x.category)parts.push(x.category);if(x.url)parts.push('🔗 Website');if(x.attachment)parts.push(`${x.attachment.type?.startsWith('image/')?'🖼️':'📄'} ${x.attachment.name||'Attachment'}`);if(x.createdAt)parts.push(`Captured ${new Date(x.createdAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}`);if(x.note)parts.push(x.note);return parts.join(' · ');}
 function toggleInboxProcessed(id){const x=data.inbox.find(item=>item.id===id);if(!x)return;x.status=x.status==='processed'?'new':'processed';x.updatedAt=new Date().toISOString();saveData();renderAll();showSaved(x.status==='processed'?'Marked processed':'Returned to inbox');}
-function renderInbox(){const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');[full,preview].forEach(area=>{if(!area)return;area.innerHTML='';const sorted=[...data.inbox].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));const items=area===preview?sorted.filter(x=>x.status!=='processed').slice(0,3):sorted;if(!items.length){area.innerHTML='<div class="empty-state">Nothing waiting in your inbox.</div>';return;}items.forEach(x=>{const processed=x.status==='processed';const row=makeV10Row({name:x.name,meta:inboxMeta(x),open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleInboxProcessed('${x.id}')">${processed?'Mark as new':'Mark processed'}</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)});if(processed)row.classList.add('processed-inbox-row');area.appendChild(row);});});}
+function renderInbox(){const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');[full,preview].forEach(area=>{if(!area)return;area.innerHTML='';const sorted=[...data.inbox].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));const items=area===preview?sorted.filter(x=>x.status!=='processed').slice(0,3):sorted;if(!items.length){area.innerHTML='<div class="empty-state">Nothing waiting in your inbox.</div>';return;}items.forEach(x=>{const processed=x.status==='processed';const row=makeV10Row({name:x.name,meta:inboxMeta(x),open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleInboxProcessed('${x.id}')">${processed?'Mark as new':'Mark processed'}</button>${x.url?`<button onclick="closeAnchoredMenu();openBrainLink('${x.id}')">Open website</button>`:''}${x.attachment?`<button onclick="closeAnchoredMenu();openBrainAttachment('${x.id}')">Open attachment</button>`:''}<button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)});if(processed)row.classList.add('processed-inbox-row');area.appendChild(row);});});}
 function renderWaiting(){const area=document.getElementById('waitingArea');if(!area)return;area.innerHTML='';if(!data.waiting.length){area.innerHTML='<div class="empty-state">Nothing being waited for.</div>';return;}data.waiting.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.reviewDate?`Review ${formatDate(x.reviewDate)}`:(x.note||'No review date'),dueDate:x.reviewDate,action:()=>completeWaiting(x.id),open:()=>editCapture('waiting',x.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('waiting','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();completeWaiting('${x.id}')">${x.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('waiting','${x.id}')">Delete</button>`,x.name)})));}
+window.pendingBrainAttachment=null;
+function normaliseBrainUrl(value){const text=String(value||'').trim();if(!text)return '';try{return new URL(/^https?:\/\//i.test(text)?text:`https://${text}`).href;}catch(error){return text;}}
+function focusWebsiteCapture(){document.getElementById('captureUrl')?.focus();}
+function chooseBrainAttachment(accept='*/*',capture=''){const input=document.getElementById('brainAttachmentInput');if(!input)return;input.value='';input.accept=accept;if(capture)input.setAttribute('capture',capture);else input.removeAttribute('capture');input.click();}
+function handleBrainAttachment(event){const file=event.target.files?.[0];if(!file)return;if(file.size>1572864){alert('That file is too large for safe on-device storage. Please choose a file under 1.5 MB.');event.target.value='';return;}const reader=new FileReader();reader.onload=()=>{window.pendingBrainAttachment={name:file.name||'Attachment',type:file.type||'application/octet-stream',size:file.size,data:String(reader.result||'')};renderBrainAttachmentPreview();};reader.onerror=()=>alert('The attachment could not be read. Please try another file.');reader.readAsDataURL(file);}
+function renderBrainAttachmentPreview(){const area=document.getElementById('brainAttachmentPreview');if(!area)return;const attachment=window.pendingBrainAttachment;if(!attachment){area.classList.add('hidden');area.innerHTML='';return;}const size=Math.max(1,Math.round((attachment.size||0)/1024));const thumb=attachment.type?.startsWith('image/')?`<img src="${attachment.data}" alt="Selected attachment preview">`:`<span class="attachment-file-icon" aria-hidden="true">📄</span>`;area.innerHTML=`${thumb}<span><strong>${escapeHtml(attachment.name||'Attachment')}</strong><small>${size} KB</small></span><button type="button" onclick="removeBrainAttachment()" aria-label="Remove attachment">×</button>`;area.classList.remove('hidden');}
+function removeBrainAttachment(){window.pendingBrainAttachment=null;const input=document.getElementById('brainAttachmentInput');if(input)input.value='';renderBrainAttachmentPreview();}
+function openBrainLink(id){const item=data.inbox.find(x=>x.id===id);if(!item?.url)return;window.open(normaliseBrainUrl(item.url),'_blank','noopener');}
+function openBrainAttachment(id){const item=data.inbox.find(x=>x.id===id);if(!item?.attachment?.data)return;const link=document.createElement('a');link.href=item.attachment.data;link.target='_blank';link.rel='noopener';link.download=item.attachment.name||'attachment';document.body.appendChild(link);link.click();link.remove();}
+function requestedBrainInboxLaunch(){const params=new URLSearchParams(location.search);return params.get('open')==='brain'||params.get('open')==='brain-inbox'||location.hash==='#brain-inbox';}
+function openRequestedLaunch(){if(!requestedBrainInboxLaunch())return false;showAppView('tasks');setTimeout(()=>{document.getElementById('inboxListSection')?.scrollIntoView({block:'start'});openCaptureDialog('inbox');},180);return true;}
 function startVoiceCapture(type=''){
  if(type) openCaptureDialog(type);
  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
