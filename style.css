@@ -620,3 +620,66 @@ dialog.bottom-sheet{width:min(680px,100% - 16px);max-height:min(88vh,850px);marg
 @media(min-width:700px){.list-hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 #appointmentDialog textarea{width:100%;box-sizing:border-box}.dialog-content{padding:1rem}.dialog-actions{display:flex;justify-content:flex-end;gap:.6rem;padding:1rem}.managed-list-section[hidden]{display:none!important}
+
+
+/* v21 — simplified, centred application header */
+.app-header {
+  display: grid;
+  grid-template-columns: 1fr !important;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px 12px 10px;
+  text-align: center;
+}
+.header-branding {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2.5vw, 16px);
+  width: 100%;
+}
+.brand-title {
+  display: block;
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(1.35rem, 5vw, 2rem) !important;
+  line-height: 1.12;
+  text-align: center;
+}
+.header-zebra {
+  width: clamp(32px, 9vw, 46px);
+  height: clamp(32px, 9vw, 46px);
+  flex: 0 0 auto;
+  border-radius: 10px;
+}
+.header-version {
+  margin: 3px 0 0;
+  color: #a3aaa6;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  line-height: 1;
+}
+.app-header .date-line {
+  margin: 5px 0 0;
+}
+.app-header .compact-progress {
+  grid-column: 1;
+  justify-self: center;
+  width: min(420px, 100%);
+}
+.app-maintenance-actions:has(.hidden + .hidden),
+.app-maintenance-actions:has(.hidden:first-child:last-child) {
+  display: none;
+}
+@media (max-width: 390px) {
+  .brand-title-row { gap: 6px; }
+  .header-zebra { width: 30px; height: 30px; }
+  .brand-title { font-size: 1.22rem !important; }
+}

@@ -1,10 +1,9 @@
-My Life Planner V20 — Code Quality Release
+My Life Planner V21 — Header Tidy-up
 
-Changes in V20:
-- Removed duplicate top-level JavaScript function declarations while retaining the stable V19 implementations.
-- Kept one authoritative renderer/action implementation for each feature.
-- Centralised the runtime version number through APP_VERSION.
-- Updated the app, manifest and service-worker cache references to V20.
-- No intentional changes to the interface, behaviour or saved-data format.
-
-Stable baseline: V19.
+Changes in V21:
+- Removed the duplicate Settings control and Add control from the top header; both remain in the bottom navigation.
+- Removed the old “My flexible daily planner” wording.
+- Centred the personalised Life Planner title with a Blue Zebra logo on each side.
+- Moved the small pale-grey v21 label beneath the title.
+- Moved install/update controls into Settings so they remain available without cluttering the header.
+- Saved-data format and planner behaviour are unchanged from V20.

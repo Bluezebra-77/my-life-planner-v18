@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=20">
-  <link rel="manifest" href="manifest.json?v=20">
+  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="manifest" href="manifest.json?v=21">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,16 +16,14 @@
   <main class="app-shell">
 
     <header class="app-header">
-      <div>
-        <p class="eyebrow">My flexible daily planner</p>
-        <h1 class="brand-title"><img src="icon-192.png" class="header-zebra" alt=""><span id="plannerTitle">My Life Planner</span> <span class="brand-77">77</span> <span class="version-badge">v20</span></h1>
+      <div class="header-branding">
+        <div class="brand-title-row">
+          <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
+          <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
+          <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
+        </div>
+        <p class="header-version">v21</p>
         <p id="todayDate" class="date-line"></p>
-      </div>
-      <div class="header-actions">
-        <button type="button" class="small-button" onclick="openAddDialog()">+ Add</button>
-        <button type="button" class="gear-button" onclick="openSettingsDialog()" aria-label="Open settings" title="Settings">⚙</button>
-        <button id="installButton" type="button" class="small-button hidden" onclick="installPlanner()">Install app</button>
-        <button id="updateButton" type="button" class="small-button hidden" onclick="applyAppUpdate()">Update available</button>
       </div>
       <div class="compact-progress" aria-label="Daily progress">
         <span id="progressText">0 of 0</span>
@@ -201,6 +199,7 @@
           <div id="fontPreview" class="setting-preview font-preview">This is how your planner text will look.</div>
         </div>
         <div class="card-actions"><button type="button" onclick="saveSettings()">Save customisation</button></div>
+        <div class="card-actions app-maintenance-actions"><button id="installButton" type="button" class="small-button hidden" onclick="installPlanner()">Install app</button><button id="updateButton" type="button" class="small-button hidden" onclick="applyAppUpdate()">Update available</button></div>
         <hr class="settings-divider">
         <h3>Five daily backups</h3>
         <p class="card-meta">One dated copy is kept for each of the latest five days. A safety copy is also made before data migration or restore.</p>
@@ -208,7 +207,7 @@
         <details class="storage-details"><summary>Where can I find my backups?</summary><p><strong>Automatic daily backups:</strong> stored privately inside this browser on this device.</p><p><strong>Visible backup files:</strong> choose Save backup file or Share backup, then save to iCloud Drive, OneDrive or Files.</p></details>
         <div class="card-actions"><button type="button" onclick="exportPlanner()">Save backup file</button><button type="button" onclick="sharePlannerBackup()">Share backup</button><button type="button" class="secondary-button" onclick="document.getElementById('importFile').click()">Import backup</button><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importPlanner(event)"></div>
         <p id="storageStatus" class="storage-status"></p><p id="saveIndicator" class="save-indicator" aria-live="polite">Ready</p>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 20</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 21</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p></details>
       </div>
     </dialog>
 
@@ -381,6 +380,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
