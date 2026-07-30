@@ -707,7 +707,7 @@ dialog.bottom-sheet{width:min(680px,100% - 16px);max-height:min(88vh,850px);marg
 .appointment-form-layout{display:grid;gap:1rem}.appointment-fieldset{border:1px solid var(--line,#d8ddd8);border-radius:16px;padding:1rem;margin:0}.appointment-fieldset legend{font-weight:800;padding:0 .45rem}.appointment-core-grid .full-width,.appointment-form-layout .full-width{grid-column:1/-1}.appointment-card{border:1px solid var(--line,#d8ddd8);border-radius:16px;background:var(--card,#fff);padding:.8rem .9rem;display:grid;gap:.7rem}.appointment-card-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem;align-items:start}.appointment-open{border:0;background:transparent;color:inherit;text-align:left;padding:0;display:grid;gap:.18rem;width:100%}.appointment-date{font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.65}.appointment-title{font-size:1.05rem;font-weight:800}.appointment-meta,.appointment-notes{font-size:.9rem;opacity:.78}.appointment-notes{white-space:pre-wrap}.appointment-link-button{justify-self:start;padding:.55rem .8rem}.change-log{margin:.5rem 0 0;padding-left:1.2rem}.change-log li{margin:.3rem 0}@media(max-width:560px){.appointment-core-grid{grid-template-columns:1fr}.appointment-core-grid>*{grid-column:1/-1}}
 
 
-/* v26 Lists and visual polish */
+/* v27 Lists and visual polish */
 .view-heading,
 .lists-hub > .section-heading,
 .managed-list-section > .section-heading,
@@ -745,3 +745,26 @@ body[data-font="spacious"] { font-family:"Segoe UI",Arial,sans-serif; letter-spa
   .list-heading-controls { left:50%; right:auto; top:auto; bottom:0; transform:translateX(-50%); }
   .list-collapse-toggle { min-width:112px; }
 }
+
+/* v27 font and navigation corrections */
+body[data-font="clear"]{font-family:Arial,Helvetica,sans-serif!important;letter-spacing:normal;line-height:1.45}
+body[data-font="rounded"]{font-family:"Trebuchet MS",Arial,sans-serif!important;letter-spacing:.01em;line-height:1.5}
+body[data-font="classic"]{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:normal;line-height:1.55}
+body[data-font="modern"]{font-family:"Segoe UI",Arial,sans-serif!important;letter-spacing:.015em;line-height:1.45}
+body[data-font="large"]{font-family:Verdana,Geneva,sans-serif!important;font-size:18px;letter-spacing:.01em;line-height:1.55}
+body[data-font="friendly"]{font-family:"Comic Sans MS","Trebuchet MS",sans-serif!important;letter-spacing:.01em;line-height:1.5}
+body[data-font="book"]{font-family:Palatino,"Book Antiqua",Georgia,serif!important;letter-spacing:.01em;line-height:1.58}
+body[data-font="compact"]{font-family:Tahoma,Arial,sans-serif!important;letter-spacing:-.025em;line-height:1.35}
+body[data-font="softserif"]{font-family:Cambria,Georgia,serif!important;letter-spacing:.005em;line-height:1.55}
+body[data-font="spacious"]{font-family:Arial,Helvetica,sans-serif!important;letter-spacing:.055em;line-height:1.75}
+body[data-font] button,body[data-font] input,body[data-font] select,body[data-font] textarea{font-family:inherit!important}
+.font-preview[data-font-preview="clear"]{font-family:Arial,Helvetica,sans-serif;letter-spacing:normal;line-height:1.45}
+.font-preview[data-font-preview="rounded"]{font-family:"Trebuchet MS",Arial,sans-serif;letter-spacing:.01em;line-height:1.5}
+.font-preview[data-font-preview="classic"]{font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+.font-preview[data-font-preview="modern"]{font-family:"Segoe UI",Arial,sans-serif;letter-spacing:.015em}
+.font-preview[data-font-preview="large"]{font-family:Verdana,Geneva,sans-serif;font-size:18px;line-height:1.55}
+.font-preview[data-font-preview="friendly"]{font-family:"Comic Sans MS","Trebuchet MS",sans-serif}
+.font-preview[data-font-preview="book"]{font-family:Palatino,"Book Antiqua",Georgia,serif;line-height:1.58}
+.font-preview[data-font-preview="compact"]{font-family:Tahoma,Arial,sans-serif;letter-spacing:-.025em;line-height:1.35}
+.font-preview[data-font-preview="softserif"]{font-family:Cambria,Georgia,serif;line-height:1.55}
+.font-preview[data-font-preview="spacious"]{font-family:Arial,Helvetica,sans-serif;letter-spacing:.055em;line-height:1.75}

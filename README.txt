@@ -1,19 +1,17 @@
-My Life Planner v26
+My Life Planner v27
 
-Changes in this release:
-- Added collapsible sections throughout Lists.
-- Added clearly named Show/Hide controls to every list section.
-- Remembered collapsed sections between visits.
-- Automatically opens a collapsed list when selected from the Lists menu.
-- Centred main section and dialog headings.
-- Made the font choices more visually distinctive.
-- Renamed the visible Thoughts Inbox label to Brain Inbox.
-- Synchronised application, manifest, assets and service-worker cache to v26.
+Corrective release based on stable v26.
 
-Suggested tests:
-1. Confirm the header and About both show v26.
-2. Open Lists and use Hide/Show on every section.
-3. Leave sections hidden, close/reopen the app and confirm the choices remain.
-4. Select a hidden list from the named Lists menu and confirm it opens and scrolls into view.
-5. Confirm add, edit, complete and delete still work in Lists.
-6. Try several font choices in Settings and confirm they look clearly different.
+Changes:
+- Lists menu now opens a collapsed section before scrolling to it.
+- Font selection previews immediately across the whole app.
+- Font choices use more visibly different typefaces, spacing and sizing.
+- The app always opens on Home rather than returning to the previous tab.
+- Existing list, appointment and customisation data is preserved.
+
+Test:
+1. Collapse a Lists section, then select it from the Lists menu.
+2. Confirm it opens and scrolls into view.
+3. Change fonts in Settings and confirm the whole app changes immediately.
+4. Save a font, close and reopen, and confirm it remains selected.
+5. Leave the app on Lists or Planner, close it, and confirm it reopens on Home.

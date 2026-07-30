@@ -1,5 +1,5 @@
 /*
- * My Life Planner v26
+ * My Life Planner v27
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -1117,6 +1117,8 @@ function previewSettings() {
   const fontPreview=document.getElementById("fontPreview");
   if(themePreview) themePreview.dataset.themePreview=theme;
   if(fontPreview) fontPreview.dataset.fontPreview=font;
+  // Preview the selected font across the whole app immediately.
+  document.body.dataset.font = font;
 }
 
 function applySettings() {
@@ -1336,8 +1338,9 @@ function showAppView(view, button) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const savedView = localStorage.getItem('myLifePlannerActiveView') || 'home';
-  showAppView(savedView);
+  // Always start from Home when the app is opened again.
+  localStorage.removeItem('myLifePlannerActiveView');
+  showAppView('home');
 });
 
 /* v9.7 dashboard and compact-management refinements */
@@ -1503,7 +1506,20 @@ function updateListHubCounts(){
  Object.entries(statusCounts).forEach(([id,[active,done]])=>{const el=document.getElementById(id);if(el)el.textContent=done?`${active} active · ${done} completed`:`${active} ${active===1?'item':'items'}`;});
 }
 function jumpToList(id){
- const el=document.getElementById(id); if(!el)return; el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('list-highlight'); setTimeout(()=>el.classList.remove('list-highlight'),900);
+ const el=document.getElementById(id);
+ if(!el)return;
+ // A Lists-menu choice must reveal the section before scrolling to it.
+ if(el.classList.contains('list-section-collapsed')){
+   const state=getCollapsedListSections();
+   state[id]=false;
+   saveCollapsedListSections(state);
+   applyListSectionState(el,false);
+ }
+ requestAnimationFrame(()=>{
+   el.scrollIntoView({behavior:'smooth',block:'start'});
+   el.classList.add('list-highlight');
+   setTimeout(()=>el.classList.remove('list-highlight'),900);
+ });
 }
 function filterMyLists(query=''){
  const q=String(query).trim().toLowerCase();
