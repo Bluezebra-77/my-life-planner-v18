@@ -1,5 +1,5 @@
 /*
- * My Life Planner v27
+ * My Life Planner v28
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "26";
+const APP_VERSION = "28";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1337,10 +1337,29 @@ function showAppView(view, button) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Always start from Home when the app is opened again.
+let plannerWasHidden = false;
+
+function returnPlannerToHome() {
   localStorage.removeItem('myLifePlannerActiveView');
   showAppView('home');
+}
+
+// A newly loaded app always starts on Home.
+document.addEventListener('DOMContentLoaded', returnPlannerToHome);
+
+// Installed PWAs commonly remain alive in the background instead of reloading.
+// Treat leaving and returning to the app as a fresh opening and return to Home.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    plannerWasHidden = true;
+  } else if (plannerWasHidden) {
+    plannerWasHidden = false;
+    returnPlannerToHome();
+  }
+});
+
+window.addEventListener('pageshow', event => {
+  if (event.persisted) returnPlannerToHome();
 });
 
 /* v9.7 dashboard and compact-management refinements */

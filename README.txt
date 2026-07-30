@@ -1,4 +1,4 @@
-My Life Planner v27
+My Life Planner v28
 
 Corrective release based on stable v26.
 
@@ -15,3 +15,9 @@ Test:
 3. Change fonts in Settings and confirm the whole app changes immediately.
 4. Save a font, close and reopen, and confirm it remains selected.
 5. Leave the app on Lists or Planner, close it, and confirm it reopens on Home.
+
+
+v28 targeted checks:
+- Lists shortcut buttons show their names as text.
+- Font options use visibly different families.
+- Returning to the installed app after it was hidden opens Home.
