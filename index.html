@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=41">
-  <link rel="manifest" href="manifest.json?v=41">
+  <link rel="stylesheet" href="style.css?v=44">
+  <link rel="manifest" href="manifest.json?v=44">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
           <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
           <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
         </div>
-        <p class="header-version">v42</p>
+        <p class="header-version">v44</p>
         <p id="todayDate" class="date-line"></p>
       </div>
       <div class="compact-progress" aria-label="Daily progress">
@@ -223,6 +223,16 @@
             <button id="updateButton" type="button" class="secondary-button" onclick="checkForAppUpdates()">Check for updates</button>
           </div>
         </section>
+        <section class="settings-maintenance-panel quick-actions-panel" aria-labelledby="quickActionsHeading">
+          <h3 id="quickActionsHeading">Quick Actions</h3>
+          <p class="card-meta">Use a special address to open the planner directly in Brain Inbox. You do not change anything in GitHub.</p>
+          <label>Brain Inbox shortcut address<input id="brainShortcutUrl" type="text" readonly></label>
+          <div class="card-actions app-maintenance-actions">
+            <button type="button" onclick="openBrainInboxShortcut()">Open Brain Inbox now</button>
+            <button type="button" class="secondary-button" onclick="copyBrainInboxShortcut()">Copy address</button>
+          </div>
+          <details class="storage-details"><summary>How do I use this on iPhone?</summary><ol class="quick-instructions"><li>Tap <strong>Copy address</strong>.</li><li>Open the Shortcuts app and create a new shortcut.</li><li>Add the action <strong>Open URLs</strong> and paste the copied address.</li><li>Name the shortcut <strong>Brain Inbox</strong>. Siri can then run it by name.</li></ol><p class="card-meta">You can also paste the copied address into Safari and bookmark it or add it to the Home Screen.</p></details>
+        </section>
         <div class="settings-grid">
           <label>Your name (optional)<input id="ownerName" type="text" maxlength="40" placeholder="For example: Mary"></label>
           <label>Box colour
@@ -246,7 +256,7 @@
         <details class="storage-details"><summary>Where can I find my backups?</summary><p><strong>Automatic daily backups:</strong> stored privately inside this browser on this device.</p><p><strong>Visible backup files:</strong> choose Save backup file or Share backup, then save to iCloud Drive, OneDrive or Files.</p></details>
         <div class="card-actions"><button type="button" onclick="exportPlanner()">Save backup file</button><button type="button" onclick="sharePlannerBackup()">Share backup</button><button type="button" class="secondary-button" onclick="document.getElementById('importFile').click()">Import backup</button><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importPlanner(event)"></div>
         <p id="storageStatus" class="storage-status"></p><p id="saveIndicator" class="save-indicator" aria-live="polite">Ready</p>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 42</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v42</strong> — Expanded the Lists drawer so its choices are clearly visible, added a More Lists scroll cue when needed, and anchored the control to the planner edge on wide screens.</li><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 44</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v44</strong> — Added flexible appointment repeats: every X days, weeks, months or years, with never, occurrence-count or end-date limits.</li><li><strong>v43</strong> — Added automatic image resizing, in-app attachment previews and a Quick Actions helper for opening Brain Inbox directly.</li><li><strong>v42</strong> — Expanded the Lists drawer so its choices are clearly visible, added a More Lists scroll cue when needed, and anchored the control to the planner edge on wide screens.</li><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
       </div>
     </dialog>
 
@@ -269,7 +279,17 @@
           <div class="settings-grid appointment-core-grid">
             <label class="full-width">Title<input id="appointmentName" required maxlength="120"></label>
             <label>Date<input id="appointmentDate" type="date" required></label>
-            <label>Repeat<select id="appointmentRepeat"><option value="none">Does not repeat</option><option value="weekly">Every week</option><option value="fortnightly">Every 2 weeks</option><option value="monthly">Every month</option><option value="yearly">Every year</option></select></label>
+            <label>Repeat<select id="appointmentRepeat" onchange="updateAppointmentRepeatControls()"><option value="none">Does not repeat</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></label>
+            <div id="appointmentRepeatOptions" class="appointment-repeat-options full-width" hidden>
+              <div class="appointment-repeat-grid">
+                <label>Repeat every<input id="appointmentRepeatInterval" type="number" oninput="updateAppointmentRepeatControls()" min="1" max="999" inputmode="numeric" value="1"></label>
+                <label>Period<select id="appointmentRepeatUnit" onchange="this.dataset.userChanged='true';updateAppointmentRepeatControls()"><option value="day">day(s)</option><option value="week">week(s)</option><option value="month">month(s)</option><option value="year">year(s)</option></select></label>
+                <label>Ends<select id="appointmentRepeatEnd" onchange="updateAppointmentRepeatControls()"><option value="never">Never</option><option value="count">After a number of appointments</option><option value="date">On a date</option></select></label>
+                <label id="appointmentRepeatCountLabel" hidden>Number of appointments<input id="appointmentRepeatCount" type="number" oninput="updateAppointmentRepeatControls()" min="1" max="999" inputmode="numeric" value="10"></label>
+                <label id="appointmentRepeatEndDateLabel" hidden>Last possible date<input id="appointmentRepeatEndDate" type="date" onchange="updateAppointmentRepeatControls()"></label>
+              </div>
+              <p id="appointmentRepeatSummary" class="card-meta appointment-repeat-summary"></p>
+            </div>
             <label>Start time<input id="appointmentTime" type="time"></label>
             <label>End time (optional)<input id="appointmentEndTime" type="time"></label>
           </div>
@@ -442,14 +462,13 @@
         <p class="capture-hub-heading">Add something useful</p>
         <div class="capture-hub-buttons">
           <button type="button" onclick="focusWebsiteCapture()"><span aria-hidden="true">🔗</span> Website link</button>
-          <button type="button" onclick="chooseBrainAttachment('image/*','environment')"><span aria-hidden="true">📷</span> Photo</button>
-          <button type="button" onclick="chooseBrainAttachment('image/*')"><span aria-hidden="true">🖼️</span> Screenshot</button>
+          <button type="button" onclick="chooseBrainAttachment('image/*')"><span aria-hidden="true">🖼️</span> Photo or image</button>
           <button type="button" onclick="chooseBrainAttachment('*/*')"><span aria-hidden="true">📄</span> Document</button>
         </div>
         <label id="captureUrlLabel">Website address (optional)<input id="captureUrl" type="url" inputmode="url" placeholder="https://example.com"></label>
         <input id="brainAttachmentInput" type="file" class="visually-hidden" onchange="handleBrainAttachment(event)">
         <div id="brainAttachmentPreview" class="attachment-preview hidden"></div>
-        <p class="capture-storage-note">Attachments are stored on this device. Keep each file under 1.5 MB.</p>
+        <p class="capture-storage-note">Images are automatically resized for the planner. Documents are stored on this device and must be under 1.5 MB.</p>
       </div>
       <div id="inboxCaptureOptions" class="capture-options">
         <label>Category (optional)<input id="captureCategory" type="text" maxlength="40" placeholder="Idea, photography, admin…"></label>
@@ -460,6 +479,13 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=41"></script>
+
+  <dialog id="attachmentViewerDialog" class="attachment-viewer-dialog">
+    <div class="dialog-header attachment-viewer-header"><div><p class="eyebrow">Brain Inbox attachment</p><h2 id="attachmentViewerTitle">Preview</h2></div><button type="button" class="dialog-close" onclick="closeAttachmentViewer()" aria-label="Close preview">×</button></div>
+    <div id="attachmentViewerBody" class="attachment-viewer-body"></div>
+    <div class="dialog-actions"><button type="button" class="secondary-button" onclick="downloadCurrentAttachment()">Download copy</button><button type="button" onclick="closeAttachmentViewer()">Close</button></div>
+  </dialog>
+
+  <script src="app.js?v=44"></script>
 </body>
 </html>
