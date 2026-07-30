@@ -1,5 +1,5 @@
 /*
- * My Life Planner v21
+ * My Life Planner v22
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "21";
+const APP_VERSION = "22";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1153,6 +1153,31 @@ function renderAll() {
 
 
 let waitingServiceWorker = null;
+let plannerServiceWorkerRegistration = null;
+
+async function checkForAppUpdates() {
+  if (!("serviceWorker" in navigator)) {
+    alert("App updates are not supported by this browser.");
+    return;
+  }
+  try {
+    const registration = plannerServiceWorkerRegistration || await navigator.serviceWorker.getRegistration();
+    if (!registration) {
+      alert("The app is not installed yet. Use Install app first.");
+      return;
+    }
+    await registration.update();
+    if (registration.waiting || waitingServiceWorker) {
+      waitingServiceWorker = registration.waiting || waitingServiceWorker;
+      if (confirm("An update is available. Apply it now?")) applyAppUpdate();
+    } else {
+      alert("You already have the latest version.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("The update check could not be completed. Please check your connection and try again.");
+  }
+}
 
 function applyAppUpdate() {
   if (waitingServiceWorker) waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
@@ -1163,9 +1188,11 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(`./service-worker.js?v=${APP_VERSION}`, { updateViaCache: "none" });
+      plannerServiceWorkerRegistration = registration;
       if (registration.waiting) {
         waitingServiceWorker = registration.waiting;
         document.getElementById("updateButton")?.classList.remove("hidden");
+        const updateButton=document.getElementById("updateButton"); if(updateButton) updateButton.textContent="Update available";
       }
       registration.addEventListener("updatefound", () => {
         const worker = registration.installing;
@@ -1173,6 +1200,7 @@ if ("serviceWorker" in navigator) {
           if (worker.state === "installed" && navigator.serviceWorker.controller) {
             waitingServiceWorker = worker;
             document.getElementById("updateButton")?.classList.remove("hidden");
+            const updateButton=document.getElementById("updateButton"); if(updateButton) updateButton.textContent="Update available";
           }
         });
       });
@@ -1491,27 +1519,22 @@ function renderTodos() {
     return;
   }
   [...items].sort(sortByDueDate).forEach(todo => {
-    const card = document.createElement('div');
-    card.className = `list-card ${todo.completed ? 'completed-card' : ''}`;
+    const row = document.createElement('div');
+    row.className = `compact-manage-row ${todo.completed ? 'completed-row' : ''}`;
+    const timing = escapeHtml(getTimingText(todo) || 'No date');
+    const details = todo.details ? ` · ${escapeHtml(todo.details)}` : '';
+    const actions = `<button onclick="closeAnchoredMenu();toggleTodo('${todo.id}');refreshListsImmediately()">${todo.completed ? 'Mark active' : 'Complete'}</button><button onclick="closeAnchoredMenu();editTodo('${todo.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodo('${todo.id}');refreshListsImmediately()">Delete</button>`;
+    row.innerHTML = `<button type="button" class="compact-row-main" onclick="editTodo('${todo.id}')"><span class="compact-row-title">${escapeHtml(todo.name || 'Untitled to-do')}</span><span class="compact-row-meta">${timing}${details}</span></button>${compactMenu(actions,todo.name || 'to-do')}`;
+    area.appendChild(row);
+
     const steps = Array.isArray(todo.steps) ? todo.steps : [];
-    const stepsHtml = steps.length ? `<div class="steps-list">${steps.map(step => `
-      <label class="step-row">
-        <input type="checkbox" ${step.completed ? 'checked' : ''} onchange="toggleTodoStep('${todo.id}','${step.id}'); refreshListsImmediately()">
-        <span><strong>${escapeHtml(step.name || '')}</strong>${step.dueDate ? `<br><span class="card-meta">Due ${formatDate(step.dueDate)}</span>` : ''}</span>
-      </label>`).join('')}</div>` : '';
-    card.innerHTML = `
-      <div class="card-top"><div>
-        <div class="card-title">${escapeHtml(todo.name || 'Untitled to-do')}</div>
-        <div class="card-meta">${escapeHtml(getTimingText(todo) || 'No date')}</div>
-        <div class="card-details">${escapeHtml(todo.details || '')}</div>
-      </div><span class="badge ${todo.completed ? 'done' : 'ongoing'}">${todo.completed ? 'Completed' : 'Active'}</span></div>
-      ${stepsHtml}
-      <div class="card-actions">
-        <button type="button" onclick="toggleTodo('${todo.id}'); refreshListsImmediately()">${todo.completed ? 'Mark active' : 'Complete'}</button>
-        <button type="button" onclick="editTodo('${todo.id}')">Edit</button>
-        <button type="button" class="danger-button" onclick="deleteTodo('${todo.id}'); refreshListsImmediately()">Delete</button>
-      </div>`;
-    area.appendChild(card);
+    steps.forEach((step,index) => {
+      const stepRow=document.createElement('div');
+      stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
+      const stepActions=`<button onclick="closeAnchoredMenu();toggleTodoStep('${todo.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete'}</button><button onclick="closeAnchoredMenu();editTodo('${todo.id}')">Edit to-do</button>`;
+      stepRow.innerHTML=`<button type="button" class="compact-row-main" onclick="toggleTodoStep('${todo.id}','${step.id}');refreshListsImmediately()"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'}</span></button>${compactMenu(stepActions,step.name||'step')}`;
+      area.appendChild(stepRow);
+    });
   });
 }
 
@@ -1528,32 +1551,19 @@ function renderProjects() {
     const steps = Array.isArray(project.steps) ? project.steps : [];
     const genuinelyComplete = steps.length > 0 && steps.every(step => step.completed);
     project.completed = genuinelyComplete;
-    const card = document.createElement('div');
-    card.className = `list-card ${genuinelyComplete ? 'completed-card' : ''}`;
-    const stepsHtml = steps.length ? steps.map((step,index) => `
-      <div class="list-card ${step.completed ? 'completed-card' : ''}">
-        <label class="step-row">
-          <input type="checkbox" ${step.completed ? 'checked' : ''} onchange="toggleStep('${project.id}','${step.id}'); refreshListsImmediately()">
-          <span><strong>${index + 1}. ${escapeHtml(step.name || 'Untitled step')}</strong>${step.dueDate ? `<br><span class="card-meta">Due ${formatDate(step.dueDate)}</span>` : ''}</span>
-        </label>
-        <div class="card-actions">
-          <button type="button" onclick="toggleStep('${project.id}','${step.id}'); refreshListsImmediately()">${step.completed ? 'Mark active' : 'Complete step'}</button>
-          <button type="button" onclick="editStep('${project.id}','${step.id}')">Edit step</button>
-          <button type="button" class="danger-button" onclick="deleteStep('${project.id}','${step.id}'); refreshListsImmediately()">Delete step</button>
-        </div>
-      </div>`).join('') : '<div class="empty-state">No steps added yet.</div>';
-    card.innerHTML = `
-      <div class="card-top"><div>
-        <div class="card-title">${escapeHtml(project.name || 'Untitled project')}</div>
-        <div class="card-details">${escapeHtml(project.details || '')}</div>
-      </div><span class="badge ${genuinelyComplete ? 'done' : 'ongoing'}">${genuinelyComplete ? 'Completed' : `${steps.filter(s=>s.completed).length} of ${steps.length} steps`}</span></div>
-      <div class="steps-list">${stepsHtml}</div>
-      <div class="card-actions">
-        <button type="button" onclick="editProject('${project.id}')">Edit project</button>
-        <button type="button" onclick="openAddDialog('step','${project.id}')">Add step</button>
-        <button type="button" class="danger-button" onclick="deleteProject('${project.id}'); refreshListsImmediately()">Delete project</button>
-      </div>`;
-    area.appendChild(card);
+    const completedCount=steps.filter(step=>step.completed).length;
+    const row=document.createElement('div');
+    row.className=`compact-manage-row project-compact-row ${genuinelyComplete?'completed-row':''}`;
+    const projectActions=`<button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}');refreshListsImmediately()">Delete project</button>`;
+    row.innerHTML=`<button type="button" class="compact-row-main" onclick="editProject('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${completedCount} of ${steps.length} steps`:'No steps'}${project.details?' · '+escapeHtml(project.details):''}</span></button>${compactMenu(projectActions,project.name||'project')}`;
+    area.appendChild(row);
+    steps.forEach((step,index)=>{
+      const stepRow=document.createElement('div');
+      stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
+      const stepActions=`<button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete step'}</button><button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit step</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}');refreshListsImmediately()">Delete step</button>`;
+      stepRow.innerHTML=`<button type="button" class="compact-row-main" onclick="toggleStep('${project.id}','${step.id}');refreshListsImmediately()"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'}</span></button>${compactMenu(stepActions,step.name||'project step')}`;
+      area.appendChild(stepRow);
+    });
   });
 }
 
@@ -1588,21 +1598,12 @@ function renderCleaning() {
   }
   [...items].sort((a,b) => String(a.nextDue || '').localeCompare(String(b.nextDue || ''))).forEach(item => {
     const dueNow = isDueTodayOrEarlier(item.nextDue);
-    const card = document.createElement('div');
-    card.className = `list-card cleaning-card ${dueNow ? 'due-today' : ''}`;
-    card.innerHTML = `
-      <div class="card-top"><div>
-        <div class="card-title">${escapeHtml(item.name || 'Untitled cleaning task')}</div>
-        <div class="card-meta">${escapeHtml(item.room || 'General')} · ${escapeHtml(frequencyLabel(item.frequency || 'weekly'))}</div>
-        <div class="cleaning-frequency">Next due ${item.nextDue ? formatDate(item.nextDue) : 'not set'}</div>
-        <div class="card-details">${escapeHtml(item.details || '')}</div>
-      </div><span class="badge ${dueNow ? 'due' : 'ongoing'}">${dueNow ? 'Due now' : 'Scheduled'}</span></div>
-      <div class="card-actions">
-        <button type="button" onclick="completeCleaning('${item.id}'); refreshListsImmediately()">Complete</button>
-        <button type="button" onclick="editCleaning('${item.id}')">Edit</button>
-        <button type="button" class="danger-button" onclick="deleteCleaning('${item.id}'); refreshListsImmediately()">Delete</button>
-      </div>`;
-    area.appendChild(card);
+    const row=document.createElement('div');
+    row.className=`compact-manage-row ${dueNow?'status-overdue':''}`;
+    const meta=`${escapeHtml(item.room||'General')} · ${escapeHtml(frequencyLabel(item.frequency||'weekly'))} · Next due ${item.nextDue?formatDate(item.nextDue):'not set'}${item.details?' · '+escapeHtml(item.details):''}`;
+    const actions=`<button onclick="closeAnchoredMenu();completeCleaning('${item.id}');refreshListsImmediately()">Complete</button><button onclick="closeAnchoredMenu();editCleaning('${item.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCleaning('${item.id}');refreshListsImmediately()">Delete</button>`;
+    row.innerHTML=`<button type="button" class="compact-row-main" onclick="editCleaning('${item.id}')"><span class="compact-row-title">${escapeHtml(item.name||'Untitled cleaning task')}</span><span class="compact-row-meta">${meta}</span></button>${compactMenu(actions,item.name||'cleaning task')}`;
+    area.appendChild(row);
   });
 }
 

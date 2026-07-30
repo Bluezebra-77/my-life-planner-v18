@@ -1,9 +1,11 @@
-My Life Planner V21 — Header Tidy-up
+My Life Planner v22
 
-Changes in V21:
-- Removed the duplicate Settings control and Add control from the top header; both remain in the bottom navigation.
-- Removed the old “My flexible daily planner” wording.
-- Centred the personalised Life Planner title with a Blue Zebra logo on each side.
-- Moved the small pale-grey v21 label beneath the title.
-- Moved install/update controls into Settings so they remain available without cluttering the header.
-- Saved-data format and planner behaviour are unchanged from V20.
+Interface consistency release.
+
+Changes:
+- To-dos, projects, project steps and cleaning tasks now use compact rows with three-dot action menus.
+- Complete/mark active, edit and delete remain available from each relevant menu.
+- Install App and Check for Updates controls are visible in Settings.
+- Version and PWA cache references are synchronised to v22.
+
+Saved data format is unchanged from v21.

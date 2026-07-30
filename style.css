@@ -683,3 +683,13 @@ dialog.bottom-sheet{width:min(680px,100% - 16px);max-height:min(88vh,850px);marg
   .header-zebra { width: 30px; height: 30px; }
   .brand-title { font-size: 1.22rem !important; }
 }
+
+
+/* v22 consistent compact list controls */
+.managed-list-section .compact-manage-row{margin-bottom:7px}
+.nested-compact-row{margin-left:24px;min-height:50px;background:rgba(255,255,255,.62)}
+.nested-compact-row .compact-row-title{font-weight:650}
+.project-compact-row{margin-top:8px}
+.item-menu-trigger{background:transparent!important;color:var(--ink)!important;border:0!important;box-shadow:none!important;font-size:1.5rem;line-height:1}
+.app-maintenance-actions{display:flex!important;flex-wrap:wrap;gap:8px}
+@media(max-width:520px){.nested-compact-row{margin-left:12px}.compact-row-meta{white-space:normal}}
