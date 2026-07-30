@@ -532,7 +532,7 @@ body[data-theme="mint"] .panel{background:#f7fffb}body[data-theme="peach"] .pane
   transform: translateX(-50%);
   width: min(790px, calc(100% - 20px));
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   padding: 8px;
   border: 1px solid rgba(95,125,104,.25);
@@ -703,5 +703,5 @@ dialog.bottom-sheet{width:min(680px,100% - 16px);max-height:min(88vh,850px);marg
 .settings-maintenance-panel button{display:inline-flex!important;visibility:visible!important;opacity:1!important;min-height:44px}
 
 
-/* v24 appointment editor and cards */
+/* v24 appointment editor and cards; v25 optional end time */
 .appointment-form-layout{display:grid;gap:1rem}.appointment-fieldset{border:1px solid var(--line,#d8ddd8);border-radius:16px;padding:1rem;margin:0}.appointment-fieldset legend{font-weight:800;padding:0 .45rem}.appointment-core-grid .full-width,.appointment-form-layout .full-width{grid-column:1/-1}.appointment-card{border:1px solid var(--line,#d8ddd8);border-radius:16px;background:var(--card,#fff);padding:.8rem .9rem;display:grid;gap:.7rem}.appointment-card-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem;align-items:start}.appointment-open{border:0;background:transparent;color:inherit;text-align:left;padding:0;display:grid;gap:.18rem;width:100%}.appointment-date{font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.65}.appointment-title{font-size:1.05rem;font-weight:800}.appointment-meta,.appointment-notes{font-size:.9rem;opacity:.78}.appointment-notes{white-space:pre-wrap}.appointment-link-button{justify-self:start;padding:.55rem .8rem}.change-log{margin:.5rem 0 0;padding-left:1.2rem}.change-log li{margin:.3rem 0}@media(max-width:560px){.appointment-core-grid{grid-template-columns:1fr}.appointment-core-grid>*{grid-column:1/-1}}

@@ -1,14 +1,15 @@
-My Life Planner v24
+My Life Planner v25
 
-Appointment improvement release.
+Focused corrective release based on the stable v24 build.
 
 Changes:
-- Restored an optional meeting or web link field for appointments.
-- Added URL validation and safe link opening.
-- Reorganised the appointment editor into appointment and optional-detail sections.
-- Added clearer appointment cards and an Open meeting or web link action.
-- Preserved compatibility with older appointment url and meetingLink fields.
-- Added a recent changes list to About.
-- Synchronised application, manifest, assets and service-worker cache to v24.
+- Corrected the header version display to v25.
+- Made appointment end time explicitly optional.
+- Removed the central Add button from the bottom navigation.
+- Rebalanced the bottom navigation to four equal buttons.
+- Preserved working meeting/web links and appointment persistence.
+- Synchronised application, manifest, assets and service-worker cache to v25.
 
-The saved-data format remains backward compatible.
+Planned for a later UI release:
+- Collapsible sections within Lists.
+- Text labels on the List section shortcut buttons.

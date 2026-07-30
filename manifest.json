@@ -1,8 +1,8 @@
 {
-  "name": "My Life Planner V24",
+  "name": "My Life Planner V25",
   "short_name": "Life Planner",
   "description": "A calm personal planner with Focus Today, full My Lists management, projects, routines, thoughts and Waiting For.",
-  "start_url": "./index.html?v=22",
+  "start_url": "./index.html?v=25",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8ff",
