@@ -134,7 +134,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "18";
+const APP_VERSION = "19";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -737,6 +737,7 @@ function editCleaning(id) {
 
 function renderCleaningToday() {
   const area = document.getElementById("cleaningTodayArea");
+  if (!area) return;
   const items = getWeeklyItems().filter(item => !item.annual && item.itemType !== "annual");
   area.innerHTML = "";
   if (!items.length) { area.innerHTML = `<div class="empty-state">No actionable tasks are due within the next week.</div>`; return; }
@@ -1441,7 +1442,7 @@ function applyAppUpdate() {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register("./service-worker.js?v=18", { updateViaCache: "none" });
+      const registration = await navigator.serviceWorker.register("./service-worker.js?v=19", { updateViaCache: "none" });
       if (registration.waiting) {
         waitingServiceWorker = registration.waiting;
         document.getElementById("updateButton")?.classList.remove("hidden");
@@ -1907,107 +1908,3 @@ renderAll = function() {
   originalRenderAllV15();
   refreshListsImmediately();
 };
-
-
-/* ===== V18 authoritative live Lists controller =====
-   This block is deliberately last so it is the only active Lists implementation. */
-(function installV18ListsController(){
-  const byId = (id) => document.getElementById(id);
-  const sameId = (a,b) => String(a) === String(b);
-
-  function repaintLists(){
-    renderTodos();
-    renderProjects();
-    renderCleaning();
-    if (typeof renderAppointments === 'function') renderAppointments();
-    if (typeof renderInbox === 'function') renderInbox();
-    if (typeof renderWaiting === 'function') renderWaiting();
-    if (typeof renderAnnualDates === 'function') renderAnnualDates();
-    if (typeof updateListHubCounts === 'function') updateListHubCounts();
-    const search = byId('globalListSearch');
-    if (search && search.value) filterMyLists(search.value); else prepareListsView();
-  }
-
-  function repaintEverything(){
-    // Run the established dashboard renderer, then repaint Lists from current live data.
-    if (typeof renderFocusToday === 'function') renderFocusToday();
-    if (typeof renderProjectNextActions === 'function') renderProjectNextActions();
-    if (typeof renderTodayReminders === 'function') renderTodayReminders();
-    if (typeof renderWeekly === 'function') renderWeekly();
-    if (typeof renderCleaningToday === 'function') renderCleaningToday();
-    if (typeof updateProgress === 'function') updateProgress();
-    repaintLists();
-  }
-
-  window.refreshListsImmediately = repaintLists;
-
-  window.renderTodos = function(){
-    const area=byId('todoArea'); if(!area) return;
-    const items=Array.isArray(data.todos)?data.todos:[];
-    area.replaceChildren();
-    if(!items.length){ area.innerHTML='<div class="empty-state">No to-do items yet.</div>'; return; }
-    [...items].sort(sortByDueDate).forEach(todo=>{
-      const card=document.createElement('div');
-      card.className=`list-card ${todo.completed?'completed-card':''}`;
-      card.dataset.recordId=String(todo.id);
-      card.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(todo.name||'Untitled to-do')}</div><div class="card-meta">${escapeHtml(getTimingText(todo)||'No date')}</div><div class="card-details">${escapeHtml(todo.details||'')}</div></div><span class="badge ${todo.completed?'done':'ongoing'}">${todo.completed?'Completed':'Active'}</span></div>
-      <div class="card-actions"><button type="button" data-v18-action="toggle-todo" data-id="${todo.id}">${todo.completed?'Mark active':'Complete'}</button><button type="button" data-v18-action="edit-todo" data-id="${todo.id}">Edit</button><button type="button" class="danger-button" data-v18-action="delete-todo" data-id="${todo.id}">Delete</button></div>`;
-      area.appendChild(card);
-    });
-  };
-
-  window.renderProjects = function(){
-    const area=byId('projectsArea'); if(!area) return;
-    const projects=Array.isArray(data.projects)?data.projects:[];
-    area.replaceChildren();
-    if(!projects.length){ area.innerHTML='<div class="empty-state">No projects yet.</div>'; return; }
-    [...projects].sort(sortByDueDate).forEach(project=>{
-      const steps=Array.isArray(project.steps)?project.steps:[];
-      project.completed=steps.length>0&&steps.every(s=>s.completed);
-      const card=document.createElement('div'); card.className=`list-card ${project.completed?'completed-card':''}`; card.dataset.recordId=String(project.id);
-      const stepsHtml=steps.length?steps.map((step,index)=>`<div class="list-card ${step.completed?'completed-card':''}"><div class="step-row"><input type="checkbox" data-v18-action="toggle-step" data-parent-id="${project.id}" data-id="${step.id}" ${step.completed?'checked':''}><span><strong>${index+1}. ${escapeHtml(step.name||'Untitled step')}</strong>${step.dueDate?`<br><span class="card-meta">Due ${formatDate(step.dueDate)}</span>`:''}</span></div><div class="card-actions"><button type="button" data-v18-action="toggle-step" data-parent-id="${project.id}" data-id="${step.id}">${step.completed?'Mark active':'Complete step'}</button><button type="button" data-v18-action="edit-step" data-parent-id="${project.id}" data-id="${step.id}">Edit step</button><button type="button" class="danger-button" data-v18-action="delete-step" data-parent-id="${project.id}" data-id="${step.id}">Delete step</button></div></div>`).join(''):'<div class="empty-state">No steps added yet.</div>';
-      card.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(project.name||'Untitled project')}</div><div class="card-details">${escapeHtml(project.details||'')}</div></div><span class="badge ${project.completed?'done':'ongoing'}">${project.completed?'Completed':`${steps.filter(s=>s.completed).length} of ${steps.length} steps`}</span></div><div class="steps-list">${stepsHtml}</div><div class="card-actions"><button type="button" data-v18-action="edit-project" data-id="${project.id}">Edit project</button><button type="button" data-v18-action="add-step" data-id="${project.id}">Add step</button><button type="button" class="danger-button" data-v18-action="delete-project" data-id="${project.id}">Delete project</button></div>`;
-      area.appendChild(card);
-    });
-  };
-
-  window.renderCleaning = function(){
-    const area=byId('cleaningArea'); if(!area) return;
-    const items=Array.isArray(data.cleaningTasks)?data.cleaningTasks:[];
-    area.replaceChildren();
-    if(!items.length){ area.innerHTML='<div class="empty-state">No cleaning tasks yet.</div>'; return; }
-    [...items].sort((a,b)=>String(a.nextDue||'').localeCompare(String(b.nextDue||''))).forEach(item=>{
-      const dueNow=isDueTodayOrEarlier(item.nextDue);
-      const card=document.createElement('div'); card.className=`list-card cleaning-card ${dueNow?'due-today':''}`; card.dataset.recordId=String(item.id);
-      card.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(item.name||'Untitled cleaning task')}</div><div class="card-meta">${escapeHtml(item.room||'General')} · ${escapeHtml(frequencyLabel(item.frequency||'weekly'))}</div><div class="cleaning-frequency">Next due ${item.nextDue?formatDate(item.nextDue):'not set'}</div><div class="card-details">${escapeHtml(item.details||'')}</div></div><span class="badge ${dueNow?'due':'ongoing'}">${dueNow?'Due now':'Scheduled'}</span></div><div class="card-actions"><button type="button" data-v18-action="complete-cleaning" data-id="${item.id}">Complete</button><button type="button" data-v18-action="edit-cleaning" data-id="${item.id}">Edit</button><button type="button" class="danger-button" data-v18-action="delete-cleaning" data-id="${item.id}">Delete</button></div>`;
-      area.appendChild(card);
-    });
-  };
-
-  function commit(message){ saveData(); repaintEverything(); requestAnimationFrame(repaintLists); setTimeout(repaintLists,0); if(message) showSaved(message); }
-
-  document.addEventListener('click',function(e){
-    const button=e.target.closest('[data-v18-action]'); if(!button) return;
-    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-    const action=button.dataset.v18Action, id=button.dataset.id, parentId=button.dataset.parentId;
-    if(action==='edit-todo') return editTodo(id);
-    if(action==='edit-project') return editProject(id);
-    if(action==='edit-step') return editStep(parentId,id);
-    if(action==='edit-cleaning') return editCleaning(id);
-    if(action==='add-step') return openAddDialog('step',id);
-    if(action==='toggle-todo') { const x=(data.todos||[]).find(v=>sameId(v.id,id)); if(x){x.completed=!x.completed;commit('To-do updated');} return; }
-    if(action==='delete-todo') { if(confirm('Delete this to-do?')){data.todos=(data.todos||[]).filter(v=>!sameId(v.id,id));commit('To-do deleted');} return; }
-    if(action==='delete-project') { if(confirm('Delete this project?')){data.projects=(data.projects||[]).filter(v=>!sameId(v.id,id));commit('Project deleted');} return; }
-    if(action==='toggle-step') { const p=(data.projects||[]).find(v=>sameId(v.id,parentId)); const step=p&&(p.steps||[]).find(v=>sameId(v.id,id)); if(step){step.completed=!step.completed;p.completed=(p.steps||[]).length>0&&p.steps.every(v=>v.completed);commit('Project step updated');} return; }
-    if(action==='delete-step') { const p=(data.projects||[]).find(v=>sameId(v.id,parentId)); if(p&&confirm('Delete this project step?')){p.steps=(p.steps||[]).filter(v=>!sameId(v.id,id));p.completed=p.steps.length>0&&p.steps.every(v=>v.completed);commit('Project step deleted');} return; }
-    if(action==='complete-cleaning') { const x=(data.cleaningTasks||[]).find(v=>sameId(v.id,id)); if(x){const done=localDateKey();x.lastCompleted=done;x.nextDue=nextCleaningDate(x.nextDue||done,x.frequency||'weekly');commit('Cleaning task completed');} return; }
-    if(action==='delete-cleaning') { if(confirm('Delete this cleaning task?')){data.cleaningTasks=(data.cleaningTasks||[]).filter(v=>!sameId(v.id,id));commit('Cleaning task deleted');} return; }
-  },true);
-
-  // The original form handler saves the record. Repaint after it has finished and the dialog has closed.
-  const form=byId('addForm');
-  if(form) form.addEventListener('submit',()=>{queueMicrotask(repaintEverything);requestAnimationFrame(repaintEverything);setTimeout(repaintEverything,0);},false);
-
-  window.addEventListener('pageshow',repaintEverything);
-  document.addEventListener('DOMContentLoaded',repaintEverything,{once:true});
-})();
