@@ -1,8 +1,10 @@
 /*
- * My Life Planner v28
+ * My Life Planner v33
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
+var timelineRange='today';
+
 const dailyTasks = [
   { id: "wake", title: "Get up, wash and get dressed", time: "Around 7:00-8:00, depending on sleep and health" },
   { id: "coffee", title: "Coffee, breakfast and medication", time: "About 30 minutes" },
@@ -1629,7 +1631,7 @@ function renderAppointments(){
     area.appendChild(row);
   });
 }
-let timelineRange='today';
+// timelineRange is declared before the initial render so Planner opens safely.
 const TIMELINE_TYPES={
   appointment:{icon:'📅',label:'Appointment'},todo:{icon:'✅',label:'To-do'},project:{icon:'📁',label:'Project'},
   cleaning:{icon:'🧹',label:'Cleaning'},annual:{icon:'🎂',label:'Birthday / annual date'},waiting:{icon:'⏳',label:'Waiting For'}
