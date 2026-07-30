@@ -1,5 +1,5 @@
 /*
- * My Life Planner v23
+ * My Life Planner v24
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "23";
+const APP_VERSION = "24";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1483,6 +1483,7 @@ function openAppointmentDialog(id='',prefillName='',prefillNotes=''){
   document.getElementById('appointmentTime').value=a?.time||'';
   document.getElementById('appointmentEndTime').value=a?.endTime||'';
   document.getElementById('appointmentLocation').value=a?.location||'';
+  document.getElementById('appointmentLink').value=a?.link||a?.url||a?.meetingLink||'';
   document.getElementById('appointmentNotes').value=a?.notes||prefillNotes||'';
   document.getElementById('appointmentRepeat').value=a?.repeat||'none';
   document.getElementById('appointmentDialogTitle').textContent=a?'Edit appointment':'Add appointment';
@@ -1496,14 +1497,33 @@ function saveAppointment(){
     if(!name){alert('Please enter an appointment title.');document.getElementById('appointmentName').focus();return false;}
     if(!date){alert('Please choose a date.');document.getElementById('appointmentDate').focus();return false;}
     const id=document.getElementById('appointmentId').value;const existing=(data.appointments||[]).find(x=>x.id===id);
-    const rec={id:existing?.id||uid(),name,date,time:document.getElementById('appointmentTime').value,endTime:document.getElementById('appointmentEndTime').value,location:document.getElementById('appointmentLocation').value.trim(),notes:document.getElementById('appointmentNotes').value.trim(),repeat:document.getElementById('appointmentRepeat').value,createdAt:existing?.createdAt||new Date().toISOString()};
+    const link=normaliseAppointmentLink(document.getElementById('appointmentLink').value);
+    if(document.getElementById('appointmentLink').value.trim()&&!link){alert('Please enter a valid meeting or web link.');document.getElementById('appointmentLink').focus();return false;}
+    const rec={id:existing?.id||uid(),name,date,time:document.getElementById('appointmentTime').value,endTime:document.getElementById('appointmentEndTime').value,location:document.getElementById('appointmentLocation').value.trim(),link,notes:document.getElementById('appointmentNotes').value.trim(),repeat:document.getElementById('appointmentRepeat').value,createdAt:existing?.createdAt||new Date().toISOString()};
     if(existing)Object.assign(existing,rec);else data.appointments.unshift(rec);
     saveData();closeAppointmentDialog();renderAll();showSaved('Appointment saved');return true;
   }catch(e){console.error(e);alert('The appointment could not be saved. Please try again.');return false;}
 }
-function deleteAppointment(id){if(!confirm('Delete this appointment?'))return;data.appointments=data.appointments.filter(x=>x.id!==id);saveData();renderAll();}
-function renderAppointments(){const area=document.getElementById('appointmentsArea');if(!area)return;area.innerHTML='';const items=[...(data.appointments||[])].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));if(!items.length){area.innerHTML='<div class="empty-state">No appointments yet.</div>';return;}items.forEach(a=>{const row=document.createElement('div');row.className='compact-manage-row';row.innerHTML=`<button class="compact-row-main" onclick="openAppointmentDialog('${a.id}')"><span class="compact-row-title">${escapeHtml(a.name)}</span><span class="compact-row-meta">${formatDate(a.date)}${a.time?' · '+a.time:''}${a.location?' · '+escapeHtml(a.location):''}${a.repeat&&a.repeat!=='none'?' · repeats '+a.repeat:''}</span></button>${compactMenu(`<button onclick="closeAnchoredMenu();openAppointmentDialog('${a.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteAppointment('${a.id}')">Delete</button>`,a.name)}`;area.appendChild(row);});}
-function renderTimeline(){const area=document.getElementById('timelineArea');if(!area)return;area.innerHTML='';const now=new Date();const items=(data.appointments||[]).flatMap(a=>appointmentOccurrences(a,now,120).map(o=>({...a,occurrenceDate:o.date}))).sort((a,b)=>(a.occurrenceDate+a.time).localeCompare(b.occurrenceDate+b.time));if(!items.length){area.innerHTML='<div class="empty-state">No upcoming appointments.</div>';return;}items.forEach(a=>area.appendChild(makeV10Row({name:a.name,meta:`${formatDate(a.occurrenceDate)}${a.time?' · '+a.time:''}${a.location?' · '+a.location:''}`,dueDate:a.occurrenceDate,open:()=>openAppointmentDialog(a.id)},{complete:false})));}
+function normaliseAppointmentLink(value){
+  const raw=(value||'').trim();if(!raw)return '';
+  const candidate=/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)?raw:`https://${raw}`;
+  try{const url=new URL(candidate);return ['http:','https:'].includes(url.protocol)?url.href:'';}catch{return '';}
+}
+function openAppointmentLink(id){const a=(data.appointments||[]).find(x=>String(x.id)===String(id));const link=normaliseAppointmentLink(a?.link||a?.url||a?.meetingLink||'');if(link)window.open(link,'_blank','noopener,noreferrer');}
+function deleteAppointment(id){if(!confirm('Delete this appointment?'))return;data.appointments=data.appointments.filter(x=>String(x.id)!==String(id));saveData();renderAll();}
+function renderAppointments(){
+  const area=document.getElementById('appointmentsArea');if(!area)return;area.innerHTML='';
+  const items=[...(data.appointments||[])].sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')));
+  if(!items.length){area.innerHTML='<div class="empty-state">No appointments yet.</div>';return;}
+  items.forEach(a=>{
+    const link=normaliseAppointmentLink(a.link||a.url||a.meetingLink||'');
+    const row=document.createElement('article');row.className='appointment-card';
+    const timeText=a.time?`${a.time}${a.endTime?'–'+a.endTime:''}`:'All day';
+    row.innerHTML=`<div class="appointment-card-main"><button class="appointment-open" onclick="openAppointmentDialog('${a.id}')"><span class="appointment-date">${escapeHtml(formatDate(a.date))}</span><span class="appointment-title">${escapeHtml(a.name)}</span><span class="appointment-meta">${escapeHtml(timeText)}${a.location?' · '+escapeHtml(a.location):''}${a.repeat&&a.repeat!=='none'?' · repeats '+escapeHtml(a.repeat):''}</span>${a.notes?`<span class="appointment-notes">${escapeHtml(a.notes)}</span>`:''}</button>${compactMenu(`<button onclick="closeAnchoredMenu();openAppointmentDialog('${a.id}')">Edit</button>${link?`<button onclick="closeAnchoredMenu();openAppointmentLink('${a.id}')">Open link</button>`:''}<button class="danger-text" onclick="closeAnchoredMenu();deleteAppointment('${a.id}')">Delete</button>`,a.name)}</div>${link?`<button class="appointment-link-button" type="button" onclick="openAppointmentLink('${a.id}')">Open meeting or web link</button>`:''}`;
+    area.appendChild(row);
+  });
+}
+function renderTimeline(){const area=document.getElementById('timelineArea');if(!area)return;area.innerHTML='';const now=new Date();const items=(data.appointments||[]).flatMap(a=>appointmentOccurrences(a,now,120).map(o=>({...a,occurrenceDate:o.date}))).sort((a,b)=>(a.occurrenceDate+a.time).localeCompare(b.occurrenceDate+b.time));if(!items.length){area.innerHTML='<div class="empty-state">No upcoming appointments.</div>';return;}items.forEach(a=>area.appendChild(makeV10Row({name:a.name,meta:`${formatDate(a.occurrenceDate)}${a.time?' · '+a.time:''}${a.location?' · '+a.location:''}${normaliseAppointmentLink(a.link||a.url||a.meetingLink||'')?' · link available':''}`,dueDate:a.occurrenceDate,open:()=>openAppointmentDialog(a.id)},{complete:false})));}
 
 /* Safe Brain Inbox conversion: an inbox item is only removed after the destination is saved. */
 let pendingInboxAppointmentId='';
