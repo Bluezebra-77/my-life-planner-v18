@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=25">
-  <link rel="manifest" href="manifest.json?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="manifest" href="manifest.json?v=26">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
           <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
           <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
         </div>
-        <p class="header-version">v25</p>
+        <p class="header-version">v26</p>
         <p id="todayDate" class="date-line"></p>
       </div>
       <div class="compact-progress" aria-label="Daily progress">
@@ -48,7 +48,7 @@
     </section>
 
     <section class="panel app-view-section" data-view="home">
-      <div class="section-heading"><div><p class="eyebrow">Capture first, organise later</p><h2>Thoughts Inbox</h2></div><div class="section-actions"><button class="voice-button" type="button" onclick="startVoiceCapture('inbox')" aria-label="Dictate a thought" title="Dictate a thought">🎤</button><button class="section-plus" type="button" onclick="openCaptureDialog('inbox')" aria-label="Capture a thought">+</button></div></div>
+      <div class="section-heading"><div><p class="eyebrow">Capture first, organise later</p><h2>Brain Inbox</h2></div><div class="section-actions"><button class="voice-button" type="button" onclick="startVoiceCapture('inbox')" aria-label="Dictate a thought" title="Dictate a thought">🎤</button><button class="section-plus" type="button" onclick="openCaptureDialog('inbox')" aria-label="Capture a thought">+</button></div></div>
       <div id="inboxPreviewArea" class="compact-list"></div>
     </section>
 
@@ -71,19 +71,19 @@
     <section class="panel app-view-section lists-hub" data-view="tasks">
       <div class="section-heading"><div><p class="eyebrow">Control centre</p><h2>My Lists</h2></div></div>
       <p class="card-meta">Every task you enter is shown below under its category. Completed items remain visible until you delete them. Search across all lists or jump straight to one collection.</p>
-      <label class="list-search-label">Search all lists<input id="globalListSearch" type="search" placeholder="Search tasks, projects, thoughts…" oninput="filterMyLists(this.value)"></label>
+      <label class="list-search-label">Search all lists<input id="globalListSearch" type="search" placeholder="Search tasks, projects, Brain Inbox…" oninput="filterMyLists(this.value)"></label>
       <div class="list-hub-grid">
         <button type="button" onclick="jumpToList('todoListSection')"><span>✅</span><strong>To-dos</strong><small id="todoHubCount">0 items</small></button>
         <button type="button" onclick="jumpToList('projectsListSection')"><span>📁</span><strong>Projects</strong><small id="projectHubCount">0 items</small></button>
         <button type="button" onclick="jumpToList('cleaningListSection')"><span>🧹</span><strong>Cleaning</strong><small id="cleaningHubCount">0 items</small></button>
         <button type="button" onclick="jumpToList('annualListSection')"><span>🎂</span><strong>Birthdays</strong><small id="annualHubCount">0 items</small></button>
         <button type="button" onclick="jumpToList('appointmentsListSection')"><span>📅</span><strong>Appointments</strong><small id="appointmentHubCount">0 items</small></button>
-        <button type="button" onclick="jumpToList('inboxListSection')"><span>💡</span><strong>Thoughts</strong><small id="inboxHubCount">0 items</small></button>
+        <button type="button" onclick="jumpToList('inboxListSection')"><span>💡</span><strong>Brain Inbox</strong><small id="inboxHubCount">0 items</small></button>
         <button type="button" onclick="jumpToList('waitingListSection')"><span>⏳</span><strong>Waiting For</strong><small id="waitingHubCount">0 items</small></button>
       </div>
     </section>
 
-    <section id="todoListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="todoListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="To-dos">
       <div class="section-heading">
         <div>
           <p class="eyebrow">My list</p>
@@ -95,25 +95,25 @@
       <div id="todoArea" class="stack-list"></div>
     </section>
 
-    <section id="appointmentsListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="appointmentsListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Appointments">
       <div class="section-heading"><div><p class="eyebrow">Calendar commitments</p><h2>Appointments and events</h2></div><button class="section-plus" type="button" onclick="openAppointmentDialog()" aria-label="Add appointment">+</button></div>
       <p class="card-meta">Every appointment appears here. Select an item to edit it.</p>
       <div id="appointmentsArea" class="stack-list"></div>
     </section>
 
-    <section id="inboxListSection" class="panel app-view-section managed-list-section" data-view="tasks">
-      <div class="section-heading"><div><p class="eyebrow">Quick capture</p><h2>Thoughts Inbox</h2></div><button class="section-plus" type="button" onclick="openCaptureDialog('inbox')" aria-label="Add thought">+</button></div>
+    <section id="inboxListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Brain Inbox">
+      <div class="section-heading"><div><p class="eyebrow">Quick capture</p><h2>Brain Inbox</h2></div><button class="section-plus" type="button" onclick="openCaptureDialog('inbox')" aria-label="Add Brain Inbox item">+</button></div>
       <p class="card-meta">Capture anything without deciding where it belongs. Convert it later from the menu.</p>
       <div id="inboxArea" class="stack-list"></div>
     </section>
 
-    <section id="waitingListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="waitingListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Waiting For">
       <div class="section-heading"><div><p class="eyebrow">Keep on your radar</p><h2>Waiting For</h2></div><button class="section-plus" type="button" onclick="openCaptureDialog('waiting')" aria-label="Add waiting item">+</button></div>
       <p class="card-meta">Things that are not yours to do, but still need watching.</p>
       <div id="waitingArea" class="stack-list"></div>
     </section>
 
-    <section id="annualListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="annualListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Birthdays">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Annual reminders</p>
@@ -125,7 +125,7 @@
       <div id="annualArea" class="stack-list"></div>
     </section>
 
-    <section id="projectsListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="projectsListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Projects">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Flexible work</p>
@@ -137,7 +137,7 @@
       <div id="projectsArea" class="stack-list"></div>
     </section>
 
-    <section id="cleaningListSection" class="panel app-view-section managed-list-section" data-view="tasks">
+    <section id="cleaningListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Cleaning">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Home care</p>
@@ -214,7 +214,7 @@
         <details class="storage-details"><summary>Where can I find my backups?</summary><p><strong>Automatic daily backups:</strong> stored privately inside this browser on this device.</p><p><strong>Visible backup files:</strong> choose Save backup file or Share backup, then save to iCloud Drive, OneDrive or Files.</p></details>
         <div class="card-actions"><button type="button" onclick="exportPlanner()">Save backup file</button><button type="button" onclick="sharePlannerBackup()">Share backup</button><button type="button" class="secondary-button" onclick="document.getElementById('importFile').click()">Import backup</button><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importPlanner(event)"></div>
         <p id="storageStatus" class="storage-status"></p><p id="saveIndicator" class="save-indicator" aria-live="polite">Ready</p>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 25</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 26</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
       </div>
     </dialog>
 
@@ -397,6 +397,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=25"></script>
+  <script src="app.js?v=26"></script>
 </body>
 </html>

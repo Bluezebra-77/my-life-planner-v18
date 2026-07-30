@@ -1,5 +1,5 @@
 /*
- * My Life Planner v25
+ * My Life Planner v26
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "25";
+const APP_VERSION = "26";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1238,6 +1238,58 @@ createRecoveryCopy(JSON.stringify(data));
 renderAll();
 
 
+function getCollapsedListSections() {
+  try { return JSON.parse(localStorage.getItem('myLifePlannerCollapsedLists') || '{}'); }
+  catch (error) { return {}; }
+}
+
+function saveCollapsedListSections(state) {
+  localStorage.setItem('myLifePlannerCollapsedLists', JSON.stringify(state));
+}
+
+function applyListSectionState(section, collapsed) {
+  if (!section) return;
+  section.classList.toggle('list-section-collapsed', collapsed);
+  const toggle = section.querySelector('.list-collapse-toggle');
+  const name = section.dataset.listName || 'list';
+  if (toggle) {
+    toggle.textContent = collapsed ? `Show ${name}` : `Hide ${name}`;
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+  }
+}
+
+function toggleListSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  const state = getCollapsedListSections();
+  const collapsed = !section.classList.contains('list-section-collapsed');
+  state[sectionId] = collapsed;
+  saveCollapsedListSections(state);
+  applyListSectionState(section, collapsed);
+}
+
+function addListSectionControls() {
+  const state = getCollapsedListSections();
+  document.querySelectorAll('.managed-list-section').forEach(section => {
+    const heading = section.querySelector(':scope > .section-heading');
+    if (!heading) return;
+    let controls = heading.querySelector('.list-heading-controls');
+    if (!controls) {
+      controls = document.createElement('div');
+      controls.className = 'list-heading-controls';
+      const existingAdd = heading.querySelector('.section-plus');
+      if (existingAdd) controls.appendChild(existingAdd);
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'small-button secondary-button list-collapse-toggle';
+      toggle.onclick = () => toggleListSection(section.id);
+      controls.appendChild(toggle);
+      heading.appendChild(controls);
+    }
+    applyListSectionState(section, Boolean(state[section.id]));
+  });
+}
+
 function prepareListsView() {
   const search = document.getElementById('globalListSearch');
   if (search && search.value) search.value = '';
@@ -1248,6 +1300,7 @@ function prepareListsView() {
       row.hidden = false;
     });
   });
+  addListSectionControls();
 }
 
 function showAppView(view, button) {

@@ -705,3 +705,43 @@ dialog.bottom-sheet{width:min(680px,100% - 16px);max-height:min(88vh,850px);marg
 
 /* v24 appointment editor and cards; v25 optional end time */
 .appointment-form-layout{display:grid;gap:1rem}.appointment-fieldset{border:1px solid var(--line,#d8ddd8);border-radius:16px;padding:1rem;margin:0}.appointment-fieldset legend{font-weight:800;padding:0 .45rem}.appointment-core-grid .full-width,.appointment-form-layout .full-width{grid-column:1/-1}.appointment-card{border:1px solid var(--line,#d8ddd8);border-radius:16px;background:var(--card,#fff);padding:.8rem .9rem;display:grid;gap:.7rem}.appointment-card-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem;align-items:start}.appointment-open{border:0;background:transparent;color:inherit;text-align:left;padding:0;display:grid;gap:.18rem;width:100%}.appointment-date{font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.65}.appointment-title{font-size:1.05rem;font-weight:800}.appointment-meta,.appointment-notes{font-size:.9rem;opacity:.78}.appointment-notes{white-space:pre-wrap}.appointment-link-button{justify-self:start;padding:.55rem .8rem}.change-log{margin:.5rem 0 0;padding-left:1.2rem}.change-log li{margin:.3rem 0}@media(max-width:560px){.appointment-core-grid{grid-template-columns:1fr}.appointment-core-grid>*{grid-column:1/-1}}
+
+
+/* v26 Lists and visual polish */
+.view-heading,
+.lists-hub > .section-heading,
+.managed-list-section > .section-heading,
+.app-view-section > .section-heading,
+.settings-dialog .dialog-header > div,
+.manager-dialog .dialog-header > div,
+.bottom-sheet .dialog-header > div {
+  text-align: center;
+}
+.view-heading .eyebrow,
+.view-heading h2 { text-align:center; }
+.managed-list-section > .section-heading { position:relative; justify-content:center; padding-right:0; }
+.managed-list-section > .section-heading > div:first-child { flex:1; text-align:center; padding:0 112px; }
+.list-heading-controls { position:absolute; right:0; top:50%; transform:translateY(-50%); display:flex; gap:7px; align-items:center; }
+.list-collapse-toggle { min-width:98px; white-space:nowrap; padding:9px 10px; font-size:.78rem; }
+.managed-list-section.list-section-collapsed > :not(.section-heading) { display:none!important; }
+.managed-list-section.list-section-collapsed { padding-bottom:16px; }
+.list-hub-grid button strong { display:block; }
+.list-hub-grid button { min-height:72px; }
+
+body[data-font="clear"] { font-family:"Segoe UI",Arial,sans-serif; }
+body[data-font="rounded"] { font-family:"Trebuchet MS","Segoe UI",sans-serif; }
+body[data-font="classic"] { font-family:Georgia,"Times New Roman",serif; }
+body[data-font="modern"] { font-family:Inter,"Segoe UI",Arial,sans-serif; }
+body[data-font="large"] { font-family:Verdana,Geneva,sans-serif; font-size:18px; }
+body[data-font="friendly"] { font-family:"Comic Sans MS","Trebuchet MS",sans-serif; }
+body[data-font="book"] { font-family:Palatino,"Book Antiqua",Georgia,serif; }
+body[data-font="compact"] { font-family:Tahoma,"Arial Narrow",Arial,sans-serif; letter-spacing:-.015em; }
+body[data-font="softserif"] { font-family:"Sitka Text",Cambria,Georgia,serif; }
+body[data-font="spacious"] { font-family:"Segoe UI",Arial,sans-serif; letter-spacing:.025em; line-height:1.65; }
+
+@media(max-width:620px){
+  .managed-list-section > .section-heading { align-items:center; padding-top:4px; }
+  .managed-list-section > .section-heading > div:first-child { padding:0 0 48px; width:100%; }
+  .list-heading-controls { left:50%; right:auto; top:auto; bottom:0; transform:translateX(-50%); }
+  .list-collapse-toggle { min-width:112px; }
+}

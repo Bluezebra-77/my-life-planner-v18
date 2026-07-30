@@ -2,7 +2,7 @@
   "name": "My Life Planner V25",
   "short_name": "Life Planner",
   "description": "A calm personal planner with Focus Today, full My Lists management, projects, routines, thoughts and Waiting For.",
-  "start_url": "./index.html?v=25",
+  "start_url": "./index.html?v=26",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8ff",
@@ -22,5 +22,6 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "./"
+  "id": "./",
+  "version": "26"
 }
