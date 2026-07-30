@@ -1,5 +1,5 @@
 /*
- * My Life Planner v38
+ * My Life Planner v39
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -1322,6 +1322,7 @@ function prepareListsView() {
 }
 
 function showAppView(view, button) {
+  if(view !== 'tasks') toggleListsSideNav(false);
   const titles = {
     home: ["Home", "Your day"],
     tasks: ["Lists", "All tasks saved under each category"],
@@ -1567,6 +1568,11 @@ function toggleListsSideNav(force){
  wrap.classList.toggle('nav-open',open);
  toggle.setAttribute('aria-expanded',String(open));
 }
+document.addEventListener('pointerdown',event=>{
+ const wrap=document.querySelector('.lists-floating-wrap');
+ if(!wrap?.classList.contains('nav-open'))return;
+ if(!wrap.contains(event.target))toggleListsSideNav(false);
+});
 function jumpToList(id){
  const el=document.getElementById(id);
  if(!el)return;
