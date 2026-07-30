@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=40">
-  <link rel="manifest" href="manifest.json?v=40">
+  <link rel="stylesheet" href="style.css?v=41">
+  <link rel="manifest" href="manifest.json?v=41">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
           <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
           <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
         </div>
-        <p class="header-version">v40</p>
+        <p class="header-version">v41</p>
         <p id="todayDate" class="date-line"></p>
       </div>
       <div class="compact-progress" aria-label="Daily progress">
@@ -88,6 +88,7 @@
         <button type="button" onclick="jumpToList('cleaningListSection')">Cleaning</button>
         <button type="button" onclick="jumpToList('customListsSection')">Custom</button>
       </nav>
+      <div class="lists-scroll-cue" aria-hidden="true">▼ More Lists</div>
       </div>
     </div>
 
@@ -245,7 +246,7 @@
         <details class="storage-details"><summary>Where can I find my backups?</summary><p><strong>Automatic daily backups:</strong> stored privately inside this browser on this device.</p><p><strong>Visible backup files:</strong> choose Save backup file or Share backup, then save to iCloud Drive, OneDrive or Files.</p></details>
         <div class="card-actions"><button type="button" onclick="exportPlanner()">Save backup file</button><button type="button" onclick="sharePlannerBackup()">Share backup</button><button type="button" class="secondary-button" onclick="document.getElementById('importFile').click()">Import backup</button><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importPlanner(event)"></div>
         <p id="storageStatus" class="storage-status"></p><p id="saveIndicator" class="save-indicator" aria-live="polite">Ready</p>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 40</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 41</p><p><strong>Updated:</strong> 30 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v41</strong> — Expanded the Lists drawer so its choices are clearly visible, added a More Lists scroll cue when needed, and anchored the control to the planner edge on wide screens.</li><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
       </div>
     </dialog>
 
@@ -446,6 +447,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=35"></script>
+  <script src="app.js?v=41"></script>
 </body>
 </html>

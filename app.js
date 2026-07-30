@@ -1,5 +1,5 @@
 /*
- * My Life Planner v40
+ * My Life Planner v41
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "40";
+const APP_VERSION = "41";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1560,6 +1560,13 @@ function openTimelineShortcut(){
 function scrollListsToTop(){
   document.querySelector('.lists-hub')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
+function updateListsScrollCue(){
+ const panel=document.getElementById('listsSideNav');
+ const cue=panel?.querySelector('.lists-scroll-cue');
+ if(!panel||!cue)return;
+ const hasMore=panel.scrollHeight-panel.scrollTop-panel.clientHeight>10;
+ cue.classList.toggle('is-visible',hasMore);
+}
 function toggleListsSideNav(force){
  const wrap=document.querySelector('.lists-floating-wrap');
  const toggle=document.querySelector('.lists-rail-toggle');
@@ -1567,6 +1574,13 @@ function toggleListsSideNav(force){
  const open=typeof force==='boolean'?force:!wrap.classList.contains('nav-open');
  wrap.classList.toggle('nav-open',open);
  toggle.setAttribute('aria-expanded',String(open));
+ if(open){
+  requestAnimationFrame(()=>{
+   const panel=document.getElementById('listsSideNav');
+   if(panel)panel.scrollTop=0;
+   updateListsScrollCue();
+  });
+ }
 }
 let listsLayoutResetTimer;
 function resetListsNavigationLayout(){
@@ -1579,6 +1593,7 @@ window.addEventListener('orientationchange',()=>{
  resetListsNavigationLayout();
 },{passive:true});
 if(window.visualViewport)window.visualViewport.addEventListener('resize',resetListsNavigationLayout,{passive:true});
+document.getElementById('listsSideNav')?.addEventListener('scroll',updateListsScrollCue,{passive:true});
 
 document.addEventListener('pointerdown',event=>{
  const wrap=document.querySelector('.lists-floating-wrap');
