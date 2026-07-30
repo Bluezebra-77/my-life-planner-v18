@@ -1,3 +1,3 @@
-My Life Planner v31
+My Life Planner v32
 
-Adds a unified, filterable Timeline for appointments, dated to-dos, projects, cleaning tasks, birthdays/annual dates and Waiting For review dates.
+Corrective release: Timeline rendering is isolated so it cannot stop dashboard and list summaries. Timeline now accepts current and legacy date/name fields and skips malformed records safely.

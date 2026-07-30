@@ -139,7 +139,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "31";
+const APP_VERSION = "32";
 let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
@@ -1157,7 +1157,13 @@ function renderAll() {
   renderInbox();
   renderWaiting();
   renderAppointments();
-  renderTimeline();
+  try { renderTimeline(); } catch (error) {
+    console.error("Timeline could not be rendered", error);
+    const area=document.getElementById("timelineArea");
+    const summary=document.getElementById("timelineSummary");
+    if(area) area.innerHTML='<div class="empty-state">Timeline could not be loaded. Your saved lists are unaffected.</div>';
+    if(summary) summary.textContent='Timeline unavailable.';
+  }
   updateListHubCounts();
   renderProjectNextActions();
   renderTodayReminders();
@@ -1645,13 +1651,25 @@ function timelineDateBounds(range){
 function timelineItems(){
   const today=new Date();today.setHours(0,0,0,0);
   const items=[];
-  (data.appointments||[]).forEach(a=>appointmentOccurrences(a,today,365).forEach(o=>items.push({id:a.id,type:'appointment',name:a.name,date:o.date,time:a.time||'',detail:[a.endTime&&a.time?`${a.time}–${a.endTime}`:a.time,a.location].filter(Boolean).join(' · '),open:()=>openAppointmentDialog(a.id)})));
-  (data.todos||[]).filter(x=>!x.completed&&x.dueDate).forEach(x=>items.push({id:x.id,type:'todo',name:x.name,date:x.dueDate,detail:x.details||'',open:()=>editTodo(x.id)}));
-  (data.projects||[]).filter(x=>!x.completed&&x.dueDate).forEach(x=>items.push({id:x.id,type:'project',name:x.name,date:x.dueDate,detail:x.details||'',open:()=>editProject(x.id)}));
-  (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue).forEach(x=>items.push({id:x.id,type:'cleaning',name:x.name,date:x.nextDue,detail:x.room||'Home',open:()=>editCleaning(x.id)}));
-  (data.annualDates||[]).forEach(x=>{const d=nextAnnualOccurrence(x.monthDay);if(d)items.push({id:x.id,type:'annual',name:x.name,date:localDateKey(d),detail:x.details||'',open:()=>editAnnual(x.id)});});
-  (data.waiting||[]).filter(x=>!x.completed&&x.reviewDate).forEach(x=>items.push({id:x.id,type:'waiting',name:x.name,date:x.reviewDate,detail:x.note||'Review due',open:()=>editCapture('waiting',x.id)}));
-  return items.filter(x=>dateOnly(x.date)>=today).sort((a,b)=>(a.date+(a.time||'99:99')+a.name).localeCompare(b.date+(b.time||'99:99')+b.name));
+  const add=(item)=>{
+    if(!item||!item.date)return;
+    const parsed=dateOnly(String(item.date).slice(0,10));
+    if(!parsed||parsed<today)return;
+    items.push({...item,date:localDateKey(parsed),name:String(item.name||'Untitled item')});
+  };
+  try{
+    (data.appointments||[]).forEach(a=>{
+      appointmentOccurrences(a,today,365).forEach(o=>add({id:a.id,type:'appointment',name:a.name||a.title,date:o.date,time:a.time||'',detail:[a.endTime&&a.time?`${a.time}–${a.endTime}`:a.time,a.location].filter(Boolean).join(' · '),open:()=>openAppointmentDialog(a.id)}));
+    });
+  }catch(error){console.warn('Timeline appointments skipped',error);}
+  (data.todos||[]).filter(x=>!x.completed&&(x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'todo',name:x.name||x.title,date:x.dueDate||x.date,detail:x.details||x.notes||'',open:()=>editTodo(x.id)}));
+  (data.projects||[]).filter(x=>!x.completed&&(x.dueDate||x.targetDate||x.date)).forEach(x=>add({id:x.id,type:'project',name:x.name||x.title,date:x.dueDate||x.targetDate||x.date,detail:x.details||x.notes||'',open:()=>editProject(x.id)}));
+  (data.cleaningTasks||[]).filter(x=>!x.completed&&(x.nextDue||x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'cleaning',name:x.name||x.title,date:x.nextDue||x.dueDate||x.date,detail:x.room||x.area||'Home',open:()=>editCleaning(x.id)}));
+  (data.annualDates||[]).forEach(x=>{
+    try{const d=nextAnnualOccurrence(String(x.monthDay||''));if(d)add({id:x.id,type:'annual',name:x.name||x.title,date:localDateKey(d),detail:x.details||x.notes||'',open:()=>editAnnual(x.id)});}catch(error){console.warn('Timeline annual date skipped',error);}
+  });
+  (data.waiting||[]).filter(x=>!x.completed&&(x.reviewDate||x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'waiting',name:x.name||x.title,date:x.reviewDate||x.dueDate||x.date,detail:x.note||x.details||'Review due',open:()=>editCapture('waiting',x.id)}));
+  return items.sort((a,b)=>`${a.date}${a.time||'99:99'}${a.name}`.localeCompare(`${b.date}${b.time||'99:99'}${b.name}`));
 }
 function renderTimeline(){
   const area=document.getElementById('timelineArea'),summary=document.getElementById('timelineSummary');if(!area)return;
