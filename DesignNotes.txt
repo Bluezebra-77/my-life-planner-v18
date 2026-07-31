@@ -13,3 +13,6 @@ PLANNER HEALTH
 
 PROGRESS BAR
 - Retained temporarily; review after extended real-world usage.
+
+SETTINGS DESIGN RULE
+- Settings should reveal detail on demand. Major areas remain collapsed unless the user opens them, and the planner remembers that choice.

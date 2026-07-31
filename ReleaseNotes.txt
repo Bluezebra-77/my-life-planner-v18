@@ -1,16 +1,9 @@
-My Life Planner v51f — Planner Health and Home Optimisation
+My Life Planner v51f — Settings Usability Correction
 
-ADDED
-- Planner Health shows one considerate suggestion at a time.
-- Inactive-project, old Brain Inbox, Waiting For follow-up and overdue-cleaning suggestions.
-- Open, Snooze 7 days and Dismiss actions.
-- Simple Excellent / Good / Needs attention status.
+Corrected
+- Settings is now divided into independently collapsible sections.
+- App maintenance, Quick Actions, Appearance and personalisation, Backup and restore, Data and storage information, About, and Developer Dashboard can each be opened or closed.
+- The planner remembers which Settings sections were left open or closed on this device.
 
-HOME
-- Time-sensitive Today is moved near the top.
-- Persistent explanatory paragraphs are replaced by optional information buttons.
-- Home sections are ordered around the morning workflow.
-
-PRESERVED
-- Progress bar retained for later usefulness review.
-- All accepted v51e features and data safety mechanisms.
+Preserved
+- Planner Health phase 1, simplified Home, Quick Add, timer layout, recurrence, tags, conversions, routines and all saved data.

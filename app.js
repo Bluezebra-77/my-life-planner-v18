@@ -2842,3 +2842,20 @@ const renderAllV51f=renderAll;
 renderAll=function(){renderAllV51f();setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();};
 window.addEventListener('pageshow',()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();});
 setTimeout(()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();},0);
+
+/* ===== v51f corrected — remembered collapsible Settings sections ===== */
+const SETTINGS_SECTION_STATE_KEY='myLifePlannerSettingsSections';
+function readSettingsSectionStates(){try{return JSON.parse(localStorage.getItem(SETTINGS_SECTION_STATE_KEY)||'{}')||{};}catch(error){return {};}}
+function initialiseSettingsSections(){
+  const states=readSettingsSectionStates();
+  document.querySelectorAll('#settingsDialog details.settings-section-details[data-settings-section]').forEach(section=>{
+    const key=section.dataset.settingsSection;
+    if(Object.prototype.hasOwnProperty.call(states,key)) section.open=Boolean(states[key]);
+    section.addEventListener('toggle',()=>{
+      const current=readSettingsSectionStates();
+      current[key]=section.open;
+      localStorage.setItem(SETTINGS_SECTION_STATE_KEY,JSON.stringify(current));
+    });
+  });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialiseSettingsSections);else initialiseSettingsSections();

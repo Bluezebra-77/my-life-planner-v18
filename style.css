@@ -1340,3 +1340,14 @@ body.timer-minimised .quick-add-fab{
 /* ===== v51f Planner Health and calmer Home ===== */
 .section-title-line{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}.section-title-line h2{margin:0}.section-info-button{width:28px!important;height:28px!important;min-width:28px!important;padding:0!important;border-radius:50%!important;background:var(--accent-soft,#e9f1ec)!important;color:var(--accent,#537462)!important;border:1px solid var(--line)!important;box-shadow:none!important;font-size:.85rem!important}.section-help-text{margin:.55rem 0 0;padding:.65rem .75rem;border-radius:12px;background:var(--accent-soft,#eef5f0);color:var(--muted,#68766f);font-size:.88rem;line-height:1.45}.planner-health-card{display:grid;gap:.7rem;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fbfdfb}.planner-health-top{display:flex;align-items:center;justify-content:space-between;gap:.8rem}.health-status{display:inline-flex;align-items:center;gap:.4rem;font-weight:800}.health-status.excellent{color:#267449}.health-status.good{color:#8a651c}.health-status.attention{color:#a84444}.planner-suggestion-title{font-weight:800}.planner-suggestion-copy{color:var(--muted);line-height:1.45}.planner-suggestion-actions{display:flex;gap:.5rem;flex-wrap:wrap}.planner-suggestion-actions button{width:auto!important;padding:.55rem .75rem!important;font-size:.84rem!important}.planner-health-empty{color:var(--muted)}
 @media(max-width:560px){.planner-suggestion-actions{display:grid;grid-template-columns:1fr 1fr}.planner-suggestion-actions button{width:100%!important}}
+
+/* v51f corrected — collapsible Settings sections */
+.settings-section-details{margin-top:12px;border:1px solid var(--line,#d9e1da);border-radius:14px;padding:0;background:rgba(255,255,255,.55)}
+.settings-section-details>summary{padding:14px 16px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-weight:800;color:var(--ink,#243229)}
+.settings-section-details>summary::-webkit-details-marker{display:none}
+.settings-section-details>summary::after{content:'▸';font-size:1rem;transition:transform .18s ease}
+.settings-section-details[open]>summary::after{transform:rotate(90deg)}
+.settings-section-body{padding:0 16px 16px}
+.settings-section-body>.card-actions:last-child{margin-bottom:0}
+.settings-section-details .settings-section-details{background:rgba(255,255,255,.7)}
+@media(max-width:560px){.settings-section-details>summary{padding:13px 14px}.settings-section-body{padding:0 14px 14px}}

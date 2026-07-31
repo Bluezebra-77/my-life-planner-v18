@@ -1,17 +1,18 @@
-My Life Planner v51f — Build Report
+My Life Planner v51f — Settings Correction Build Report
 
-Baseline: accepted v51e iPhone timer patch.
+Baseline
+- User-accepted v51f feature build.
 
 Implemented
-- Planner Health phase 1 with one suggestion, snooze/dismiss memory and health state.
-- Home explanatory text moved behind information buttons.
-- Home order prioritises time-sensitive information.
-- Progress bar retained and recorded for later design review.
+- Converted all main Settings areas to independent details/summary sections.
+- Added local remembered open/closed state using myLifePlannerSettingsSections.
+- Preserved all existing control IDs and behaviours.
 
 Validation
-- JavaScript syntax checked with Node.
-- manifest.json parsed successfully.
-- Duplicate HTML IDs checked.
-- CSS braces checked.
-- Version/cache references audited.
-- ZIP integrity checked.
+- JavaScript syntax: PASS
+- manifest.json JSON: PASS
+- Duplicate HTML IDs: PASS
+- CSS brace balance: PASS
+- Version/cache consistency: PASS
+- Required files: PASS
+- ZIP integrity: PASS

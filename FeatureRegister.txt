@@ -8,3 +8,6 @@ DELIVERED IN v51f
 
 DELIVERED EARLIER IN v51
 - Migration framework, advanced recurrence, tags, Today’s Focus workspace, timer, Convert and Quick Add.
+
+DELIVERED IN v51f SETTINGS CORRECTION
+- Remembered collapsible Settings sections across all major Settings areas.

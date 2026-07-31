@@ -8,3 +8,6 @@ OPEN DESIGN REVIEW
 - Decide whether the progress bar motivates or communicates enough value; retain for now.
 - Review Home/Timeline distinction after extended real-life use.
 - Generated-task timer remains a future enhancement.
+
+FIXED IN v51f SETTINGS CORRECTION
+- Settings had become long and required excessive scrolling. All major areas are now independently collapsible and remember their state.
