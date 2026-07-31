@@ -1,16 +1,16 @@
-My Life Planner
-Version 50
-Date: 31 July 2026
+My Life Planner v50 — Corrected Release
 
-NEW
-- Recurring Tasks are distinct from appointments.
-- Daily, weekly, every-N-weeks, monthly and yearly patterns.
+This corrected v50 build fixes the data-retention failure found during acceptance testing.
+
+Corrected
+- Today's Focus quick one-offs are now included when migration candidates are scored.
+- A fresh v50 rescue pass checks the migration safety copy and daily backups, even when an older migration marker already exists.
+- Today's Focus is also saved to an independent local safety mirror for protection during future upgrades.
+- Existing appointments, to-dos, projects, lists and other planner information continue to use the established lifePlannerData storage key.
+
+Included from v50
+- New separate Recurring Tasks list.
+- Daily, weekly, every N weeks, monthly and yearly intervals.
 - Due and overdue tasks remain visible until completed.
-- Completing an overdue task advances to the next scheduled date after today.
-- Add, edit, pause, resume and delete recurring tasks.
-- Home and Lists integration.
-- Recurring tasks participate in Lists search.
-
-PRESERVED
-- Existing v49 localStorage structure and all existing planner information.
-- Appointments, Today’s Focus, projects, lists, routines and search behaviour.
+- Completing a recurring task advances its next due date.
+- Pause, resume, edit, delete, Home and search integration.

@@ -12,3 +12,6 @@ DELIVERED IN v49
 
 PLANNED — v51
 - Smart Lists
+
+Today's Focus upgrade safety mirror — Added in corrected v50.
+Purpose: protect quick one-off entries during future schema migrations while retaining lifePlannerData as the authoritative record.

@@ -1,25 +1,41 @@
-MY LIFE PLANNER v50 — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v50 — CORRECTED ACCEPTANCE CHECKLIST
 
-INSTALLATION
-☐ Header shows v50
-☐ About shows Version 50
-☐ Developer Dashboard shows my-life-planner-v50
-☐ Existing information is present
+Before updating
+[ ] In the currently installed planner, add two Today's Focus quick one-offs.
+[ ] Leave at least one item incomplete.
+[ ] Note one or two existing appointments, to-dos, projects and list items for comparison.
 
-RECURRING TASKS
-☐ Add Weekly Injection with a past due date
-☐ Confirm it appears Overdue on Home and in Lists
-☐ Complete it and confirm the next due date is the next scheduled day after today
-☐ Add a daily, monthly and yearly task
-☐ Edit name, notes, date and repeat interval
-☐ Pause a task and confirm it leaves Home but remains in Lists
-☐ Resume it
-☐ Search using part of its name
-☐ Delete a test task
+Installation and version
+[ ] Install/update with the corrected v50 files.
+[ ] Header shows v50.
+[ ] About shows Version 50.
+[ ] Developer information shows the v50 cache/version details.
 
-REGRESSION
-☐ Today’s Focus works
-☐ Appointments and Timeline work
-☐ Projects and project steps work
-☐ Existing Lists search works
-☐ Refresh/reopen and confirm data persists
+Critical data-retention test
+[ ] Both Today's Focus quick one-offs are still present after the update.
+[ ] Close and reopen the app; the quick one-offs remain present.
+[ ] Refresh the page; the quick one-offs remain present.
+[ ] Add another quick one-off, close/reopen, and confirm it remains.
+[ ] Existing appointments remain intact.
+[ ] Existing to-dos remain intact.
+[ ] Existing projects and steps remain intact.
+[ ] Existing custom lists remain intact.
+
+Recurring Tasks — separate list
+[ ] Open Lists and locate the separate Recurring Tasks list.
+[ ] Add Weekly Injection with a past due date.
+[ ] Confirm it appears overdue in Recurring Tasks and on Home.
+[ ] Complete it and confirm the next due date advances beyond today.
+[ ] Add daily, monthly and yearly examples.
+[ ] Edit, pause, resume, search for and delete a test recurring task.
+
+Regression
+[ ] Today's Focus add, complete, reinstate and delete controls work.
+[ ] Appointments and Timeline work.
+[ ] Projects and project steps work.
+[ ] List search works.
+[ ] Data persists after refresh and reopening.
+
+Result
+[ ] ACCEPT v50
+[ ] REJECT v50 — record the failed item(s)

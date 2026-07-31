@@ -10,3 +10,8 @@ OPEN DESIGN ITEMS
 - Home/Timeline duplication review
 - Progress indicator purpose
 - Generated-task timer
+
+v50 correction — Today's Focus migration loss
+Status: Fixed, awaiting acceptance retest.
+Cause: migration candidate scoring ignored data sets containing only Today's Focus, and the older migration marker could prevent a fresh backup rescue pass.
+Fix: include all current collections in scoring, run a dedicated v50 rescue pass, and maintain a standalone Today's Focus safety mirror.

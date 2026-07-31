@@ -1,7 +1,7 @@
 /*
- * My Life Planner v49
- * Code-quality release: duplicate top-level function declarations removed.
- * Behaviour and saved-data format are unchanged from the stable v19 baseline.
+ * My Life Planner v50 — corrected data-preservation build.
+ * Recurring tasks are added without changing the main saved-data key.
+ * Today's Focus is protected by migration recovery and a standalone safety mirror.
  */
 var timelineRange='today';
 var TIMELINE_TYPES={
@@ -64,8 +64,10 @@ function normaliseLegacyShape(value = {}) {
 
 function scoreData(candidate = {}) {
   const shaped = normaliseLegacyShape(candidate);
-  return [shaped.todos, shaped.projects, shaped.annualDates, shaped.cleaningTasks, shaped.appointments]
-    .reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+  return [
+    shaped.todos, shaped.projects, shaped.annualDates, shaped.cleaningTasks, shaped.appointments,
+    shaped.recurringTasks, shaped.inbox, shaped.waiting, shaped.customLists, shaped.todayFocus
+  ].reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
 }
 
 function mergeUniqueLists(candidates, field) {
@@ -99,9 +101,9 @@ function getData() {
     catch (error) { console.warn("Could not read", key, error); }
   });
 
-  // One-time v9.4 rescue pass: inspect safety copies and daily snapshots so a list
-  // missed by an earlier migration can be recovered rather than silently lost.
-  if (!localStorage.getItem("lifePlannerMigrationV93Done")) {
+  // v50 correction: perform a fresh rescue pass even when an older migration marker exists.
+  // This recovers Today's Focus entries from safety copies or daily backups before v50 writes.
+  if (!localStorage.getItem("lifePlannerMigrationV50FocusDone")) {
     try {
       const safety = JSON.parse(localStorage.getItem("lifePlannerMigrationSafety") || "null");
       if (safety?.data) addCandidate(candidates, "migrationSafety", 20, safety.data);
@@ -116,6 +118,10 @@ function getData() {
         });
       } catch {}
     });
+    try {
+      const focusMirror = JSON.parse(localStorage.getItem("lifePlannerTodayFocus") || "[]");
+      if (Array.isArray(focusMirror) && focusMirror.length) addCandidate(candidates, "todayFocusMirror", 15, {todayFocus:focusMirror});
+    } catch {}
   }
 
   if (!candidates.length) return normaliseData({});
@@ -138,6 +144,8 @@ function getData() {
     localStorage.setItem("lifePlannerMigrationSafety", JSON.stringify({savedAt:new Date().toISOString(), sourceKeys:candidates.map(x=>x.key), data:merged}));
     localStorage.setItem("lifePlannerData", JSON.stringify(merged));
     localStorage.setItem("lifePlannerMigrationV93Done", new Date().toISOString());
+    localStorage.setItem("lifePlannerMigrationV50FocusDone", new Date().toISOString());
+    localStorage.setItem("lifePlannerTodayFocus", JSON.stringify(merged.todayFocus || []));
   } catch {}
   return merged;
 }
@@ -234,6 +242,8 @@ function saveData() {
     const serialised = JSON.stringify(data);
     createRecoveryCopy(serialised);
     localStorage.setItem(DATA_KEY, serialised);
+    // Keep a small independent mirror so quick one-offs survive future migrations.
+    localStorage.setItem("lifePlannerTodayFocus", JSON.stringify(data.todayFocus || []));
     updateStorageStatus();
     showSaved();
   } catch (error) {

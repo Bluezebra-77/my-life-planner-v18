@@ -9,3 +9,6 @@ RECURRING BEHAVIOUR
 - Appointments happen at a time and may advance automatically.
 - Recurring tasks represent obligations and remain overdue until completed.
 - Their schedule remains anchored to the intended recurrence, not the late completion date.
+
+v50 corrected data-preservation rule
+Today's Focus quick one-offs are user data, not temporary interface state. They must remain in the main lifePlannerData record and are additionally mirrored in lifePlannerTodayFocus. A release migration must inspect safety and daily backup copies before writing its migration-complete marker.
