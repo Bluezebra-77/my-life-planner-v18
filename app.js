@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="51f";
+const APP_VERSION="51";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2795,7 +2795,7 @@ window.addEventListener('orientationchange',()=>setTimeout(syncQuickAddTimerClea
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(syncQuickAddTimerClearance,0);});
 
 
-/* ===== v51f Planner Health and Home optimisation ===== */
+/* ===== v51 Planner Health and Home optimisation ===== */
 const PLANNER_HEALTH_MEMORY_KEY='myLifePlannerHealthMemory';
 function healthMemory(){try{return JSON.parse(localStorage.getItem(PLANNER_HEALTH_MEMORY_KEY)||'{}')||{};}catch(e){return {};}}
 function saveHealthMemory(memory){localStorage.setItem(PLANNER_HEALTH_MEMORY_KEY,JSON.stringify(memory));}
@@ -2843,7 +2843,7 @@ renderAll=function(){renderAllV51f();setupHomeInfoButtons();optimiseHomeOrder();
 window.addEventListener('pageshow',()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();});
 setTimeout(()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();},0);
 
-/* ===== v51f corrected — remembered collapsible Settings sections ===== */
+/* ===== v51 production — remembered collapsible Settings sections ===== */
 const SETTINGS_SECTION_STATE_KEY='myLifePlannerSettingsSections';
 function readSettingsSectionStates(){try{return JSON.parse(localStorage.getItem(SETTINGS_SECTION_STATE_KEY)||'{}')||{};}catch(error){return {};}}
 function initialiseSettingsSections(){

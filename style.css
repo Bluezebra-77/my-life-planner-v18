@@ -1233,7 +1233,7 @@ html,body{max-width:100%;overflow-x:clip}
 #recurringTaskForm{padding:22px;display:grid;gap:16px}
 
 
-/* v51a corrected: Home heading controls and routine customisation */
+/* v51 corrected: Home heading controls and routine customisation */
 .home-heading-controls{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto;min-width:0}
 .home-heading-controls>.section-actions{display:flex;align-items:center;gap:8px;margin:0}
 .home-heading-controls .home-collapse-toggle{margin-left:0}
@@ -1248,16 +1248,16 @@ html,body{max-width:100%;overflow-x:clip}
   .routine-manager-actions button{width:auto!important;flex:0 0 auto}
 }
 
-/* v51b advanced recurrence and tags */
+/* v51 advanced recurrence and tags */
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.tag-chip{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--accent-soft,#e9f1ec);color:var(--accent,#537462);font-size:.76rem;font-weight:800}.home-heading-controls{display:flex;align-items:center;gap:7px;margin-left:auto}.home-heading-controls .voice-button{order:2}.home-heading-controls .section-plus{order:3}.home-heading-controls .home-collapse-toggle{order:1}@media(max-width:560px){.home-heading-controls{width:100%;justify-content:flex-end;flex-wrap:wrap}.home-heading-controls .home-collapse-toggle{margin-right:auto}}
 
 
-/* v51b recurrence-dialog correction */
+/* v51 recurrence-dialog correction */
 [hidden]{display:none!important}
 .recurring-rule-summary{margin:.25rem 0;padding:.8rem 1rem;border:1px solid var(--line,#d8ddd8);border-radius:12px;background:var(--accent-soft,#e9f1ec);color:var(--ink,#20312a);font-weight:700;line-height:1.45}
 
 
-/* v51d Today workspace */
+/* v51 Today workspace */
 .today-focus-row{grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center}
 .focus-start-button{width:34px;height:34px;min-width:34px;padding:0;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);box-shadow:none}
 .pinned-focus-row{border-left:4px solid #d2a75a;background:#fffaf0}
@@ -1266,7 +1266,7 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:560px){.today-focus-row{grid-template-columns:auto minmax(0,1fr) auto}.today-focus-row .item-menu-anchor{grid-column:3}.focus-start-button{grid-column:3}.timer-choice-grid{grid-template-columns:repeat(2,1fr)}}
 
 
-/* v51d corrected: faster ordering, persistent timer and Waiting For Home */
+/* v51 corrected: faster ordering, persistent timer and Waiting For Home */
 .focus-reorder-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.focus-reorder-controls button{width:100%}
 .focus-timer-mini{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(92px + env(safe-area-inset-bottom));z-index:10000;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:6px;width:min(420px,calc(100vw - 24px));padding:8px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 14px 36px rgba(30,50,40,.25);backdrop-filter:blur(12px)}
 .focus-timer-mini-main{display:flex!important;justify-content:space-between;align-items:center;gap:12px;min-width:0;background:transparent!important;color:var(--ink)!important;box-shadow:none!important;text-align:left;padding:8px!important}.focus-timer-mini-main strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.focus-timer-mini-main span{font-variant-numeric:tabular-nums;font-size:1.15rem}
@@ -1275,11 +1275,11 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:560px){.focus-reorder-controls{grid-template-columns:1fr 1fr}.focus-timer-mini{left:8px;right:8px;width:auto;bottom:calc(82px + env(safe-area-inset-bottom))}.focus-timer-mini-pause{font-size:.78rem}.focus-timer-mini-main{padding:6px!important}}
 
 
-/* v51d final corrections */
+/* v51 final corrections */
 .focus-timer-mini.hidden{display:none!important}
 
 
-/* v51e Quick Add */
+/* v51 Quick Add */
 .quick-add-fab{position:fixed;right:max(18px,calc((100vw - 920px)/2 + 18px));bottom:96px;z-index:115;width:56px;height:56px;min-width:56px;padding:0;border-radius:50%;font-size:2rem;line-height:1;display:grid;place-items:center;box-shadow:0 12px 28px rgba(32,49,42,.28)}
 .quick-add-dialog{width:min(560px,calc(100vw - 20px));padding:20px;overflow:auto}
 .quick-add-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
@@ -1288,7 +1288,7 @@ html,body{max-width:100%;overflow-x:clip}
 .quick-add-footer{margin-top:14px}.quick-add-voice{width:100%}
 @media(max-width:560px){.quick-add-fab{right:14px;bottom:88px;width:50px;height:50px;min-width:50px}.quick-add-dialog{padding:16px}.quick-add-grid{grid-template-columns:1fr}.quick-add-grid button{width:100%;min-height:52px}}
 
-/* v51e corrected: keep Cleaning actions visible and separate Quick Add from timer */
+/* v51 corrected: keep Cleaning actions visible and separate Quick Add from timer */
 #cleaningArea .compact-manage-row{
   display:grid;
   grid-template-columns:minmax(0,1fr) 42px;
@@ -1325,7 +1325,7 @@ body.timer-minimised .quick-add-fab{
   }
 }
 
-/* v51e iPhone timer/Quick Add final layout patch */
+/* v51 iPhone timer/Quick Add final layout patch */
 body.timer-minimised .quick-add-fab{
   bottom:calc(92px + env(safe-area-inset-bottom) + var(--focus-timer-mini-height, 74px) + 14px)!important;
 }
@@ -1337,11 +1337,11 @@ body.timer-minimised .quick-add-fab{
 }
 
 
-/* ===== v51f Planner Health and calmer Home ===== */
+/* ===== v51 Planner Health and calmer Home ===== */
 .section-title-line{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}.section-title-line h2{margin:0}.section-info-button{width:28px!important;height:28px!important;min-width:28px!important;padding:0!important;border-radius:50%!important;background:var(--accent-soft,#e9f1ec)!important;color:var(--accent,#537462)!important;border:1px solid var(--line)!important;box-shadow:none!important;font-size:.85rem!important}.section-help-text{margin:.55rem 0 0;padding:.65rem .75rem;border-radius:12px;background:var(--accent-soft,#eef5f0);color:var(--muted,#68766f);font-size:.88rem;line-height:1.45}.planner-health-card{display:grid;gap:.7rem;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fbfdfb}.planner-health-top{display:flex;align-items:center;justify-content:space-between;gap:.8rem}.health-status{display:inline-flex;align-items:center;gap:.4rem;font-weight:800}.health-status.excellent{color:#267449}.health-status.good{color:#8a651c}.health-status.attention{color:#a84444}.planner-suggestion-title{font-weight:800}.planner-suggestion-copy{color:var(--muted);line-height:1.45}.planner-suggestion-actions{display:flex;gap:.5rem;flex-wrap:wrap}.planner-suggestion-actions button{width:auto!important;padding:.55rem .75rem!important;font-size:.84rem!important}.planner-health-empty{color:var(--muted)}
 @media(max-width:560px){.planner-suggestion-actions{display:grid;grid-template-columns:1fr 1fr}.planner-suggestion-actions button{width:100%!important}}
 
-/* v51f corrected — collapsible Settings sections */
+/* v51 corrected — collapsible Settings sections */
 .settings-section-details{margin-top:12px;border:1px solid var(--line,#d9e1da);border-radius:14px;padding:0;background:rgba(255,255,255,.55)}
 .settings-section-details>summary{padding:14px 16px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-weight:800;color:var(--ink,#243229)}
 .settings-section-details>summary::-webkit-details-marker{display:none}
