@@ -1,15 +1,16 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED/PRESERVED
-- v51b recurrence-dialog clarity retained.
-- Brain Inbox control overlap remains fixed.
+FIXED IN v51c CORRECTED
+- Smart Lists buttons did not display results.
+- Smart Lists duplicated Timeline date-range views.
+- Home summary counts were unclear/not visible.
+- Daily Rhythm “Decide for me” duplicated the working Needs Attention task-choice controls and no longer worked.
 
-MONITOR IN v51c
-- Smart List date classification around midnight and month boundaries.
-- Home summary counts after edits/completion.
-- Search result ordering and restoration after clearing.
+MONITOR
+- Search ranking with larger real-life data sets.
+- Home/Timeline distinction during normal use.
 
 OPEN DESIGN ITEMS
-- Home/Timeline duplication review.
+- Dashboard design for v51d.
 - Progress indicator purpose.
 - Generated-task timer.

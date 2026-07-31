@@ -1,30 +1,25 @@
-MY LIFE PLANNER v51c — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51c — CORRECTED CHECKLIST
 
-INSTALLATION
+INSTALLATION AND DATA
 [ ] Header, About and Developer information show v51c.
-[ ] Existing data, Today’s Focus, routines, tags and recurring tasks remain present.
+[ ] Existing data, Today's Focus, routines, tags and recurring tasks remain present.
 
-SMART LISTS
-[ ] Open Lists and find Smart Lists near the top.
-[ ] Today contains items due today.
-[ ] Overdue contains incomplete dated items before today.
-[ ] Next 7 days contains upcoming dated items.
-[ ] Recently added shows items created in the last 14 days.
-[ ] Waiting For, Brain Inbox and Recurring due show the expected records.
-[ ] Opening an item from a Smart List opens its normal editor.
-
-HOME SUMMARY
-[ ] Summary card counts match the Smart Lists.
-[ ] Tap each card and confirm it opens Lists at Smart Lists.
-[ ] Counts update after adding, completing or editing an item.
+CLEAN WORKFLOW
+[ ] Lists no longer contains the broken Smart Lists panel.
+[ ] Timeline still provides Today, Tomorrow, Next 7 days, This month and All upcoming.
+[ ] Home no longer contains unclear summary-count cards.
+[ ] Daily Rhythm no longer contains the duplicate “Need a useful extra task? Decide for me” area.
+[ ] The three task-choice buttons under Needs Attention still work.
 
 SEARCH
-[ ] Partial search still works.
-[ ] Exact/stronger matches appear before weaker matches within a section.
-[ ] Clearing search restores all sections and their normal order.
-[ ] Tags and tag search still work.
+[ ] Search using an exact title and confirm it appears above weaker matches in the same list.
+[ ] Search with a partial word and confirm relevant items are found.
+[ ] Search by tag.
+[ ] Clear search and confirm normal list order returns.
 
 REGRESSION
-[ ] Recurring rules including second Thursday still work.
-[ ] Today’s Focus, Projects, Appointments, Timeline, Brain Inbox and routines remain stable.
-[ ] Refresh and close/reopen; data persists.
+[ ] Second-Thursday recurrence works.
+[ ] Tags and tag search work.
+[ ] Brain Inbox controls do not overlap.
+[ ] Today's Focus, Projects, Lists, Timeline and Recurring Tasks remain stable.
+[ ] Refresh and reopen; data persists.

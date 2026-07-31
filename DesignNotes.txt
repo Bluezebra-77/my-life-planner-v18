@@ -1,7 +1,16 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-CORE
-- One item has one logical home; Smart Lists are computed views, never duplicate records.
-- Home summaries should answer what needs attention now and link to detail rather than repeat it.
-- Search should favour the most relevant matches without hiding valid partial matches.
-- Existing data must be preserved through every internal milestone.
+CORE PRINCIPLES
+- One item has one logical home; other screens are views.
+- Do not add a second route that merely duplicates Timeline.
+- Existing user data is preserved through every internal and public release.
+- Internal lettered milestones are test builds; public versions remain whole numbers.
+
+HOME AND TIMELINE
+- Home answers: what needs attention now?
+- Timeline answers: what happens over time?
+- Dashboard additions must provide clear value, not duplicate Timeline filters.
+
+SEARCH
+- Partial terms and tags remain supported.
+- Within each list section, stronger matches should sort above weaker matches.

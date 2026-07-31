@@ -2500,48 +2500,7 @@ renderAll=function(){renderAllV51b();applyTagBadgesToRenderedLists();};
 setTimeout(()=>{updateRecurringRuleControls();applyTagBadgesToRenderedLists();},0);
 
 
-/* ===== v51c Smart Lists, summary shortcuts and ranked Lists search ===== */
-const SMART_LIST_LABELS={today:'Today',overdue:'Overdue',week:'Next 7 days',recent:'Recently added',waiting:'Waiting For',inbox:'Brain Inbox',recurring:'Recurring due'};
-let activeSmartList='today';
-function smartDateValue(value){if(!value)return null;const d=dateOnly(value);return isNaN(d)?null:d;}
-function daysFromToday(value){const d=smartDateValue(value);if(!d)return null;const now=new Date();now.setHours(0,0,0,0);return Math.round((d-now)/86400000);}
-function smartItems(){
- const rows=[]; const add=(type,item,name,date,meta,open,completed=false,createdAt='')=>rows.push({type,item,name:name||'Untitled',date:date||'',meta:meta||type,open,completed:Boolean(completed),createdAt:createdAt||item?.createdAt||''});
- (data.todos||[]).forEach(x=>add('To-do',x,x.name,x.dueDate,x.details||'To-do',()=>openAddDialog('todo',x.id),x.completed,x.createdAt));
- (data.projects||[]).forEach(x=>{add('Project',x,x.name,x.dueDate,x.details||'Project',()=>openAddDialog('project',x.id),x.completed,x.createdAt);(x.steps||[]).forEach(s=>add('Project step',s,s.name,s.dueDate,`Project: ${x.name}`,()=>openProjectStepDialog(x.id,s.id),s.completed,s.createdAt||x.createdAt));});
- (data.appointments||[]).forEach(x=>appointmentOccurrences(x,new Date(),400).slice(0,1).forEach(o=>add('Appointment',x,x.name,o.date,[x.time,x.location].filter(Boolean).join(' · ')||'Appointment',()=>openAppointmentDialog(x.id),false,x.createdAt)));
- (data.recurringTasks||[]).filter(x=>x.status!=='paused').forEach(x=>add('Recurring',x,x.name,x.nextDue,recurringRuleLabel(x),()=>openRecurringTaskDialog(x.id),false,x.createdAt));
- (data.cleaningTasks||[]).forEach(x=>add('Cleaning',x,x.name,x.nextDue||x.dueDate,x.frequency||'Cleaning',()=>openCleaningDialog(x.id),x.completed,x.createdAt));
- (data.waiting||[]).forEach(x=>add('Waiting For',x,x.name,x.reviewDate,x.note||'Waiting For',()=>editCapture('waiting',x.id),x.completed,x.createdAt));
- (data.inbox||[]).filter(x=>x.status!=='processed').forEach(x=>add('Brain Inbox',x,x.name,'',x.note||'Brain Inbox',()=>editCapture('inbox',x.id),false,x.createdAt));
- (data.annualDates||[]).forEach(x=>add('Annual',x,x.name,nextAnnualOccurrence(x),x.notes||'Annual date',()=>openAnnualDialog(x.id),false,x.createdAt));
- return rows;
-}
-function nextAnnualOccurrence(x){if(!x?.monthDay)return'';const [m,d]=String(x.monthDay).split('-').map(Number);if(!m||!d)return'';const now=new Date();let y=now.getFullYear();let candidate=new Date(y,m-1,d);candidate.setHours(0,0,0,0);const floor=new Date(now);floor.setHours(0,0,0,0);if(candidate<floor)candidate=new Date(y+1,m-1,d);return localDateKey(candidate);}
-function smartListItems(kind=activeSmartList){
- const all=smartItems();
- if(kind==='today')return all.filter(x=>daysFromToday(x.date)===0&&!x.completed);
- if(kind==='overdue')return all.filter(x=>{const n=daysFromToday(x.date);return n!==null&&n<0&&!x.completed;});
- if(kind==='week')return all.filter(x=>{const n=daysFromToday(x.date);return n!==null&&n>=0&&n<=7&&!x.completed;});
- if(kind==='recent'){const cutoff=Date.now()-14*86400000;return all.filter(x=>x.createdAt&&new Date(x.createdAt).getTime()>=cutoff).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));}
- if(kind==='waiting')return all.filter(x=>x.type==='Waiting For'&&!x.completed);
- if(kind==='inbox')return all.filter(x=>x.type==='Brain Inbox');
- if(kind==='recurring')return all.filter(x=>x.type==='Recurring'&&daysFromToday(x.date)!==null&&daysFromToday(x.date)<=7);
- return all;
-}
-function showSmartList(kind='today',button=null){
- activeSmartList=kind;document.querySelectorAll('[data-smart-list]').forEach(b=>b.classList.toggle('active',b.dataset.smartList===kind));
- const area=document.getElementById('smartListArea'),summary=document.getElementById('smartListSummary');if(!area)return;
- const items=smartListItems(kind).sort((a,b)=>{const ad=smartDateValue(a.date),bd=smartDateValue(b.date);return (ad?.getTime()||Infinity)-(bd?.getTime()||Infinity)||a.name.localeCompare(b.name);});
- area.innerHTML='';if(summary)summary.textContent=`${items.length} ${items.length===1?'item':'items'} in ${SMART_LIST_LABELS[kind]||'Smart List'}`;
- if(!items.length){area.innerHTML='<div class="empty-state">Nothing to show here at the moment.</div>';return;}
- items.forEach(x=>{const n=daysFromToday(x.date),when=x.date?(n<0?`${Math.abs(n)} day${Math.abs(n)===1?'':'s'} overdue`:n===0?'Due today':n===1?'Due tomorrow':formatDate(x.date)):'';const row=makeV10Row({name:x.name,meta:[x.type,when,x.meta].filter(Boolean).join(' · '),open:x.open},{complete:false});if(n!==null&&n<0)row.classList.add('overdue-row');area.appendChild(row);});
-}
-function openSmartListFromHome(kind){showAppView('tasks');requestAnimationFrame(()=>{showSmartList(kind);document.getElementById('smartListsSection')?.scrollIntoView({behavior:'smooth',block:'start'});});}
-function renderHomeSmartSummary(){
- const area=document.getElementById('homeSmartSummary');if(!area)return;const kinds=['today','overdue','week','waiting','inbox','recurring'];area.innerHTML='';
- kinds.forEach(kind=>{const count=smartListItems(kind).length;const b=document.createElement('button');b.type='button';b.className=`smart-summary-card ${kind==='overdue'&&count?'has-alert':''}`;b.onclick=()=>openSmartListFromHome(kind);b.innerHTML=`<strong>${count}</strong><span>${escapeHtml(SMART_LIST_LABELS[kind])}</span>`;area.appendChild(b);});
-}
+/* ===== v51c corrected: ranked Lists search without duplicate Smart Lists ===== */
 function searchMatchScore(text,query){const q=normaliseSearchText(query);if(!q)return 0;const hay=normaliseSearchText(text);const tokens=q.split(/\s+/).filter(Boolean);if(!tokens.every(t=>hay.includes(t)))return -1;if(hay===q)return 100;if(hay.startsWith(q))return 80;if(hay.includes(` ${q} `)||hay.includes(q))return 60;return 40+tokens.reduce((s,t)=>s+(hay.startsWith(t)?4:1),0);}
 const filterMyListsV51b=filterMyLists;
 filterMyLists=function(query=''){
@@ -2549,5 +2508,3 @@ filterMyLists=function(query=''){
  filterMyListsV51b(query);
  document.querySelectorAll('.managed-list-section').forEach(section=>{const rows=[...section.querySelectorAll(':scope > .stack-list > .compact-manage-row,:scope > .stack-list > .annual-manage-row,:scope > .stack-list > .list-card,:scope > .stack-list > .v10-row,:scope > .custom-lists-grid > .custom-list-card')];const parent=rows[0]?.parentElement;if(!parent)return;rows.forEach((row,i)=>{if(!row.dataset.originalSearchOrder)row.dataset.originalSearchOrder=String(i);row.dataset.searchScore=String(q?searchMatchScore(row.textContent||'',q):0);});rows.sort((a,b)=>q?Number(b.dataset.searchScore)-Number(a.dataset.searchScore):Number(a.dataset.originalSearchOrder)-Number(b.dataset.originalSearchOrder)).forEach(r=>parent.appendChild(r));});
 };
-const renderAllV51cBase=renderAll;
-renderAll=function(){renderAllV51cBase();renderHomeSmartSummary();showSmartList(activeSmartList);};

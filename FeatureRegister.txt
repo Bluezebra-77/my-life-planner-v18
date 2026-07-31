@@ -1,14 +1,16 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
-DELIVERED IN v51c
-- Smart Lists: Today, Overdue, Next 7 days, Recently added, Waiting For, Brain Inbox and Recurring due.
-- Home summary shortcuts into Smart Lists.
-- Relevance ordering for Lists search matches.
+DELIVERED IN v51c CORRECTED
+- Cleaner Home/Lists workflow with duplicate date-based Smart Lists removed.
+- Timeline retained as the single date-oriented view.
+- Ranked Lists search retained.
+- Redundant Daily Rhythm randomiser removed.
 
 DELIVERED IN v51b
-- Advanced monthly recurrence and tags.
+- Nth-weekday monthly recurrence.
+- Tags and tag-aware search.
 
-NEXT
-- v51d Dashboard refinement.
-- v51e Quick Add.
-- v51f Planner Health phase 1.
+PLANNED NEXT IN v51
+- v51d: carefully designed Dashboard.
+- v51e: Quick Add.
+- v51f: Planner Health phase 1.

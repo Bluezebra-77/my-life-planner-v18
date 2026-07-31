@@ -1,9 +1,11 @@
-My Life Planner v51c — Smart Lists
+My Life Planner v51c — Corrected Release
 
-ADDED
-- Live Smart Lists for Today, Overdue, Next 7 days, Recently added, Waiting For, Brain Inbox and Recurring due.
-- Home summary cards that open the matching Smart List.
-- Relevance ordering within matching Lists search results.
+Corrected
+- Removed the broken Smart Lists panel and its duplicate date-based views.
+- Timeline remains the single place for Today, upcoming and date-range views.
+- Removed the unclear Home summary-card area; dashboard summaries are deferred to v51d for a cleaner design.
+- Removed the redundant Daily Rhythm “Decide for me” control because the three working task-choice buttons already exist under Needs Attention.
+- Retained improved Lists search ordering so stronger text matches sort above weaker matches within each list section.
 
-PRESERVED
-- Advanced recurrence, tags, tag search, migration/backup framework, Today’s Focus, editable routines and all accepted v51b data.
+Preserved
+- All accepted v51b recurrence, tags, migration, backup and data-retention behaviour.

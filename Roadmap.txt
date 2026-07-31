@@ -1,16 +1,20 @@
 MY LIFE PLANNER — MASTER ROADMAP
 
 CURRENT INTERNAL MILESTONE
-v51c — Smart Lists and dashboard foundation
+v51c — Corrected workflow cleanup and ranked search
+- Removed broken/duplicative Smart Lists
+- Timeline remains the date-based view
+- Removed unclear Home counts and redundant Daily Rhythm randomiser
+- Retained ranked Lists search
 
-COMPLETED
-- v51a migration infrastructure and editable routines
-- v51b advanced recurrence and tags
+COMPLETED INTERNAL MILESTONES
+v51a — Migration infrastructure and routine customisation
+v51b — Advanced recurrence and Tags
 
-NEXT
-- v51d Dashboard refinement
-- v51e Quick Add
-- v51f Planner Health phase 1
+NEXT INTERNAL MILESTONES
+v51d — Dashboard (redesigned without Timeline duplication)
+v51e — Quick Add
+v51f — Planner Health phase 1
 
 PUBLIC RELEASE
-- v51 only after all internal milestones pass acceptance testing.
+v51 — Package only after all agreed milestones pass acceptance testing.
