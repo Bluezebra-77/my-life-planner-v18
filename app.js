@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="51d";
+const APP_VERSION="51e";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2726,3 +2726,36 @@ const renderAllV51dFinal=renderAll;
 renderAll=function(){renderAllV51dFinal();renderWaitingHome();renderHomeEveningRoutine();};
 window.addEventListener('pageshow',()=>{document.getElementById('focusTimerMini')?.classList.add('hidden');renderHomeEveningRoutine();});
 setTimeout(()=>{document.getElementById('focusTimerMini')?.classList.add('hidden');renderHomeEveningRoutine();},0);
+
+
+// v51e Quick Add
+const QUICK_ADD_LAST_KEY='myLifePlannerLastQuickAdd';
+function openQuickAdd(){
+  const dialog=document.getElementById('quickAddDialog');
+  if(!dialog)return;
+  const last=localStorage.getItem(QUICK_ADD_LAST_KEY)||'focus';
+  document.querySelectorAll('[data-quick-add]').forEach(button=>button.classList.toggle('last-used',button.dataset.quickAdd===last));
+  if(!dialog.open)dialog.showModal();
+}
+function closeQuickAdd(){document.getElementById('quickAddDialog')?.close();}
+function chooseQuickAdd(type){
+  localStorage.setItem(QUICK_ADD_LAST_KEY,type);
+  closeQuickAdd();
+  window.setTimeout(()=>{
+    if(type==='focus'){
+      showAppView('home');
+      const panel=document.getElementById('todayFocusPanel');
+      panel?.scrollIntoView({behavior:'smooth',block:'start'});
+      window.setTimeout(()=>document.getElementById('todayFocusInput')?.focus(),250);
+    }else if(type==='todo')openAddDialog('todo');
+    else if(type==='appointment')openAppointmentDialog();
+    else if(type==='recurring')openRecurringTaskDialog();
+    else if(type==='project')openAddDialog('project');
+    else if(type==='cleaning')openCleaningDialog();
+    else if(type==='waiting')openCaptureDialog('waiting');
+    else if(type==='inbox')openCaptureDialog('inbox');
+  },50);
+}
+document.addEventListener('keydown',event=>{
+  if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();openQuickAdd();}
+});

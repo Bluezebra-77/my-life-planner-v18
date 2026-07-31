@@ -10,3 +10,8 @@ FIXED IN v51d CORRECTED
 OPEN DESIGN ITEMS
 - Home/Timeline duplication review.
 - Generated-task timer integration with the new persistent timer.
+
+
+v51e MONITOR
+- Quick Add placement on iPhone portrait/landscape and MacBook.
+- Correct destination form opens from every current screen.

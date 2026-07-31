@@ -1,15 +1,16 @@
-My Life Planner v51d — Final Corrected Build Report
+My Life Planner v51e — Build Report
 
-Baseline: v51d corrected build.
-Scope: acceptance fixes only.
+Baseline: accepted v51d Final Corrected.
+Scope: Quick Add milestone.
 
-PASS — timer mini bar hidden until deliberate minimisation
-PASS — repeated Focus Up/Down workflow retained
-PASS — cleaning completion refreshes Needs Attention and Timeline
-PASS — Home Gentle close-down panel restored
+PASS — floating Quick Add control added
+PASS — eight creation destinations connected to existing forms
+PASS — current view remains unchanged after save
+PASS — last-used choice stored separately in localStorage
+PASS — compact mobile layout and bottom-navigation clearance
 PASS — JavaScript syntax
 PASS — manifest JSON
 PASS — duplicate HTML ID scan
 PASS — CSS brace balance
 PASS — version/cache consistency
-PASS — ZIP integrity
+PASS — required files and ZIP integrity

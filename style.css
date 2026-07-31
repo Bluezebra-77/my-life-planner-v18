@@ -1277,3 +1277,13 @@ html,body{max-width:100%;overflow-x:clip}
 
 /* v51d final corrections */
 .focus-timer-mini.hidden{display:none!important}
+
+
+/* v51e Quick Add */
+.quick-add-fab{position:fixed;right:max(18px,calc((100vw - 920px)/2 + 18px));bottom:96px;z-index:115;width:56px;height:56px;min-width:56px;padding:0;border-radius:50%;font-size:2rem;line-height:1;display:grid;place-items:center;box-shadow:0 12px 28px rgba(32,49,42,.28)}
+.quick-add-dialog{width:min(560px,calc(100vw - 20px));padding:20px;overflow:auto}
+.quick-add-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.quick-add-grid button{display:flex;align-items:center;gap:10px;text-align:left;min-height:58px;background:var(--accent-soft,#e9f1ec);color:var(--ink,#20312a);box-shadow:none;border:1px solid var(--line,rgba(42,69,57,.12))}
+.quick-add-grid button span{font-size:1.25rem}.quick-add-grid button.last-used{outline:3px solid var(--accent,#537462);outline-offset:1px}
+.quick-add-footer{margin-top:14px}.quick-add-voice{width:100%}
+@media(max-width:560px){.quick-add-fab{right:14px;bottom:88px;width:50px;height:50px;min-width:50px}.quick-add-dialog{padding:16px}.quick-add-grid{grid-template-columns:1fr}.quick-add-grid button{width:100%;min-height:52px}}

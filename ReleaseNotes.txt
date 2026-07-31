@@ -1,10 +1,13 @@
-My Life Planner v51d — Final Corrected Release
+My Life Planner v51e — Quick Add
 
-Corrected
-- Mini timer is hidden on normal app launch and appears only after a running timer is minimised.
-- Today’s Focus Move Up/Move Down can be repeated without manually reopening the item each time.
-- Completed converted cleaning tasks disappear from Needs Attention immediately after their next date is calculated.
-- Gentle close-down has been restored to Home as an editable collapsible panel.
+ADDED
+- Floating Quick Add button available from every main screen.
+- Direct choices for Today’s Focus, To-do, Appointment, Recurring Task, Project, Cleaning Task, Waiting For and Brain Inbox.
+- Last-used Quick Add choice is highlighted.
+- Voice shortcut to Brain Inbox.
+- Cmd/Ctrl+K keyboard shortcut on desktop.
 
-Preserved
-- All accepted v51d features, data, recurrence, tags, routines, Timeline and migration protections.
+PRESERVED
+- All accepted v51d data and workflows.
+- Existing lifePlannerData and Today’s Focus safety mirror.
+- Migration, backup and rollback framework.

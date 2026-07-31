@@ -13,3 +13,9 @@ TODAY WORKSPACE
 CONVERSION
 - Converted items prefill the destination form.
 - Recurrence and due dates must behave exactly like items created directly in that destination.
+
+
+QUICK ADD
+- Capture should be available without navigating away first.
+- Quick Add launches the authoritative item editor; it does not create duplicate records.
+- The floating control must not obscure bottom navigation or active timer controls.

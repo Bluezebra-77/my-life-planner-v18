@@ -1,7 +1,7 @@
-My Life Planner v51d — Corrected Internal Test Build
+My Life Planner v51e — Internal Test Build
 
-Upload every file to the root of the GitHub Pages repository, replacing the previous app files.
+Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
 
-This correction adds faster Today’s Focus ordering, a persistent minimisable timer, corrected monthly Cleaning conversion, and restores Waiting For on Home. Existing planner data and storage keys are preserved.
+This build adds a floating Quick Add button available throughout the planner. It opens Today’s Focus, To-do, Appointment, Recurring Task, Project, Cleaning Task, Waiting For or Brain Inbox directly and remembers the last-used choice.
 
-Follow TestChecklist.txt before accepting this milestone.
+All accepted v51d data, timer, conversion, recurrence, tags, routines and migration protections are preserved. Follow TestChecklist.txt before accepting this milestone.

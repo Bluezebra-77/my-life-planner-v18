@@ -1,32 +1,31 @@
-MY LIFE PLANNER v51d — FINAL CORRECTED CHECKLIST
+MY LIFE PLANNER v51e — ACCEPTANCE CHECKLIST
 
-INSTALLATION
-[ ] Header, About and Developer information show v51d.
-[ ] Existing data remains present.
+INSTALLATION AND DATA
+[ ] Header, About and Developer information show v51e.
+[ ] Existing Today’s Focus, lists, appointments, recurring tasks, projects, routines and tags remain present.
 
-TIMER
-[ ] Open the app with no timer running: no timer strip is visible.
-[ ] Start a timer and keep the dialog open: no mini strip appears.
-[ ] Minimise it: the mini strip appears and continues counting.
-[ ] Reopen the timer, cancel it and confirm the strip disappears.
+QUICK ADD
+[ ] Quick Add + appears on Home, Lists and Planner without covering bottom navigation.
+[ ] Open and close the Quick Add menu.
+[ ] Add a Today’s Focus item; cursor goes directly to the Focus entry.
+[ ] Add a To-do.
+[ ] Add an Appointment.
+[ ] Add a Recurring Task.
+[ ] Add a Project.
+[ ] Add a Cleaning Task.
+[ ] Add a Waiting For item.
+[ ] Add a Brain Inbox item.
+[ ] Confirm each correct form opens and saving returns to the screen you were using.
+[ ] Reopen Quick Add and confirm the last-used choice is highlighted.
+[ ] Test the Brain Inbox voice shortcut if available.
+[ ] On MacBook, Cmd/Ctrl+K opens Quick Add.
 
-TODAY’S FOCUS ORDER
-[ ] Use Move Up repeatedly without manually reopening the menu each time.
-[ ] Use Move Down repeatedly.
-[ ] Move to top and Move to bottom still work.
+MOBILE AND REGRESSION
+[ ] Test iPhone portrait and landscape; menu fits and scrolls if needed.
+[ ] Quick Add does not cover the timer strip when a timer is minimised.
+[ ] Today’s Focus, timer, Convert, Waiting For, Gentle close-down, Timeline, search and recurrence remain stable.
+[ ] Refresh and reopen; data persists.
 
-CONVERTED CLEANING TASK
-[ ] Convert a Focus item to a monthly cleaning task.
-[ ] Complete it.
-[ ] Confirm its next due date advances by one month.
-[ ] Confirm it disappears from Needs Attention immediately.
-[ ] Confirm Timeline shows only the next due occurrence.
-
-HOME
-[ ] Waiting For remains visible and collapsible.
-[ ] Gentle close-down is visible on Home.
-[ ] Add, edit, delete and reorder Gentle close-down items.
-[ ] Refresh/reopen and confirm the routine remains.
-
-REGRESSION
-[ ] Today’s Focus, Projects, Brain Inbox, Daily Rhythm, Lists, Timeline and Recurring Tasks remain stable.
+RESULT
+[ ] ACCEPT v51e
+[ ] REJECT v51e — record failed item(s).

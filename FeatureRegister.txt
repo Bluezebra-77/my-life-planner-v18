@@ -9,3 +9,10 @@ DELIVERED IN v51d CORRECTED
 
 DELIVERED EARLIER IN v51
 - Migration framework, editable routines, advanced recurrence, tags and improved search.
+
+
+DELIVERED IN v51e
+- Global Quick Add button.
+- Direct add choices for core planner item types.
+- Remembered last-used Quick Add choice.
+- Brain Inbox voice shortcut from Quick Add.
