@@ -14,3 +14,8 @@ PASS — CSS brace balance
 PASS — v51e version/cache consistency
 PASS — required files present
 PASS — ZIP integrity
+
+FINAL PATCH VALIDATION
+PASS — Explicit timer-minimised class added when the mini timer is shown
+PASS — Class removed when timer is restored, completed or cancelled
+PASS — Quick Add offset no longer relies on CSS :has()

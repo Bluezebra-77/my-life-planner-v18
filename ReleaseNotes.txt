@@ -9,3 +9,8 @@ PRESERVED
 - All accepted v51e Quick Add behaviour.
 - All accepted v51d timer, Convert, Today’s Focus, Waiting For and Gentle close-down behaviour.
 - Existing data, migrations, tags and recurring tasks.
+
+FINAL v51e TIMER/QUICK ADD PATCH
+- Replaced the unreliable CSS :has() overlap rule with an explicit timer-minimised page state.
+- Quick Add now moves above the minimised timer on iPhone and Mac.
+- The page state is removed when the timer is restored, completed or cancelled.

@@ -19,3 +19,6 @@ v51e MONITOR
 FIXED IN v51e CORRECTED
 - Cleaning three-dot actions could be pushed outside the visible iPhone portrait row.
 - A minimised Focus timer overlapped the floating Quick Add button.
+
+FIXED IN v51e FINAL PATCH
+- Quick Add could still be covered by the minimised timer because the previous CSS :has() selector was not applied reliably in the installed PWA. Replaced with an explicit JavaScript timer-minimised state.

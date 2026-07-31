@@ -2637,14 +2637,22 @@ function pauseResumeFocusTimer(){
   recalculateFocusTimer();focusTimerPaused=!focusTimerPaused;focusTimerEndAt=focusTimerPaused?0:Date.now()+focusTimerRemaining*1000;
   if(!focusTimerPaused)ensureFocusTimerInterval();updateFocusTimerDisplay();saveFocusTimerState();
 }
-function minimiseFocusTimer(){document.getElementById('focusTimerDialog')?.close();if(focusTimerRemaining>0||focusTimerEndAt)document.getElementById('focusTimerMini')?.classList.remove('hidden');saveFocusTimerState();}
+function minimiseFocusTimer(){
+  document.getElementById('focusTimerDialog')?.close();
+  if(focusTimerRemaining>0||focusTimerEndAt){
+    document.getElementById('focusTimerMini')?.classList.remove('hidden');
+    document.body.classList.add('timer-minimised');
+  }
+  saveFocusTimerState();
+}
 function restoreFocusTimerDialog(){
-  document.getElementById('focusTimerMini')?.classList.add('hidden');const item=focusItemById(focusTimerItemId);if(item)document.getElementById('focusTimerTitle').textContent=item.name;
+  document.getElementById('focusTimerMini')?.classList.add('hidden');
+  document.body.classList.remove('timer-minimised');const item=focusItemById(focusTimerItemId);if(item)document.getElementById('focusTimerTitle').textContent=item.name;
   document.getElementById('focusTimerChoices')?.classList.toggle('hidden',focusTimerRemaining>0||focusTimerEndAt>0);
   document.getElementById('focusTimerRunningActions')?.classList.toggle('hidden',!(focusTimerRemaining>0||focusTimerEndAt>0));updateFocusTimerDisplay();document.getElementById('focusTimerDialog')?.showModal();
 }
 function closeFocusTimer(){minimiseFocusTimer();}
-function cancelFocusTimer(){clearInterval(focusTimerInterval);focusTimerInterval=null;focusTimerRemaining=0;focusTimerEndAt=0;focusTimerPaused=false;focusTimerItemId='';clearFocusTimerState();document.getElementById('focusTimerDialog')?.close();document.getElementById('focusTimerMini')?.classList.add('hidden');updateFocusTimerDisplay();}
+function cancelFocusTimer(){clearInterval(focusTimerInterval);focusTimerInterval=null;focusTimerRemaining=0;focusTimerEndAt=0;focusTimerPaused=false;focusTimerItemId='';clearFocusTimerState();document.getElementById('focusTimerDialog')?.close();document.getElementById('focusTimerMini')?.classList.add('hidden');document.body.classList.remove('timer-minimised');updateFocusTimerDisplay();}
 function completeFocusFromTimer(){const item=focusItemById(focusTimerItemId);if(item&&!item.completed)toggleTodayFocusItem(item.id);cancelFocusTimer();}
 function openFocusTimer(id){
   const item=focusItemById(id);if(!item)return;
@@ -2697,6 +2705,7 @@ function moveTodayFocusItemKeepMenu(id,direction,button){
 function restoreStoredFocusTimer(){
   const mini=document.getElementById('focusTimerMini');
   mini?.classList.add('hidden');
+  document.body.classList.remove('timer-minimised');
   try{
     const state=JSON.parse(localStorage.getItem(FOCUS_TIMER_STORAGE_KEY)||'null');
     if(!state||!state.active)return;

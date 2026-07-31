@@ -1314,13 +1314,13 @@ html,body{max-width:100%;overflow-x:clip}
 }
 
 /* When a minimised focus timer is visible, lift Quick Add clear of it. */
-body:has(.focus-timer-mini:not(.hidden)) .quick-add-fab{
+body.timer-minimised .quick-add-fab{
   bottom:calc(174px + env(safe-area-inset-bottom));
 }
 @media(max-width:560px){
   #cleaningArea .compact-manage-row{grid-template-columns:minmax(0,1fr) 40px;gap:6px}
   #cleaningArea .item-menu-anchor{width:40px;min-width:40px}
-  body:has(.focus-timer-mini:not(.hidden)) .quick-add-fab{
+  body.timer-minimised .quick-add-fab{
     bottom:calc(154px + env(safe-area-inset-bottom));
   }
 }

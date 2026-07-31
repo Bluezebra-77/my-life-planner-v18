@@ -27,3 +27,11 @@ REGRESSION
 RESULT
 [ ] ACCEPT v51e
 [ ] REJECT v51e — record the failed item(s)
+
+FINAL TIMER / QUICK ADD PATCH
+[ ] Start a timer from Today's Focus and minimise it.
+[ ] Confirm Quick Add moves above the timer on iPhone portrait.
+[ ] Confirm Quick Add moves above the timer on MacBook.
+[ ] Restore the timer and confirm Quick Add returns to its normal position.
+[ ] Cancel or complete the timer and confirm Quick Add returns to its normal position.
+[ ] Close and reopen the app; confirm the timer bar is not shown automatically.
