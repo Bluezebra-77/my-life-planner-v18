@@ -1,17 +1,14 @@
-My Life Planner v51d — Build Report
+My Life Planner v51d — Corrected Build Report
 
-Baseline: accepted corrected v51c.
+Baseline: v51d test build.
 
-SCOPE
-PASS — Today Focus notes, estimates, pinning and ordering included
-PASS — focus timer included
-PASS — Convert workflow included
-PASS — existing storage keys and schema retained
-
-STATIC VALIDATION
-PASS — JavaScript syntax
-PASS — manifest JSON
+PASS — About version corrected
+PASS — Today’s Focus top/bottom and repeated in-dialog reordering added
+PASS — persistent/minimisable timer state implemented
+PASS — converted monthly Cleaning recurrence and Timeline refresh corrected
+PASS — Waiting For restored on Home
+PASS — JavaScript syntax validation
+PASS — manifest JSON validation
 PASS — duplicate HTML ID scan
-PASS — CSS brace balance
-PASS — v51d version/cache consistency
-PASS — ZIP integrity
+PASS — version/cache consistency
+PASS — required files and ZIP integrity

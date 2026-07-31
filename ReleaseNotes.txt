@@ -1,11 +1,11 @@
-My Life Planner v51d — Today Workspace
+My Life Planner v51d — Corrected Release
 
-NEW
-- Edit Today’s Focus items with optional notes and estimated minutes.
-- Pin important Focus items and move active items up or down.
-- Start a built-in 10/15/20/30/45/60 minute focus timer.
-- Convert a Focus thought into a To-do, Cleaning task, Recurring task, Appointment, Project or Waiting For item using pre-filled details.
-- Completed Focus items remain reusable/reinstatable until removed.
+Corrected after acceptance testing:
+- Corrected the top About version to v51d.
+- Added Move to top/bottom and in-dialog reordering for Today’s Focus.
+- Added a minimisable, persistent Focus Timer that restores after reopening.
+- Corrected converted monthly Cleaning Tasks so completion advances the due date and refreshes Timeline immediately.
+- Restored a collapsible Waiting For working view on Home.
 
-PRESERVED
-- Accepted v51c simplification, Timeline, recurrence, tags, routines, search and data safety.
+Preserved:
+- Existing data, Today’s Focus, recurrence, tags, routines, Projects, Lists and Timeline.

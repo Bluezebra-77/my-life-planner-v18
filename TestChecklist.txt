@@ -1,33 +1,32 @@
-MY LIFE PLANNER v51d — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51d — CORRECTED ACCEPTANCE CHECKLIST
 
 INSTALLATION AND DATA
-[ ] Header, About and Developer information show v51d
-[ ] All existing data and Today’s Focus items remain present
+[ ] Header, both About locations and Developer information show v51d.
+[ ] Existing data and Today’s Focus remain present.
 
-TODAY WORKSPACE
-[ ] Add several items quickly using Return
-[ ] Tap item text and edit its name, notes and estimated minutes
-[ ] Pin and unpin an item; pinned item moves to the top
-[ ] Move active items Up and Down
-[ ] Complete and reinstate an item
-[ ] Refresh and reopen; details and order remain
+TODAY’S FOCUS ORDER
+[ ] Open an item and use Move up/down several times without the editor closing.
+[ ] Move an item directly to top and bottom.
+[ ] Refresh/reopen and confirm the order remains.
 
 TIMER
-[ ] Start 10-minute timer (briefly test countdown)
-[ ] Pause and continue
-[ ] Close timer without completing
-[ ] Start again and use Mark complete
-[ ] Check layout on iPhone portrait/landscape and MacBook
+[ ] Start a short timer and minimise it.
+[ ] Use the planner while the mini timer remains visible.
+[ ] Leave/reopen the app and confirm the timer restores with the correct remaining time.
+[ ] Pause/continue from the mini timer.
+[ ] Cancel explicitly and confirm it clears.
+[ ] Mark complete from the timer.
 
-CONVERT
-[ ] Convert a Focus item to To-do and confirm fields are pre-filled
-[ ] Convert one to Cleaning task and confirm Monthly is suggested
-[ ] Convert one to Recurring task and confirm Monthly is suggested
-[ ] Convert one to Appointment or Project
-[ ] Move one directly to Waiting For
-[ ] Confirm no existing data is lost
+CONVERT TO CLEANING
+[ ] Convert a Focus item to a monthly Cleaning Task.
+[ ] Save it, mark it complete, and confirm next due advances by one month.
+[ ] Confirm Timeline updates immediately.
+
+WAITING FOR ON HOME
+[ ] Waiting For appears on Home and is collapsible.
+[ ] Active items appear and View all opens the full Lists section.
+[ ] Collapse state is remembered.
 
 REGRESSION
-[ ] Needs Attention random/useful buttons work
-[ ] Timeline, Lists search, projects, recurrence, tags, Brain Inbox and routines work
-[ ] Refresh/reopen and confirm data persists
+[ ] Appointments, Recurring Tasks, Projects, Lists, search, Timeline, Brain Inbox and Daily Rhythm work.
+[ ] Data persists after refresh and reopen.

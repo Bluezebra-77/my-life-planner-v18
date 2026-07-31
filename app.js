@@ -2559,7 +2559,7 @@ function convertTodayFocus(id,type){
   const name=item.name||'',details=item.notes||'';
   if(type==='todo'||type==='project'||type==='cleaning'){
     openAddDialog(type);document.getElementById('itemName').value=name;document.getElementById('itemDetails').value=details;
-    if(type==='cleaning'){document.getElementById('cleaningFrequency').value='monthly';document.getElementById('cleaningStartDate').value=localDateKey();}
+    if(type==='cleaning'){document.getElementById('cleaningFrequency').value='monthly';document.getElementById('cleaningStartDate').value=localDateKey();document.getElementById('cleaningFrequency').dispatchEvent(new Event('change',{bubbles:true}));}
   }else if(type==='recurring'){
     openRecurringTaskDialog();document.getElementById('recurringTaskName').value=name;document.getElementById('recurringTaskNotes').value=details;document.getElementById('recurringTaskUnit').value='month';document.getElementById('recurringTaskInterval').value=1;updateRecurringRuleControls();
   }else if(type==='appointment')openAppointmentDialog('',name,details);
@@ -2577,10 +2577,104 @@ renderTodayFocus=function(){
   items.forEach(item=>{
     const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''} ${item.pinned?'pinned-focus-row':''}`;
     const meta=[item.completed?'Completed':'Today',item.estimatedMinutes?`${item.estimatedMinutes} min`:'',item.notes?item.notes:''].filter(Boolean).join(' · ');
-    const actions=`<button onclick="closeAnchoredMenu();openTodayFocusEdit('${item.id}')">Edit details</button><button onclick="closeAnchoredMenu();openFocusTimer('${item.id}')">Start timer</button><button onclick="closeAnchoredMenu();toggleTodayFocusPin('${item.id}')">${item.pinned?'Unpin':'Pin to top'}</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',-1)">Move up</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',1)">Move down</button>${todayFocusConvertMenu(item.id)}<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`;
+    const actions=`<button onclick="closeAnchoredMenu();openTodayFocusEdit('${item.id}')">Edit details</button><button onclick="closeAnchoredMenu();openFocusTimer('${item.id}')">Start timer</button><button onclick="closeAnchoredMenu();toggleTodayFocusPin('${item.id}')">${item.pinned?'Unpin':'Pin to top'}</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','top')">Move to top</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',-1)">Move up</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',1)">Move down</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','bottom')">Move to bottom</button>${todayFocusConvertMenu(item.id)}<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`;
     row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleTodayFocusItem('${item.id}')" aria-label="${item.completed?'Reinstate':'Complete'} ${escapeHtml(item.name)}">${item.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="openTodayFocusEdit('${item.id}')"><span class="v10-row-title">${item.pinned?'★ ':''}${escapeHtml(item.name)}</span><span class="v10-row-meta">${escapeHtml(meta)}</span></button>${!item.completed?`<button type="button" class="focus-start-button" onclick="openFocusTimer('${item.id}')" aria-label="Start timer for ${escapeHtml(item.name)}">▶</button>`:''}${compactMenu(actions,item.name)}`;
     area.appendChild(row);
   });
   if(items.some(x=>x.completed))area.insertAdjacentHTML('beforeend','<button type="button" class="small-button secondary-button clear-focus-completed" onclick="clearCompletedTodayFocus()">Remove completed items</button>');
 };
 ensureTodayFocusFields();saveData();renderTodayFocus();
+
+
+/* ===== v51d corrected acceptance fixes ===== */
+const FOCUS_TIMER_STORAGE_KEY='lifePlannerFocusTimer';
+let focusTimerEndAt=0;
+function currentFocusEditId(){return document.getElementById('todayFocusEditId')?.value||'';}
+function normaliseActiveFocusOrder(){
+  ensureTodayFocusFields();
+  const active=(data.todayFocus||[]).filter(x=>!x.completed).sort((a,b)=>Number(b.pinned)-Number(a.pinned)||Number(a.order)-Number(b.order));
+  active.forEach((x,i)=>x.order=i);
+  return active;
+}
+function moveEditedFocusItem(direction){
+  const id=currentFocusEditId();if(!id)return;
+  const active=normaliseActiveFocusOrder();
+  const index=active.findIndex(x=>String(x.id)===String(id));if(index<0)return;
+  let target=index;
+  if(direction==='top')target=0;else if(direction==='bottom')target=active.length-1;else target=Math.max(0,Math.min(active.length-1,index+Number(direction||0)));
+  if(target===index)return;
+  const [item]=active.splice(index,1);active.splice(target,0,item);active.forEach((x,i)=>x.order=i);
+  saveData();renderTodayFocus();showSaved(target===0?'Moved to top':target===active.length-1?'Moved to bottom':'Order updated');
+}
+function moveTodayFocusItem(id,direction){
+  ensureTodayFocusFields();const active=normaliseActiveFocusOrder();
+  const index=active.findIndex(x=>String(x.id)===String(id));if(index<0)return;
+  let target=direction==='top'?0:direction==='bottom'?active.length-1:Math.max(0,Math.min(active.length-1,index+Number(direction||0)));
+  if(target===index)return;const [item]=active.splice(index,1);active.splice(target,0,item);active.forEach((x,i)=>x.order=i);saveData();renderTodayFocus();
+}
+function timerState(){return {itemId:focusTimerItemId,remaining:focusTimerRemaining,paused:focusTimerPaused,endAt:focusTimerEndAt,title:focusItemById(focusTimerItemId)?.name||document.getElementById('focusTimerTitle')?.textContent||'Focus timer',active:focusTimerRemaining>0||focusTimerEndAt>0};}
+function saveFocusTimerState(){try{localStorage.setItem(FOCUS_TIMER_STORAGE_KEY,JSON.stringify(timerState()));}catch(e){}}
+function clearFocusTimerState(){try{localStorage.removeItem(FOCUS_TIMER_STORAGE_KEY);}catch(e){}}
+function recalculateFocusTimer(){if(!focusTimerPaused&&focusTimerEndAt)focusTimerRemaining=Math.max(0,Math.ceil((focusTimerEndAt-Date.now())/1000));}
+function updateFocusTimerDisplay(){
+  recalculateFocusTimer();const m=Math.floor(focusTimerRemaining/60),s=focusTimerRemaining%60,text=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el=document.getElementById('focusTimerDisplay');if(el)el.textContent=text;
+  const mini=document.getElementById('focusTimerMiniDisplay');if(mini)mini.textContent=text;
+  const title=focusItemById(focusTimerItemId)?.name||document.getElementById('focusTimerTitle')?.textContent||'Focus timer';
+  const mt=document.getElementById('focusTimerMiniTitle');if(mt)mt.textContent=title;
+  const pb=document.getElementById('focusTimerPauseButton');if(pb)pb.textContent=focusTimerPaused?'Continue':'Pause';
+  const mp=document.getElementById('focusTimerMiniPause');if(mp)mp.textContent=focusTimerPaused?'Continue':'Pause';
+  if(focusTimerRemaining<=0&&focusTimerEndAt){focusTimerEndAt=0;clearInterval(focusTimerInterval);focusTimerInterval=null;const msg=document.getElementById('focusTimerMessage');if(msg)msg.textContent='Time is up. Mark it complete or choose another period.';document.getElementById('focusTimerChoices')?.classList.remove('hidden');saveFocusTimerState();}
+}
+function ensureFocusTimerInterval(){clearInterval(focusTimerInterval);focusTimerInterval=setInterval(()=>{updateFocusTimerDisplay();saveFocusTimerState();},1000);}
+function startFocusTimer(minutes){
+  focusTimerRemaining=Math.max(1,Number(minutes)||15)*60;focusTimerPaused=false;focusTimerEndAt=Date.now()+focusTimerRemaining*1000;
+  document.getElementById('focusTimerChoices')?.classList.add('hidden');document.getElementById('focusTimerRunningActions')?.classList.remove('hidden');
+  const msg=document.getElementById('focusTimerMessage');if(msg)msg.textContent='Stay with this one task until the timer ends.';
+  ensureFocusTimerInterval();updateFocusTimerDisplay();saveFocusTimerState();
+}
+function pauseResumeFocusTimer(){
+  recalculateFocusTimer();focusTimerPaused=!focusTimerPaused;focusTimerEndAt=focusTimerPaused?0:Date.now()+focusTimerRemaining*1000;
+  if(!focusTimerPaused)ensureFocusTimerInterval();updateFocusTimerDisplay();saveFocusTimerState();
+}
+function minimiseFocusTimer(){document.getElementById('focusTimerDialog')?.close();if(focusTimerRemaining>0||focusTimerEndAt)document.getElementById('focusTimerMini')?.classList.remove('hidden');saveFocusTimerState();}
+function restoreFocusTimerDialog(){
+  document.getElementById('focusTimerMini')?.classList.add('hidden');const item=focusItemById(focusTimerItemId);if(item)document.getElementById('focusTimerTitle').textContent=item.name;
+  document.getElementById('focusTimerChoices')?.classList.toggle('hidden',focusTimerRemaining>0||focusTimerEndAt>0);
+  document.getElementById('focusTimerRunningActions')?.classList.toggle('hidden',!(focusTimerRemaining>0||focusTimerEndAt>0));updateFocusTimerDisplay();document.getElementById('focusTimerDialog')?.showModal();
+}
+function closeFocusTimer(){minimiseFocusTimer();}
+function cancelFocusTimer(){clearInterval(focusTimerInterval);focusTimerInterval=null;focusTimerRemaining=0;focusTimerEndAt=0;focusTimerPaused=false;focusTimerItemId='';clearFocusTimerState();document.getElementById('focusTimerDialog')?.close();document.getElementById('focusTimerMini')?.classList.add('hidden');updateFocusTimerDisplay();}
+function completeFocusFromTimer(){const item=focusItemById(focusTimerItemId);if(item&&!item.completed)toggleTodayFocusItem(item.id);cancelFocusTimer();}
+function openFocusTimer(id){
+  const item=focusItemById(id);if(!item)return;
+  if(focusTimerItemId&&focusTimerItemId!==String(id)&&(focusTimerRemaining>0||focusTimerEndAt)){if(!confirm('Replace the timer that is already running?'))return;cancelFocusTimer();}
+  focusTimerItemId=String(id);focusTimerRemaining=(Number(item.estimatedMinutes)||15)*60;focusTimerEndAt=0;focusTimerPaused=false;
+  document.getElementById('focusTimerTitle').textContent=item.name;document.getElementById('focusTimerChoices')?.classList.remove('hidden');document.getElementById('focusTimerRunningActions')?.classList.add('hidden');
+  document.getElementById('focusTimerMessage').textContent=item.estimatedMinutes?`Suggested time: ${item.estimatedMinutes} minutes.`:'Choose a focus time.';updateFocusTimerDisplay();document.getElementById('focusTimerDialog')?.showModal();
+}
+function restoreStoredFocusTimer(){
+  try{const state=JSON.parse(localStorage.getItem(FOCUS_TIMER_STORAGE_KEY)||'null');if(!state||!state.active)return;focusTimerItemId=String(state.itemId||'');focusTimerRemaining=Math.max(0,Number(state.remaining)||0);focusTimerPaused=Boolean(state.paused);focusTimerEndAt=focusTimerPaused?0:Number(state.endAt)||0;recalculateFocusTimer();if(focusTimerRemaining>0){ensureFocusTimerInterval();document.getElementById('focusTimerMini')?.classList.remove('hidden');updateFocusTimerDisplay();}else clearFocusTimerState();}catch(e){clearFocusTimerState();}
+}
+function openWaitingForList(){showView('tasks');setTimeout(()=>jumpToList('waitingListSection'),30);}
+function renderWaitingHome(){
+  const area=document.getElementById('homeWaitingArea');if(!area)return;area.innerHTML='';
+  const items=(data.waiting||[]).filter(x=>!x.completed).sort((a,b)=>String(a.reviewDate||'9999-12-31').localeCompare(String(b.reviewDate||'9999-12-31'))).slice(0,5);
+  if(!items.length){area.innerHTML='<div class="empty-state">Nothing currently waiting for attention.</div>';return;}
+  items.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.reviewDate?`Review ${formatDate(x.reviewDate)}`:(x.note||x.details||'No review date'),dueDate:x.reviewDate,open:()=>editCapture('waiting',x.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('waiting','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();completeWaiting('${x.id}')">Complete</button>`,x.name)})));
+}
+// Correct cleaning completion: advance from today when overdue and refresh Timeline immediately.
+function completeCleaning(id){
+  const task=(data.cleaningTasks||[]).find(item=>String(item.id)===String(id));if(!task)return;
+  const completedOn=localDateKey();task.lastCompleted=completedOn;
+  const anchor=(!task.nextDue||task.nextDue<completedOn)?completedOn:task.nextDue;
+  task.nextDue=nextCleaningDate(anchor,task.frequency||'weekly');saveData();renderAll();renderTimeline();refreshListsImmediately();
+}
+const renderAllV51dCorrected=renderAll;
+renderAll=function(){renderAllV51dCorrected();renderWaitingHome();};
+// Add faster actions to the Focus menu.
+const renderTodayFocusV51dCorrected=renderTodayFocus;
+renderTodayFocus=function(){renderTodayFocusV51dCorrected();document.querySelectorAll('#todayFocusArea .item-menu-popover').forEach(()=>{});};
+window.addEventListener('pageshow',()=>{restoreStoredFocusTimer();renderWaitingHome();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateFocusTimerDisplay();renderWaitingHome();}});
+setTimeout(()=>{restoreStoredFocusTimer();renderWaitingHome();},0);

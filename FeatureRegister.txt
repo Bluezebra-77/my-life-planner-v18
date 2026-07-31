@@ -1,13 +1,11 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
-DELIVERED IN v51d
-- Today Focus optional notes and estimated duration
-- Pinning and manual Up/Down ordering
-- In-app focus timer
-- Convert Focus items into structured planner records
+DELIVERED IN v51d CORRECTED
+- Today’s Focus notes, estimates, pinning and faster reordering.
+- Persistent minimisable Focus Timer.
+- Convert Focus items into other planner item types.
+- Waiting For restored to Home.
+- Correct monthly Cleaning conversion/next-date workflow.
 
 DELIVERED EARLIER IN v51
-- Migration framework, editable routines, advanced recurrence, tags and simplified search.
-
-PLANNED
-- Quick Add and Planner Health.
+- Migration framework, editable routines, advanced recurrence, tags and improved search.

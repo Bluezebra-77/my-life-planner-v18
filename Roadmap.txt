@@ -1,19 +1,16 @@
 MY LIFE PLANNER — MASTER ROADMAP
 
 CURRENT INTERNAL MILESTONE
-v51d — Today Workspace
-- Focus details, pinning and ordering
-- Built-in timer
-- Convert captured work into its logical long-term home
+v51d — Today workspace, persistent timer and Convert workflow (corrected)
 
-COMPLETED
-- v51a infrastructure
-- v51b recurrence and tags
-- v51c simplification and search cleanup
+COMPLETED INTERNAL MILESTONES
+v51a — Migration infrastructure and routine customisation
+v51b — Advanced recurrence and tags
+v51c — Search refinement and workflow simplification
 
 NEXT
-- v51e Quick Add
-- v51f Planner Health phase 1
+v51e — Quick Add and whole-app workflow review
+v51f — Planner Health phase 1
 
 PUBLIC RELEASE
-- v51 after all internal milestones pass acceptance testing.
+v51 — Package only after all agreed milestones pass acceptance testing.

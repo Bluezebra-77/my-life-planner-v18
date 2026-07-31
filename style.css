@@ -1264,3 +1264,12 @@ html,body{max-width:100%;overflow-x:clip}
 .inline-check{display:flex;grid-template-columns:auto 1fr;align-items:center;gap:10px}.inline-check input{width:22px;height:22px}
 .focus-timer-body{padding:12px 22px 24px}.focus-timer-display{text-align:center;font-size:clamp(3rem,14vw,5rem);font-weight:800;letter-spacing:-.05em;margin:18px 0}.timer-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.timer-choice-grid button{padding:12px 8px}.convert-menu-label{padding:.25rem .7rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
 @media(max-width:560px){.today-focus-row{grid-template-columns:auto minmax(0,1fr) auto}.today-focus-row .item-menu-anchor{grid-column:3}.focus-start-button{grid-column:3}.timer-choice-grid{grid-template-columns:repeat(2,1fr)}}
+
+
+/* v51d corrected: faster ordering, persistent timer and Waiting For Home */
+.focus-reorder-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.focus-reorder-controls button{width:100%}
+.focus-timer-mini{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(92px + env(safe-area-inset-bottom));z-index:10000;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:6px;width:min(420px,calc(100vw - 24px));padding:8px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 14px 36px rgba(30,50,40,.25);backdrop-filter:blur(12px)}
+.focus-timer-mini-main{display:flex!important;justify-content:space-between;align-items:center;gap:12px;min-width:0;background:transparent!important;color:var(--ink)!important;box-shadow:none!important;text-align:left;padding:8px!important}.focus-timer-mini-main strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.focus-timer-mini-main span{font-variant-numeric:tabular-nums;font-size:1.15rem}
+.focus-timer-mini-pause,.focus-timer-mini-close{width:auto!important;min-width:40px;padding:8px 10px!important}.focus-timer-mini-close{border-radius:50%;background:#eef3ef!important;color:var(--ink)!important;box-shadow:none!important}
+#homeWaitingPanel .v10-row{margin-bottom:6px}
+@media(max-width:560px){.focus-reorder-controls{grid-template-columns:1fr 1fr}.focus-timer-mini{left:8px;right:8px;width:auto;bottom:calc(82px + env(safe-area-inset-bottom))}.focus-timer-mini-pause{font-size:.78rem}.focus-timer-mini-main{padding:6px!important}}

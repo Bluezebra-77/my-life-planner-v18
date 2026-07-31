@@ -1,14 +1,15 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-CAPTURE FIRST, ORGANISE LATER
-- Today’s Focus accepts a quick thought without demanding classification.
-- Convert offers a later path to the item’s logical home.
-- Conversion opens a pre-filled editor; the user remains in control of saving and removing the original.
+CORE PRINCIPLES
+- Capture first, organise later.
+- One item has one logical home; Home provides useful working views.
+- Existing user data is preserved through every release.
 
 TODAY WORKSPACE
-- Notes, estimates and pinning are optional.
-- The basic Return-to-add flow remains fast.
-- The timer supports action without leaving the planner.
+- Reordering must not require repetitive reopening.
+- A running timer may be minimised but only an explicit cancel clears it.
+- Timer state is restored from an absolute finish time after app suspension.
 
-DATA SAFETY
-- Existing lifePlannerData and Today Focus safety mirror remain authoritative.
+CONVERSION
+- Converted items prefill the destination form.
+- Recurrence and due dates must behave exactly like items created directly in that destination.
