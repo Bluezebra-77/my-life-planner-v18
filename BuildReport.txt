@@ -1,21 +1,22 @@
-My Life Planner v51a — Corrected Build Report
+My Life Planner v51b — Build Report
 
-Baseline
-- Accepted corrected v50 source plus the v51a migration framework.
+BASELINE
+- Accepted v51a Corrected source.
 
-Corrections
-- Home panel controls are now placed inside a dedicated flex control group, preventing the collapse button from covering Brain Inbox and other action buttons.
-- Routine manager now supports add, edit, delete and ordered movement of Daily Rhythm and Gentle close-down items.
-- Routine item entry accepts Return-to-add.
+IMPLEMENTED
+- Nth-weekday monthly recurrence engine with interval support.
+- Monthly recurrence editor and rule labels.
+- Tag normalisation, storage, display and search integration for core planner item types.
+- Responsive Brain Inbox heading-control layout.
 
-Data safety
-- Existing lifePlannerData key retained.
-- Schema version remains 51.
-- Today's Focus safety mirror retained.
-- User-created dailyTasks and eveningTasks arrays are preserved.
+DATA SAFETY
+- Existing storage key and schema version retained.
+- Existing recurring tasks default safely to same-date monthly behaviour.
+- Unknown data properties are preserved by normal save/load processing.
 
-Validation
-- JavaScript syntax checked with Node.
-- Manifest JSON parsed successfully.
-- Required source and documentation files checked.
+VALIDATION
+- JavaScript syntax check passed.
+- Manifest JSON validation passed.
+- Required files present.
+- Version and cache references checked.
 - ZIP integrity checked after packaging.

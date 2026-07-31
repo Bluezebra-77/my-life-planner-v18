@@ -1,14 +1,17 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED IN v51a CORRECTED
-- Home Brain Inbox collapse control overlapped an existing action button, appearing as a dark square behind Show.
-- Daily Rhythm customisation was not sufficiently discoverable and lacked reordering controls.
+FIXED IN v51b
+- Brain Inbox microphone could sit behind the Home Show/Hide control on narrow screens. Controls now use a responsive ordered layout.
 
-FIXED IN v50
-- Recurring appointments advanced without completion; true recurring tasks now remain overdue until completed.
-- Today's Focus migration loss corrected with rescue and safety mirror handling.
+FIXED IN v51a CORRECTED
+- Home heading controls overlapped on small screens.
+- Daily Rhythm customisation and ordering restored.
+
+MONITOR IN v51b
+- Nth-weekday monthly rules across month and year boundaries.
+- Tag badges on all supported list renderers and tag search after edits.
 
 OPEN DESIGN ITEMS
-- Home/Timeline duplication review
-- Progress indicator purpose
-- Generated-task timer
+- Home/Timeline duplication review.
+- Progress indicator purpose.
+- Generated-task timer.

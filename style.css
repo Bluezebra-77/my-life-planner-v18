@@ -1247,3 +1247,6 @@ html,body{max-width:100%;overflow-x:clip}
   .routine-manager-actions{width:100%;justify-content:flex-start}
   .routine-manager-actions button{width:auto!important;flex:0 0 auto}
 }
+
+/* v51b advanced recurrence and tags */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.tag-chip{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--accent-soft,#e9f1ec);color:var(--accent,#537462);font-size:.76rem;font-weight:800}.home-heading-controls{display:flex;align-items:center;gap:7px;margin-left:auto}.home-heading-controls .voice-button{order:2}.home-heading-controls .section-plus{order:3}.home-heading-controls .home-collapse-toggle{order:1}@media(max-width:560px){.home-heading-controls{width:100%;justify-content:flex-end;flex-wrap:wrap}.home-heading-controls .home-collapse-toggle{margin-right:auto}}

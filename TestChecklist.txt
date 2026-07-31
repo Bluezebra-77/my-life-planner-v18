@@ -1,36 +1,43 @@
-MY LIFE PLANNER v51a — CORRECTED ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51b — ACCEPTANCE CHECKLIST
 
-Installation and data
-[ ] Header and About show v51a.
-[ ] Existing Today's Focus, lists, appointments, projects and recurring tasks remain.
-[ ] Close/reopen and refresh; data remains.
+INSTALLATION AND DATA
+[ ] Header and About show v51b.
+[ ] Developer Dashboard shows v51b and my-life-planner-v51b.
+[ ] All existing v51a data remains present.
+[ ] Today's Focus and customised Daily Rhythm remain present.
+[ ] Close/reopen and refresh; data remains present.
 
-Home collapse-control fix
-[ ] Brain Inbox Show/Hide button has no dark square or overlapping control behind it.
-[ ] Expand Brain Inbox and confirm microphone, add and Hide controls are all visible and usable.
-[ ] Check Show/Hide on Today's Focus, Needs Attention, Recurring Tasks, Today, This week, Projects and Daily Rhythm.
-[ ] No heading control overlaps another on the phone screen.
+ADVANCED MONTHLY RECURRENCE
+[ ] Add a recurring task: every 1 month, second Thursday.
+[ ] Confirm the displayed rule says Monthly on the second Thursday.
+[ ] Complete it and confirm the next due date is the next matching second Thursday after today.
+[ ] Add a last Friday task and verify its next occurrence.
+[ ] Add every 2 months on the first Monday and verify the interval.
+[ ] Edit an existing same-date monthly task to an nth-weekday rule.
+[ ] Edit it back to same calendar date.
+[ ] Confirm overdue tasks remain visible until completed.
 
-Daily Rhythm customisation
-[ ] Open Daily Rhythm → Manage list.
-[ ] Add a new routine item and optional note/time.
-[ ] Add another item by pressing Return.
-[ ] Edit an existing item.
-[ ] Move an item up and down.
-[ ] Delete a test item.
-[ ] Close the manager and confirm the Daily Rhythm boxes match the edited list.
-[ ] Refresh and reopen the app; customised items and order remain.
+TAGS
+[ ] Add two comma-separated tags to a to-do.
+[ ] Add tags to an appointment and recurring task.
+[ ] Add tags to a Brain Inbox or Waiting For item.
+[ ] Confirm tags remain after editing, refresh and reopening.
+[ ] Search Lists using a tag and confirm matching items are shown.
+[ ] Confirm duplicate tags with different capitalisation are not stored twice.
 
-Gentle close-down
-[ ] Open Planner → Gentle close-down → Manage list.
-[ ] Add, edit, reorder and remove a test item.
-[ ] Confirm the changes persist after reopening.
+BRAIN INBOX CONTROL FIX
+[ ] On phone portrait, microphone, + and Show/Hide do not overlap.
+[ ] On phone landscape, the controls remain usable.
+[ ] Voice capture and + still open the correct Brain Inbox actions.
 
-Regression
-[ ] Recurring Tasks still remain due until completed.
-[ ] Home, Lists, Timeline, Projects, search and settings work normally.
-[ ] No new errors or noticeable slowdown.
+REGRESSION
+[ ] To-dos add/edit/complete/delete.
+[ ] Appointments and Timeline work.
+[ ] Recurring daily/weekly/same-date monthly/yearly tasks work.
+[ ] Projects and steps work.
+[ ] Daily Rhythm remains editable.
+[ ] Custom lists and Lists search work.
 
-Result
-[ ] ACCEPT corrected v51a
-[ ] REJECT corrected v51a — record failed item(s)
+RESULT
+[ ] ACCEPT v51b
+[ ] REJECT v51b — record failed item(s)

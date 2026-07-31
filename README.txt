@@ -1,9 +1,7 @@
-My Life Planner v51a — Corrected Internal Test Build
+My Life Planner v51b — Internal Test Build
 
 Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
 
-This build retains the v51a migration infrastructure and corrects two issues found in phone testing:
-- overlapping Home Show/Hide controls
-- Daily Rhythm customisation and reordering
+This build adds advanced monthly recurring-task rules (including second Thursday and last weekday patterns), tags on core planner items, tag-aware Lists search, and a corrected Home Brain Inbox control layout.
 
-After upload, use Settings → App maintenance → Check for updates. Confirm v51a, verify existing data, then follow TestChecklist.txt.
+The accepted v51a migration framework, all existing data keys, Today's Focus safety mirror, routines and recurring-task data are preserved. Follow TestChecklist.txt before accepting this milestone.

@@ -1,19 +1,16 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
+DELIVERED IN v51b
+- First/second/third/fourth/last weekday monthly recurring-task rules.
+- Every-N-month support for weekday-position rules.
+- Core item tags, tag chips and tag-aware Lists search.
+- Corrected Brain Inbox microphone placement.
+
 DELIVERED IN v51a
-- Schema version 51
-- Generic migration engine
-- Pre-migration backup, verification, rollback and diagnostics
+- Schema versioning, migration engine, backups, validation and rollback diagnostics.
+- Editable and reorderable Daily Rhythm.
 
-DELIVERED IN v51a CORRECTED
-- Reliable grouped controls for collapsible Home headings
-- Fully customisable Daily Rhythm and Gentle close-down lists
-- Add, edit, delete, reorder and Return-to-add routine workflow
-
-DELIVERED IN v50
-- Recurring Tasks and due-until-completed behaviour
-- Daily, weekly, every-N-weeks, monthly and yearly schedules
-- Home, Lists, pause/resume and search integration
-
-PLANNED NEXT — v51b
-- Tags
+PLANNED NEXT IN v51
+- Expanded tag management and suggestions.
+- Smart Lists.
+- Dashboard, Quick Add and Planner Health milestones.

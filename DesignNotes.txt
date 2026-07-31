@@ -1,22 +1,20 @@
 MY LIFE PLANNER — DESIGN NOTES
 
 CORE PRINCIPLES
-- The planner adapts to how the user lives.
 - One item has one logical home; other screens are views.
-- Real-world usage drives development.
-- User-created information must survive upgrades.
+- Existing user data is preserved through every internal and public release.
+- Internal lettered milestones are test builds; public versions remain whole numbers.
 
-MIGRATION FRAMEWORK
-- Saved data carries schemaVersion 51.
-- Migrations run in order and create a safety backup first.
-- Migrated data is verified; failure restores the pre-migration snapshot.
+RECURRING TASKS
+- Obligations remain due until completed.
+- Same-date monthly recurrence retains the intended day where possible.
+- Weekday-position recurrence is anchored to the selected ordinal and weekday, such as second Thursday.
+- Late completion advances to the first matching occurrence after today, not from the completion date.
 
-ROUTINE DESIGN
-- Daily Rhythm and Gentle close-down are user-owned lists, not hard-coded prescriptions.
-- Defaults apply only when no saved list exists.
-- Users can add, edit, remove and reorder items.
-- Routine arrays remain in the authoritative lifePlannerData record.
+TAGS
+- Tags are lightweight labels stored on the item.
+- Input is comma-separated, trimmed and de-duplicated case-insensitively.
+- Tags are visible and searchable; they do not move the item from its logical home.
 
-HOME CONTROL DESIGN
-- Panel action buttons and Show/Hide controls share a dedicated responsive control group.
-- Collapse controls must never cover or obscure capture, manage or refresh actions.
+DATA SAFETY
+- v51a migration, backup, validation and rollback framework remains the foundation.

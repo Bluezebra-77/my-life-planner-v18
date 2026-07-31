@@ -1,5 +1,14 @@
+
+/* ===== v51b tags and advanced recurrence helpers ===== */
+function normaliseTags(value){
+  const source=Array.isArray(value)?value:String(value||'').split(',');
+  const seen=new Set();
+  return source.map(x=>String(x||'').trim()).filter(Boolean).filter(x=>{const k=x.toLocaleLowerCase();if(seen.has(k))return false;seen.add(k);return true;}).slice(0,20);
+}
+function tagsInputValue(item){return normaliseTags(item?.tags).join(', ');}
+function tagsMarkup(item){const tags=normaliseTags(item?.tags);return tags.length?`<div class="tag-row">${tags.map(tag=>`<span class="tag-chip">${escapeHtml(tag)}</span>`).join('')}</div>`:'';}
 /*
- * My Life Planner v51a — migration infrastructure build.
+ * My Life Planner v51b — advanced recurrence and tags build.
  * Recurring tasks are added without changing the main saved-data key.
  * Today's Focus is protected by migration recovery and a standalone safety mirror.
  */
@@ -48,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION = "51a";
+const APP_VERSION = "51b";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -991,6 +1000,7 @@ function clearForm() {
 
 function openAddDialog(type="todo",projectId="") {
   clearForm();
+  const tagsField=document.getElementById("itemTags"); if(tagsField) tagsField.value="";
   itemType.value=type;
   document.getElementById("editingParentId").value=projectId;
   populateProjectPicker(projectId);
@@ -1050,6 +1060,7 @@ function loadCommon(item,type,parentId="") {
   document.getElementById("editingParentId").value=parentId;
   document.getElementById("itemName").value=item.name || "";
   document.getElementById("itemDetails").value=item.details || "";
+  const tagsField=document.getElementById("itemTags"); if(tagsField) tagsField.value=tagsInputValue(item);
   if (type === "project") loadStepBuilder("projectStepsBuilder", item.steps || []);
   if (["todo","cleaning","annual"].includes(type)) loadStepBuilder("itemStepsBuilder", item.steps || []);
   timingType.value=item.timingType || (item.dueDate ? "date" : "none");
@@ -1077,6 +1088,7 @@ function editAnnual(id) {
   document.getElementById("editingId").value=item.id;
   document.getElementById("itemName").value=item.name || "";
   document.getElementById("itemDetails").value=item.details || "";
+  const tagsField=document.getElementById("itemTags"); if(tagsField) tagsField.value=tagsInputValue(item);
   document.getElementById("annualDate").value=`2000-${item.monthDay}`;
   document.getElementById("annualReminderDays").value=item.reminderDays ?? 7;
   document.getElementById("dialogTitle").textContent="Edit annual date";
@@ -1110,6 +1122,7 @@ addForm.addEventListener("submit",event=>{
       id: id || uid(),
       name,
       details,
+      tags:normaliseTags(document.getElementById("itemTags")?.value),
       room: document.getElementById("cleaningRoom").value.trim(),
       frequency: document.getElementById("cleaningFrequency").value,
       nextDue: startDate,
@@ -1131,7 +1144,7 @@ addForm.addEventListener("submit",event=>{
     if(!annualDate)return;
     const monthDay=annualDate.slice(5);
     const oldAnnual=id?data.annualDates.find(x=>x.id===id):null;
-    const payload={id:id||uid(),name,details,monthDay,reminderDays:Number(document.getElementById("annualReminderDays").value||7),kind:"Birthday / annual date",steps:mergeEnteredSteps(oldAnnual?.steps||[],parseDatedSteps(document.getElementById("itemSteps")?.value||""),{})};
+    const payload={id:id||uid(),name,details,tags:normaliseTags(document.getElementById("itemTags")?.value),monthDay,reminderDays:Number(document.getElementById("annualReminderDays").value||7),kind:"Birthday / annual date",steps:mergeEnteredSteps(oldAnnual?.steps||[],parseDatedSteps(document.getElementById("itemSteps")?.value||""),{})};
     if(id) data.annualDates[data.annualDates.findIndex(x=>x.id===id)]=payload;
     else data.annualDates.push(payload);
     saveData(); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
@@ -1145,7 +1158,7 @@ addForm.addEventListener("submit",event=>{
     dueDate=date.toISOString().slice(0,10);
   }
 
-  const common={id:id||uid(),name,details,timingType:timing,dueDate,leadDays,completed:false};
+  const common={id:id||uid(),name,details,tags:normaliseTags(document.getElementById("itemTags")?.value),timingType:timing,dueDate,leadDays,completed:false};
   const parsedItemSteps = parseDatedSteps(document.getElementById("itemSteps")?.value || "");
 
   if(type==="todo") {
@@ -1763,7 +1776,8 @@ function openCaptureDialog(type='inbox',id=''){
  const item=(data[type]||[]).find(x=>x.id===id);
  document.getElementById('captureType').value=type;document.getElementById('captureId').value=id;
  document.getElementById('captureTitle').textContent=type==='waiting'?(id?'Edit waiting item':'Add Waiting For'):(id?'Edit Brain Inbox item':'Capture to Brain Inbox');
- document.getElementById('captureName').value=item?.name||'';document.getElementById('captureNote').value=item?.note||'';document.getElementById('captureDate').value=item?.reviewDate||'';
+ document.getElementById('captureName').value=item?.name||'';document.getElementById('captureNote').value=item?.note||'';
+ document.getElementById('captureTags').value=tagsInputValue(item);document.getElementById('captureDate').value=item?.reviewDate||'';
  document.getElementById('captureCategory').value=item?.category||'';document.getElementById('captureStatus').value=item?.status||'new';
  document.getElementById('captureUrl').value=item?.url||'';window.pendingBrainAttachment=item?.attachment||null;renderBrainAttachmentPreview();
  document.getElementById('waitingDateLabel').classList.toggle('hidden',type!=='waiting');
@@ -1777,7 +1791,7 @@ function closeCaptureDialog(){window.pendingBrainAttachment=null;document.getEle
 function editCapture(type,id){openCaptureDialog(type,id);}
 function deleteCapture(type,id){data[type]=data[type].filter(x=>x.id!==id);saveData();renderAll();showSaved('Deleted');}
 function completeWaiting(id){const x=data.waiting.find(x=>x.id===id);if(x)x.completed=!x.completed;saveData();renderAll();}
-function captureDraft(){return {type:document.getElementById('captureType').value,id:document.getElementById('captureId').value,name:document.getElementById('captureName').value.trim(),note:document.getElementById('captureNote').value.trim(),reviewDate:document.getElementById('captureDate').value,category:document.getElementById('captureCategory').value.trim(),status:document.getElementById('captureStatus').value,url:normaliseBrainUrl(document.getElementById('captureUrl')?.value||''),attachment:window.pendingBrainAttachment||null};}
+function captureDraft(){return {type:document.getElementById('captureType').value,id:document.getElementById('captureId').value,name:document.getElementById('captureName').value.trim(),note:document.getElementById('captureNote').value.trim(),tags:normaliseTags(document.getElementById('captureTags')?.value),reviewDate:document.getElementById('captureDate').value,category:document.getElementById('captureCategory').value.trim(),status:document.getElementById('captureStatus').value,url:normaliseBrainUrl(document.getElementById('captureUrl')?.value||''),attachment:window.pendingBrainAttachment||null};}
 function saveCapture(targetType=''){
  const d=captureDraft(); if(!d.name){document.getElementById('captureName').focus();return false;}
  const sourceItem=d.id?(data[d.type]||[]).find(x=>x.id===d.id):null;
@@ -2042,6 +2056,7 @@ function openAppointmentDialog(id='',prefillName='',prefillNotes=''){
   document.getElementById('appointmentLocation').value=a?.location||'';
   document.getElementById('appointmentLink').value=a?.link||a?.url||a?.meetingLink||'';
   document.getElementById('appointmentNotes').value=a?.notes||prefillNotes||'';
+  document.getElementById('appointmentTags').value=tagsInputValue(a);
   document.getElementById('appointmentRepeat').value=rule.repeat;
   document.getElementById('appointmentRepeatInterval').value=rule.interval;
   const unit=document.getElementById('appointmentRepeatUnit');unit.value=rule.unit||'day';unit.dataset.userChanged='false';
@@ -2063,7 +2078,7 @@ function saveAppointment(){
     const repeat=document.getElementById('appointmentRepeat').value,interval=Math.max(1,Number(document.getElementById('appointmentRepeatInterval').value)||1),endType=document.getElementById('appointmentRepeatEnd').value,count=Math.max(1,Number(document.getElementById('appointmentRepeatCount').value)||1),endDate=document.getElementById('appointmentRepeatEndDate').value;
     if(repeat!=='none'&&endType==='date'&&!endDate){alert('Please choose the repeat end date.');document.getElementById('appointmentRepeatEndDate').focus();return false;}
     if(repeat!=='none'&&endType==='date'&&dateOnly(endDate)<dateOnly(date)){alert('The repeat end date cannot be before the first appointment.');document.getElementById('appointmentRepeatEndDate').focus();return false;}
-    const rec={id:existing?.id||uid(),name,date,time:document.getElementById('appointmentTime').value,endTime:document.getElementById('appointmentEndTime').value,location:document.getElementById('appointmentLocation').value.trim(),link,notes:document.getElementById('appointmentNotes').value.trim(),repeat,repeatInterval:repeat==='none'?1:interval,repeatUnit:repeat==='none'?'':document.getElementById('appointmentRepeatUnit').value,repeatEndType:repeat==='none'?'never':endType,repeatCount:repeat!=='none'&&endType==='count'?count:null,repeatEndDate:repeat!=='none'&&endType==='date'?endDate:'',createdAt:existing?.createdAt||new Date().toISOString()};
+    const rec={id:existing?.id||uid(),name,date,time:document.getElementById('appointmentTime').value,endTime:document.getElementById('appointmentEndTime').value,location:document.getElementById('appointmentLocation').value.trim(),link,notes:document.getElementById('appointmentNotes').value.trim(),tags:normaliseTags(document.getElementById('appointmentTags')?.value),repeat,repeatInterval:repeat==='none'?1:interval,repeatUnit:repeat==='none'?'':document.getElementById('appointmentRepeatUnit').value,repeatEndType:repeat==='none'?'never':endType,repeatCount:repeat!=='none'&&endType==='count'?count:null,repeatEndDate:repeat!=='none'&&endType==='date'?endDate:'',createdAt:existing?.createdAt||new Date().toISOString()};
     if(existing)Object.assign(existing,rec);else data.appointments.unshift(rec);
     saveData();closeAppointmentDialog();renderAll();showSaved('Appointment saved');return true;
   }catch(e){console.error(e);alert('The appointment could not be saved. Please try again.');return false;}
@@ -2346,18 +2361,39 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 /* ===== Version 50 recurring tasks ===== */
 function recurringDate(value){ return value ? new Date(`${value}T12:00:00`) : null; }
 function recurringDateKey(date){ return localDateKey(date); }
-function addRecurringInterval(date, unit, interval){
+function nthWeekdayOfMonth(year,month,weekday,ordinal){
+  const w=Number(weekday),o=Number(ordinal);
+  if(o===-1){const d=new Date(year,month+1,0,12);d.setDate(d.getDate()-((d.getDay()-w+7)%7));return d;}
+  const d=new Date(year,month,1,12);d.setDate(1+((w-d.getDay()+7)%7)+((o-1)*7));
+  return d.getMonth()===month?d:null;
+}
+function addRecurringInterval(date, unit, interval, task={}){
   const next=new Date(date); const n=Math.max(1,Number(interval)||1);
   if(unit==='day') next.setDate(next.getDate()+n);
   else if(unit==='week') next.setDate(next.getDate()+(7*n));
-  else if(unit==='month') { const day=next.getDate(); next.setDate(1); next.setMonth(next.getMonth()+n); next.setDate(Math.min(day,new Date(next.getFullYear(),next.getMonth()+1,0).getDate())); }
+  else if(unit==='month' && task.monthlyMode==='nthWeekday'){
+    const targetMonth=next.getMonth()+n; const year=next.getFullYear()+Math.floor(targetMonth/12); const month=((targetMonth%12)+12)%12;
+    return nthWeekdayOfMonth(year,month,Number(task.weekday),Number(task.ordinal)) || new Date(year,month+1,0,12);
+  } else if(unit==='month') { const day=next.getDate(); next.setDate(1); next.setMonth(next.getMonth()+n); next.setDate(Math.min(day,new Date(next.getFullYear(),next.getMonth()+1,0).getDate())); }
   else if(unit==='year') { const month=next.getMonth(),day=next.getDate(); next.setDate(1); next.setFullYear(next.getFullYear()+n); next.setMonth(month); next.setDate(Math.min(day,new Date(next.getFullYear(),month+1,0).getDate())); }
   return next;
 }
 function recurringPatternLabel(task){
   const n=Math.max(1,Number(task.interval)||1), unit=task.unit||'week';
-  if(n===1) return ({day:'Daily',week:'Weekly',month:'Monthly',year:'Yearly'})[unit]||'Repeating';
+  if(unit==='month' && task.monthlyMode==='nthWeekday'){
+    const ord={1:'first',2:'second',3:'third',4:'fourth','-1':'last'}[String(task.ordinal)]||'first';
+    const day=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][Number(task.weekday)||0];
+    return n===1?`Monthly on the ${ord} ${day}`:`Every ${n} months on the ${ord} ${day}`;
+  }
+  if(n===1) return ({day:'Daily',week:'Weekly',month:'Monthly on the same date',year:'Yearly'})[unit]||'Repeating';
   return `Every ${n} ${unit}s`;
+}
+function updateRecurringRuleControls(){
+  const monthly=document.getElementById('recurringTaskUnit')?.value==='month';
+  const mode=document.getElementById('recurringMonthlyMode')?.value||'date';
+  document.getElementById('recurringMonthlyModeLabel').hidden=!monthly;
+  document.getElementById('recurringOrdinalLabel').hidden=!monthly||mode!=='nthWeekday';
+  document.getElementById('recurringWeekdayLabel').hidden=!monthly||mode!=='nthWeekday';
 }
 function recurringStatus(task){
   if(task.status==='paused') return {label:'Paused',className:'ongoing'};
@@ -2377,6 +2413,11 @@ function openRecurringTaskDialog(id=''){
   document.getElementById('recurringTaskInterval').value=task?.interval||1;
   document.getElementById('recurringTaskUnit').value=task?.unit||'week';
   document.getElementById('recurringTaskStatus').value=task?.status||'active';
+  document.getElementById('recurringMonthlyMode').value=task?.monthlyMode||'date';
+  document.getElementById('recurringOrdinal').value=String(task?.ordinal??2);
+  document.getElementById('recurringWeekday').value=String(task?.weekday??4);
+  document.getElementById('recurringTaskTags').value=tagsInputValue(task);
+  updateRecurringRuleControls();
   document.getElementById('recurringTaskDialogTitle').textContent=task?'Edit recurring task':'New recurring task';
   dialog.showModal();
 }
@@ -2385,7 +2426,8 @@ function saveRecurringTask(event){
   event.preventDefault();
   const id=document.getElementById('recurringTaskId').value;
   const existing=(data.recurringTasks||[]).find(x=>x.id===id);
-  const task={id:id||uid(),name:document.getElementById('recurringTaskName').value.trim(),notes:document.getElementById('recurringTaskNotes').value.trim(),nextDue:document.getElementById('recurringTaskDueDate').value,interval:Math.max(1,Number(document.getElementById('recurringTaskInterval').value)||1),unit:document.getElementById('recurringTaskUnit').value,status:document.getElementById('recurringTaskStatus').value,createdAt:existing?.createdAt||new Date().toISOString(),lastCompleted:existing?.lastCompleted||''};
+  const unit=document.getElementById('recurringTaskUnit').value, monthlyMode=unit==='month'?document.getElementById('recurringMonthlyMode').value:'date';
+  const task={id:id||uid(),name:document.getElementById('recurringTaskName').value.trim(),notes:document.getElementById('recurringTaskNotes').value.trim(),tags:normaliseTags(document.getElementById('recurringTaskTags')?.value),nextDue:document.getElementById('recurringTaskDueDate').value,interval:Math.max(1,Number(document.getElementById('recurringTaskInterval').value)||1),unit,monthlyMode,ordinal:monthlyMode==='nthWeekday'?Number(document.getElementById('recurringOrdinal').value):null,weekday:monthlyMode==='nthWeekday'?Number(document.getElementById('recurringWeekday').value):null,status:document.getElementById('recurringTaskStatus').value,createdAt:existing?.createdAt||new Date().toISOString(),lastCompleted:existing?.lastCompleted||''};
   if(!task.name||!task.nextDue) return;
   if(existing) Object.assign(existing,task); else data.recurringTasks.push(task);
   saveData(); closeRecurringTaskDialog(); renderAll(); filterMyLists(document.getElementById('globalListSearch')?.value||'');
@@ -2393,7 +2435,7 @@ function saveRecurringTask(event){
 function completeRecurringTask(id){
   const task=(data.recurringTasks||[]).find(x=>x.id===id); if(!task) return;
   let next=recurringDate(task.nextDue)||recurringDate(localDateKey()); const today=recurringDate(localDateKey());
-  do { next=addRecurringInterval(next,task.unit,task.interval); } while(next<=today);
+  do { next=addRecurringInterval(next,task.unit,task.interval,task); } while(next<=today);
   task.lastCompleted=new Date().toISOString(); task.nextDue=recurringDateKey(next); task.status='active';
   saveData(); renderAll();
 }
@@ -2401,7 +2443,7 @@ function toggleRecurringPause(id){ const task=data.recurringTasks.find(x=>x.id==
 function deleteRecurringTask(id){ if(!confirm('Delete this recurring task?'))return; data.recurringTasks=data.recurringTasks.filter(x=>x.id!==id);saveData();renderAll(); }
 function recurringTaskCard(task){
   const status=recurringStatus(task), row=document.createElement('div'); row.className='list-card recurring-task-card v10-row';
-  row.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(task.name)}</div><div class="card-meta">${escapeHtml(recurringPatternLabel(task))} · Next due ${escapeHtml(formatDate(task.nextDue))}</div></div><span class="badge ${status.className}">${escapeHtml(status.label)}</span></div>${task.notes?`<div class="card-details">${escapeHtml(task.notes)}</div>`:''}<div class="card-actions"><button type="button" onclick="completeRecurringTask('${task.id}')" ${task.status==='paused'?'disabled':''}>Complete</button><button type="button" class="secondary-button" onclick="openRecurringTaskDialog('${task.id}')">Edit</button><button type="button" class="secondary-button" onclick="toggleRecurringPause('${task.id}')">${task.status==='paused'?'Resume':'Pause'}</button><button type="button" class="danger-button" onclick="deleteRecurringTask('${task.id}')">Delete</button></div>`;
+  row.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(task.name)}</div><div class="card-meta">${escapeHtml(recurringPatternLabel(task))} · Next due ${escapeHtml(formatDate(task.nextDue))}</div></div><span class="badge ${status.className}">${escapeHtml(status.label)}</span></div>${task.notes?`<div class="card-details">${escapeHtml(task.notes)}</div>`:''}${tagsMarkup(task)}<div class="card-actions"><button type="button" onclick="completeRecurringTask('${task.id}')" ${task.status==='paused'?'disabled':''}>Complete</button><button type="button" class="secondary-button" onclick="openRecurringTaskDialog('${task.id}')">Edit</button><button type="button" class="secondary-button" onclick="toggleRecurringPause('${task.id}')">${task.status==='paused'?'Resume':'Pause'}</button><button type="button" class="danger-button" onclick="deleteRecurringTask('${task.id}')">Delete</button></div>`;
   return row;
 }
 function renderRecurringTasks(){
@@ -2419,3 +2461,21 @@ function renderRecurringHome(){
 const renderAllV49=renderAll;
 renderAll=function(){ renderAllV49(); renderRecurringTasks(); renderRecurringHome(); };
 renderRecurringTasks(); renderRecurringHome(); initialiseListSearch();
+
+function applyTagBadgesToRenderedLists(){
+  const mappings=[
+    ['todoArea',data.todos],['projectsArea',data.projects],['appointmentsArea',data.appointments],['recurringTasksArea',data.recurringTasks],['inboxArea',data.inbox],['waitingArea',data.waiting],['annualArea',data.annualDates],['cleaningArea',data.cleaningTasks]
+  ];
+  mappings.forEach(([areaId,items])=>{
+    const area=document.getElementById(areaId);if(!area||!Array.isArray(items))return;
+    const rows=[...area.children].filter(el=>!el.classList.contains('empty-state'));
+    items.forEach(item=>{
+      const name=String(item?.name||item?.title||'').trim();if(!name)return;
+      const row=rows.find(el=>String(el.textContent||'').includes(name));
+      const html=tagsMarkup(item);if(row&&html&&!row.querySelector('.tag-row'))row.insertAdjacentHTML('beforeend',html);
+    });
+  });
+}
+const renderAllV51b=renderAll;
+renderAll=function(){renderAllV51b();applyTagBadgesToRenderedLists();};
+setTimeout(()=>{updateRecurringRuleControls();applyTagBadgesToRenderedLists();},0);
