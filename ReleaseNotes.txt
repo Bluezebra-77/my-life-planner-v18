@@ -1,16 +1,11 @@
-My Life Planner v51b — Internal Release Notes
+My Life Planner v51b — Corrected Release
 
-NEW
-- Monthly recurring tasks can repeat on the same calendar date or on the first, second, third, fourth or last chosen weekday.
-- Rules can repeat every N months, such as every two months on the second Thursday.
-- Existing monthly recurring tasks remain same-date rules unless edited.
-- Tags can be entered on to-dos, projects, annual dates, cleaning tasks, appointments, recurring tasks, Brain Inbox and Waiting For items.
-- Tags are displayed as chips and participate in Lists search.
+Corrected
+- Recurring-task forms now show only controls relevant to the selected period.
+- Monthly rule is hidden for daily, weekly and yearly recurrence.
+- Occurrence and Weekday are shown only when Monthly + Weekday position is selected.
+- Added a live plain-English recurrence summary.
+- Hidden recurrence fields are ignored when saving non-monthly rules.
 
-FIXED
-- The Home Brain Inbox microphone and Show/Hide controls are separated and no longer overlap on narrow screens.
-
-PRESERVED
-- Existing v51a migration, backup and rollback infrastructure.
-- lifePlannerData and Today's Focus safety mirror.
-- Daily Rhythm customisation and all accepted v50/v51a behaviour.
+Preserved
+- Advanced monthly recurrence, tags, tag-aware search, data migration framework and all accepted v51a/v50 data.

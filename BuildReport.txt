@@ -1,22 +1,15 @@
-My Life Planner v51b — Build Report
+My Life Planner v51b — Corrected Build Report
 
-BASELINE
-- Accepted v51a Corrected source.
+Baseline: user-tested v51b.
+Scope: recurrence-dialog usability correction only.
 
-IMPLEMENTED
-- Nth-weekday monthly recurrence engine with interval support.
-- Monthly recurrence editor and rule labels.
-- Tag normalisation, storage, display and search integration for core planner item types.
-- Responsive Brain Inbox heading-control layout.
-
-DATA SAFETY
-- Existing storage key and schema version retained.
-- Existing recurring tasks default safely to same-date monthly behaviour.
-- Unknown data properties are preserved by normal save/load processing.
-
-VALIDATION
-- JavaScript syntax check passed.
-- Manifest JSON validation passed.
-- Required files present.
-- Version and cache references checked.
-- ZIP integrity checked after packaging.
+PASS — irrelevant recurrence controls hidden dynamically
+PASS — live recurrence summary included
+PASS — weekly, daily and yearly rules save without monthly fields
+PASS — monthly same-date and nth-weekday rules retained
+PASS — JavaScript syntax
+PASS — manifest JSON
+PASS — duplicate HTML ID scan
+PASS — CSS brace balance
+PASS — v51b version/cache consistency
+PASS — ZIP integrity

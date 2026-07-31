@@ -2389,11 +2389,30 @@ function recurringPatternLabel(task){
   return `Every ${n} ${unit}s`;
 }
 function updateRecurringRuleControls(){
-  const monthly=document.getElementById('recurringTaskUnit')?.value==='month';
+  const unit=document.getElementById('recurringTaskUnit')?.value||'week';
+  const monthly=unit==='month';
   const mode=document.getElementById('recurringMonthlyMode')?.value||'date';
-  document.getElementById('recurringMonthlyModeLabel').hidden=!monthly;
-  document.getElementById('recurringOrdinalLabel').hidden=!monthly||mode!=='nthWeekday';
-  document.getElementById('recurringWeekdayLabel').hidden=!monthly||mode!=='nthWeekday';
+  const monthlyLabel=document.getElementById('recurringMonthlyModeLabel');
+  const ordinalLabel=document.getElementById('recurringOrdinalLabel');
+  const weekdayLabel=document.getElementById('recurringWeekdayLabel');
+  if(monthlyLabel) monthlyLabel.hidden=!monthly;
+  if(ordinalLabel) ordinalLabel.hidden=!monthly||mode!=='nthWeekday';
+  if(weekdayLabel) weekdayLabel.hidden=!monthly||mode!=='nthWeekday';
+
+  const interval=Math.max(1,Number(document.getElementById('recurringTaskInterval')?.value)||1);
+  const summary=document.getElementById('recurringRuleSummary');
+  if(summary){
+    let text='';
+    if(unit==='day') text=interval===1?'This task will repeat every day.':`This task will repeat every ${interval} days.`;
+    else if(unit==='week') text=interval===1?'This task will repeat every week.':`This task will repeat every ${interval} weeks.`;
+    else if(unit==='year') text=interval===1?'This task will repeat every year on the selected date.':`This task will repeat every ${interval} years on the selected date.`;
+    else if(mode==='nthWeekday'){
+      const ord={1:'first',2:'second',3:'third',4:'fourth','-1':'last'}[String(document.getElementById('recurringOrdinal')?.value||'1')];
+      const day=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][Number(document.getElementById('recurringWeekday')?.value||0)];
+      text=interval===1?`This task will repeat on the ${ord} ${day} of every month.`:`This task will repeat on the ${ord} ${day} every ${interval} months.`;
+    } else text=interval===1?'This task will repeat monthly on the same calendar date.':`This task will repeat every ${interval} months on the same calendar date.`;
+    summary.textContent=text;
+  }
 }
 function recurringStatus(task){
   if(task.status==='paused') return {label:'Paused',className:'ongoing'};

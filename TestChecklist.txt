@@ -1,43 +1,23 @@
-MY LIFE PLANNER v51b — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51b — CORRECTED CHECKLIST
 
-INSTALLATION AND DATA
-[ ] Header and About show v51b.
-[ ] Developer Dashboard shows v51b and my-life-planner-v51b.
-[ ] All existing v51a data remains present.
-[ ] Today's Focus and customised Daily Rhythm remain present.
-[ ] Close/reopen and refresh; data remains present.
+INSTALLATION
+[ ] Header, About and Developer information all show v51b.
+[ ] Existing data, Today's Focus, routines, tags and recurring tasks remain present.
 
-ADVANCED MONTHLY RECURRENCE
-[ ] Add a recurring task: every 1 month, second Thursday.
-[ ] Confirm the displayed rule says Monthly on the second Thursday.
-[ ] Complete it and confirm the next due date is the next matching second Thursday after today.
-[ ] Add a last Friday task and verify its next occurrence.
-[ ] Add every 2 months on the first Monday and verify the interval.
-[ ] Edit an existing same-date monthly task to an nth-weekday rule.
-[ ] Edit it back to same calendar date.
-[ ] Confirm overdue tasks remain visible until completed.
-
-TAGS
-[ ] Add two comma-separated tags to a to-do.
-[ ] Add tags to an appointment and recurring task.
-[ ] Add tags to a Brain Inbox or Waiting For item.
-[ ] Confirm tags remain after editing, refresh and reopening.
-[ ] Search Lists using a tag and confirm matching items are shown.
-[ ] Confirm duplicate tags with different capitalisation are not stored twice.
-
-BRAIN INBOX CONTROL FIX
-[ ] On phone portrait, microphone, + and Show/Hide do not overlap.
-[ ] On phone landscape, the controls remain usable.
-[ ] Voice capture and + still open the correct Brain Inbox actions.
+RECURRING DIALOG
+[ ] Select week(s): Monthly rule, Occurrence and Weekday are not shown.
+[ ] Select day(s): monthly controls are not shown.
+[ ] Select year(s): monthly controls are not shown.
+[ ] Select month(s): Monthly rule appears.
+[ ] Choose Same calendar date: Occurrence and Weekday remain hidden.
+[ ] Choose Weekday position: Occurrence and Weekday appear.
+[ ] Change occurrence/weekday and confirm the summary updates.
+[ ] Save a weekly task and confirm it displays only a weekly rule.
+[ ] Save second Thursday monthly and confirm it works.
+[ ] Edit between weekly, same-date monthly and nth-weekday monthly.
 
 REGRESSION
-[ ] To-dos add/edit/complete/delete.
-[ ] Appointments and Timeline work.
-[ ] Recurring daily/weekly/same-date monthly/yearly tasks work.
-[ ] Projects and steps work.
-[ ] Daily Rhythm remains editable.
-[ ] Custom lists and Lists search work.
-
-RESULT
-[ ] ACCEPT v51b
-[ ] REJECT v51b — record failed item(s)
+[ ] Tags and tag search work.
+[ ] Brain Inbox controls do not overlap.
+[ ] Today's Focus, Projects, Lists, Timeline and Recurring Tasks remain stable.
+[ ] Close/reopen and refresh; data persists.

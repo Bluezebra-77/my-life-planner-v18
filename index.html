@@ -355,16 +355,16 @@
       <label>Task name<input id="recurringTaskName" type="text" maxlength="120" required placeholder="For example: Weekly injection"></label>
       <label>Notes (optional)<textarea id="recurringTaskNotes" rows="3" placeholder="Anything useful to remember"></textarea></label>
       <div class="settings-grid">
-        <label>First due date<input id="recurringTaskDueDate" type="date" required></label>
-        <label>Repeat every<input id="recurringTaskInterval" type="number" min="1" max="999" value="1" required></label>
+        <label>First due date<input id="recurringTaskDueDate" type="date" required onchange="updateRecurringRuleControls()"></label>
+        <label>Repeat every<input id="recurringTaskInterval" type="number" min="1" max="999" value="1" required oninput="updateRecurringRuleControls()"></label>
         <label>Period<select id="recurringTaskUnit" onchange="updateRecurringRuleControls()"><option value="day">day(s)</option><option value="week" selected>week(s)</option><option value="month">month(s)</option><option value="year">year(s)</option></select></label>
         <label id="recurringMonthlyModeLabel" hidden>Monthly rule<select id="recurringMonthlyMode" onchange="updateRecurringRuleControls()"><option value="date">Same calendar date</option><option value="nthWeekday">Weekday position</option></select></label>
-        <label id="recurringOrdinalLabel" hidden>Occurrence<select id="recurringOrdinal"><option value="1">First</option><option value="2">Second</option><option value="3">Third</option><option value="4">Fourth</option><option value="-1">Last</option></select></label>
-        <label id="recurringWeekdayLabel" hidden>Weekday<select id="recurringWeekday"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></label>
+        <label id="recurringOrdinalLabel" hidden>Occurrence<select id="recurringOrdinal" onchange="updateRecurringRuleControls()"><option value="1">First</option><option value="2">Second</option><option value="3">Third</option><option value="4">Fourth</option><option value="-1">Last</option></select></label>
+        <label id="recurringWeekdayLabel" hidden>Weekday<select id="recurringWeekday" onchange="updateRecurringRuleControls()"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></label>
         <label>Status<select id="recurringTaskStatus"><option value="active">Active</option><option value="paused">Paused</option></select></label>
       </div>
       <label>Tags (optional)<input id="recurringTaskTags" type="text" maxlength="240" placeholder="Health, Medication"><span class="field-help">Separate tags with commas.</span></label>
-      <p class="card-meta">The schedule stays anchored to its rule. Completing an overdue task moves it to the next scheduled occurrence after today.</p>
+      <p id="recurringRuleSummary" class="recurring-rule-summary" aria-live="polite"></p><p class="card-meta">The schedule stays anchored to its rule. Completing an overdue task moves it to the next scheduled occurrence after today.</p>
       <div class="dialog-actions"><button type="button" class="secondary-button" onclick="closeRecurringTaskDialog()">Cancel</button><button type="submit">Save recurring task</button></div>
     </form>
   </dialog>

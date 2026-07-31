@@ -1250,3 +1250,8 @@ html,body{max-width:100%;overflow-x:clip}
 
 /* v51b advanced recurrence and tags */
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.tag-chip{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--accent-soft,#e9f1ec);color:var(--accent,#537462);font-size:.76rem;font-weight:800}.home-heading-controls{display:flex;align-items:center;gap:7px;margin-left:auto}.home-heading-controls .voice-button{order:2}.home-heading-controls .section-plus{order:3}.home-heading-controls .home-collapse-toggle{order:1}@media(max-width:560px){.home-heading-controls{width:100%;justify-content:flex-end;flex-wrap:wrap}.home-heading-controls .home-collapse-toggle{margin-right:auto}}
+
+
+/* v51b recurrence-dialog correction */
+[hidden]{display:none!important}
+.recurring-rule-summary{margin:.25rem 0;padding:.8rem 1rem;border:1px solid var(--line,#d8ddd8);border-radius:12px;background:var(--accent-soft,#e9f1ec);color:var(--ink,#20312a);font-weight:700;line-height:1.45}
