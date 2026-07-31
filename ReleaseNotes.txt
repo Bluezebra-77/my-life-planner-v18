@@ -1,29 +1,24 @@
 My Life Planner
-Version 45
-Date: 30 July 2026
+Version 46
+Date: 31 July 2026
 
 BUILT FROM
-- Last user-tested stable release: v42
+- Version 45 supplied by the user after acceptance testing.
 
-NEW
-- Automatic image resizing/compression for Brain Inbox images.
-- In-app image, PDF and text previews where supported.
-- Quick Actions with a generated Brain Inbox launch address.
-- Flexible appointment recurrence: every X days, weeks, months or years.
-- Repeat endings: never, after a chosen number, or on a chosen date.
-- Developer Dashboard showing release, module, data-count and storage information.
-- ReleaseNotes.txt and BuildReport.txt included in the package.
-
-IMPROVED
-- Photo and screenshot capture combined as Photo or image.
-- Clear preview versus download behaviour for attachments.
-- Version consistency across app header, About, JavaScript, manifest and service-worker cache.
+STABILITY FIXES
+- Custom-list editor now keeps item text visible alongside Complete and Delete controls on iPhone.
+- Lists side navigation is constrained to the visual viewport and can no longer widen the page and trigger Safari page shrinking.
+- Home task text opens the task; completion remains a separate circular control.
+- Header progress now includes saved to-do completion as well as Daily Rhythm and evening checks, and refreshes immediately.
+- Lists search now filters rendered to-dos, appointments, Brain Inbox, Waiting For, annual dates, projects, cleaning tasks and custom lists.
+- Random task choices now use user-saved tasks only; built-in examples such as Vinted and “Sort one small box” are excluded.
 
 DATA COMPATIBILITY
-- Existing localStorage keys are unchanged.
-- Existing appointments and Brain Inbox records remain readable.
-- Existing non-repeating and legacy repeating appointments remain supported.
+- Existing localStorage keys and database format remain unchanged.
+- Existing tasks, projects, appointments, custom lists, Brain Inbox items and settings remain readable.
 
-KNOWN LIMITATIONS
-- Some document types cannot be previewed by Safari and will use Download copy.
-- Browser storage allowance varies by device and browser.
+DEFERRED TO LATER STAGES
+- Reordering project steps.
+- Advanced monthly weekday recurrence.
+- Early appointment visibility and notifications.
+- Broader global search and navigation improvements.

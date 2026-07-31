@@ -1,5 +1,5 @@
 /*
- * My Life Planner v45
+ * My Life Planner v46
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "45";
+const APP_VERSION = "46";
 const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
@@ -338,11 +338,16 @@ function renderChecklist(containerId, tasks, group, editable = false) {
 }
 
 function updateProgress() {
-  const all = document.querySelectorAll("#dailyChecklist input, #eveningChecklist input");
-  const completed = [...all].filter(item => item.checked).length;
-  const total = all.length;
-  document.getElementById("progressBar").style.width = `${total ? Math.round(completed / total * 100) : 0}%`;
-  document.getElementById("progressText").textContent = `${completed} of ${total}`;
+  const routineChecks = [...document.querySelectorAll("#dailyChecklist input, #eveningChecklist input")];
+  const routineCompleted = routineChecks.filter(item => item.checked).length;
+  const todos = Array.isArray(data.todos) ? data.todos : [];
+  const completed = routineCompleted + todos.filter(item => item.completed).length;
+  const total = routineChecks.length + todos.length;
+  const percent = total ? Math.round(completed / total * 100) : 0;
+  const bar = document.getElementById("progressBar");
+  const text = document.getElementById("progressText");
+  if (bar) bar.style.width = `${percent}%`;
+  if (text) text.textContent = `${completed} of ${total}`;
 }
 
 function setDate() {
@@ -369,16 +374,11 @@ function savedChoiceItems() {
 }
 
 function chooseFrom(poolName) {
-  const saved = savedChoiceItems();
-  let pool = choicePools[poolName] || [];
-  if (poolName === "normal") pool = [...saved, ...choicePools.normal];
-  if (poolName === "low") pool = [...data.dailyTasks.slice(-3).map(x => x.title), ...choicePools.low];
-  if (poolName === "quick") pool = [...(data.categoryTasks?.admin || []).slice(0,2), ...choicePools.quick];
-  pool = [...new Set(pool.filter(Boolean))];
+  const pool = [...new Set(savedChoiceItems().filter(Boolean))];
   const card = document.getElementById("choiceCard");
-  if (!pool.length) { card.textContent = "There are no available tasks yet. Add one to a list first."; return; }
+  if (!pool.length) { card.textContent = "There are no available saved tasks yet. Add one to a list first."; return; }
   const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, Math.min(3, pool.length));
-  card.innerHTML = `<ol class="choice-list">${shuffled.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ol><button type="button" class="small-button" onclick="chooseFrom('${poolName}')">Give me three different ideas</button>`;
+  card.innerHTML = `<ol class="choice-list">${shuffled.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ol><button type="button" class="small-button" onclick="chooseFrom('${poolName}')">Give me three different saved tasks</button>`;
 }
 
 function chooseForMe() { chooseFrom("normal"); }
@@ -393,8 +393,7 @@ function helpfulCandidates(mode='extra') {
       const s=(p.steps||[]).find(x=>!x.completed);
       return s?[{key:`step:${p.id}:${s.id}`,label:s.name,detail:`Project: ${p.name}`,open:()=>editStep(p.id,s.id),priority:s.dueDate?0:2}]:[{key:`project:${p.id}`,label:`Review ${p.name}`,detail:'Project without a next step',open:()=>editProject(p.id),priority:4}];
     }),
-    ...data.cleaningTasks.filter(x=>!x.completed).map(x=>({key:`clean:${x.id}`,label:x.name,detail:`Cleaning · ${x.room||'Home'}`,open:()=>editCleaning(x.id),priority:isDueTodayOrEarlier(x.nextDue)?0:5})),
-    ...Object.entries(data.categoryTasks||{}).flatMap(([group,list])=>(list||[]).map((name,i)=>({key:`category:${group}:${i}`,label:name,detail:categoryNames[group]||'Useful task',open:null,priority:6})))
+    ...data.cleaningTasks.filter(x=>!x.completed).map(x=>({key:`clean:${x.id}`,label:x.name,detail:`Cleaning · ${x.room||'Home'}`,open:()=>editCleaning(x.id),priority:isDueTodayOrEarlier(x.nextDue)?0:5}))
   ];
   let pool=items.filter(x=>x.key!==lastHelpfulChoiceKey);
   if(!pool.length) pool=items;
@@ -1534,7 +1533,7 @@ function makeV10Row(item,{complete=true,menu='' }={}){
  const row=document.createElement('div'); row.className=`v10-row ${dueClass(item.dueDate)}`;
  const main=document.createElement('button');main.type='button';main.className='v10-row-main';main.innerHTML=`<span class="v10-row-title">${escapeHtml(item.name)}</span><span class="v10-row-meta">${escapeHtml(item.meta||'')}</span>`; if(item.open)main.onclick=item.open;
  row.appendChild(main);
- if(complete&&item.action){const done=document.createElement('button');done.type='button';done.className='complete-dot';done.setAttribute('aria-label','Complete');done.innerHTML='✓';done.onclick=item.action;row.prepend(done);}
+ if(complete&&item.action){const done=document.createElement('button');done.type='button';done.className='complete-dot';done.setAttribute('aria-label',`Mark ${item.name} complete`);done.setAttribute('title','Mark complete');done.innerHTML='';done.onclick=event=>{event.stopPropagation();item.action();};row.prepend(done);}
  if(menu)row.insertAdjacentHTML('beforeend',menu);
  return row;
 }
@@ -1732,11 +1731,28 @@ function jumpToList(id){
 }
 function filterMyLists(query=''){
  const q=String(query).trim().toLowerCase();
- document.querySelectorAll('.managed-list-section').forEach(section=>{
+ const sections=document.querySelectorAll('.managed-list-section');
+ sections.forEach(section=>{
+   const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item')];
    let visible=0;
-   section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row').forEach(row=>{const match=!q||row.textContent.toLowerCase().includes(q);row.hidden=!match;if(match)visible++;});
-   section.classList.toggle('search-no-match',Boolean(q)&&visible===0);
+   rows.forEach(row=>{
+     const match=!q||String(row.textContent||'').toLowerCase().includes(q);
+     row.hidden=!match;
+     if(match) visible++;
+   });
+   const sectionText=String(section.dataset.listName||'').toLowerCase();
+   const headingMatch=Boolean(q)&&sectionText.includes(q);
+   if(headingMatch){rows.forEach(row=>row.hidden=false);visible=rows.length||1;}
+   section.hidden=Boolean(q)&&visible===0;
+   section.classList.toggle('search-no-match',false);
  });
+ const customSection=document.getElementById('customListsSection');
+ if(customSection){
+   const cards=[...customSection.querySelectorAll('.custom-list-card')];
+   let visible=0;
+   cards.forEach(card=>{const match=!q||String(card.textContent||'').toLowerCase().includes(q);card.hidden=!match;if(match)visible++;});
+   customSection.hidden=Boolean(q)&&visible===0;
+ }
 }
 
 

@@ -1,41 +1,37 @@
 My Life Planner — Build Report
-Version: 45
-Build date: 30 July 2026
-Built from: v42 (last user-tested stable release)
+Version: 46
+Build date: 31 July 2026
+Built from: v45 files supplied by the user
+
+SCOPE
+PASS — BUG-001 custom-list item text layout corrected
+PASS — BUG-002 Lists rail constrained inside iPhone viewport
+PASS — BUG-003 task text opens task; completion uses separate control
+PASS — BUG-004 progress calculation includes to-dos and refreshes through renderAll
+PASS — BUG-005 Lists search covers all rendered list sections and custom lists
+PASS — BUG-006 random choice excludes built-in sample/category suggestions
 
 VERSION AUDIT
-PASS — Header displays v45
-PASS — About displays Version 45
-PASS — APP_VERSION is 45
-PASS — Manifest name/version/start URL identify v45
-PASS — Service-worker cache is my-life-planner-v45
-PASS — ZIP filename identifies v45
-
-FEATURE AUDIT
-PASS — Brain Inbox automatic image reduction code present
-PASS — Combined Photo or image capture present
-PASS — In-app attachment viewer present
-PASS — Quick Actions launch-address tools present
-PASS — Flexible appointment intervals present
-PASS — Repeat end by count/date present
-PASS — Developer Dashboard present
-PASS — Module versions present
+PASS — Header displays v46
+PASS — APP_VERSION is 46
+PASS — Asset query strings identify v46
+PASS — Manifest identifies V46/version 46
+PASS — Service-worker cache is my-life-planner-v46
+PASS — Package filename identifies v46
 
 STATIC VALIDATION
 PASS — JavaScript syntax (node --check)
 PASS — Manifest JSON parsing
 PASS — HTML duplicate-ID scan
 PASS — CSS brace balance
-PASS — Required feature-marker scan
-PASS — Existing localStorage keys preserved
+PASS — Required fix-marker scan
+PASS — Existing saved-data keys and database format unchanged
+PASS — ZIP integrity
 
-MODULE VERSIONS
-Planner Core: 1.0
-Brain Capture: 2.1
-Attachment Module: 1.1
-Appointment Engine: 2.0
-Quick Actions: 1.0
-Database format: 1
-
-IMPORTANT TESTING NOTE
-Automated static checks cannot reproduce physical iPhone rotation, Safari document-preview behaviour, installed-PWA caching, or all touch interactions. These remain on the user acceptance checklist before v45 becomes the stable baseline.
+USER ACCEPTANCE STILL REQUIRED
+- iPhone portrait and landscape Lists rail behaviour
+- Custom-list editor item visibility
+- Home task opening versus completion
+- Immediate progress update
+- Search across each list type
+- Random task source using real saved data only
