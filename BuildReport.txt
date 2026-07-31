@@ -1,19 +1,21 @@
-My Life Planner v50 — Corrected Build Report
+My Life Planner v51a — Build Report
 
-Baseline: approved v49 source, with the v50 recurring-task implementation.
-Correction: Today's Focus upgrade preservation.
+Baseline: user-accepted corrected v50 source.
+Target: internal v51a infrastructure milestone.
 
 Code changes
-- Expanded migration scoring to include Today's Focus and all newer lists.
-- Added one-time v50 recovery from migration safety data and daily backups.
-- Added an independent lifePlannerTodayFocus safety mirror.
-- Kept the primary data key as lifePlannerData.
+- Added schemaVersion 51 to normalised and saved planner data.
+- Added migration registry and 50-to-51 migration.
+- Added automatic migration backup storage (five snapshots).
+- Added validation, rollback path and migration diagnostics (twenty entries).
+- Preserved lifePlannerData and lifePlannerTodayFocus keys.
+- Updated app, manifest, cache and About identifiers to v51a.
 
 Validation
-- app.js passed Node JavaScript syntax validation.
-- manifest.json passed JSON validation.
-- ZIP integrity checked after packaging.
-- Required application and documentation files included.
+- JavaScript syntax checked with Node.
+- Manifest JSON parsed successfully.
+- Required files included.
+- ZIP integrity checked.
 
 Acceptance status
-- Awaiting user retest. This build must not be approved until Today's Focus survives an update test.
+- Awaiting user testing. v51a must remain an internal build until accepted.

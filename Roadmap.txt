@@ -1,14 +1,20 @@
-MY LIFE PLANNER — MASTER ROADMAP (updated for v50)
+MY LIFE PLANNER — MASTER ROADMAP
 
-CURRENT
-v50 — Recurring Tasks and Smart Recurrence
-- Recurring obligations distinct from appointments
-- Remain overdue until completion
-- Daily, weekly, monthly, yearly and interval patterns
-- Home and Lists integration
+CURRENT ACCEPTED
+v50 — Recurring Tasks and corrected data preservation
 
-NEXT
-v51 — Smart Lists
-- Basic Lists, reusable Checklists and Action Lists
-- Rapid Return-to-add and reset options
-- Completed items crossed through and moved down
+IN DEVELOPMENT — v51
+v51a — Migration infrastructure (current internal test build)
+- Schema versioning
+- Generic migration engine
+- Automatic pre-migration backup
+- Validation, rollback and diagnostics
+
+v51b — Tags
+v51c — Smart Lists and saved searches
+v51d — Dashboard and priority colours
+v51e — Quick Add
+v51f — Planner Health phase 1
+
+PUBLIC RELEASE
+v51 — Package after all internal milestones are accepted.

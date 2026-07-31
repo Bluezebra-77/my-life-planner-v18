@@ -2,16 +2,16 @@ MY LIFE PLANNER — FEATURE REGISTER
 
 DELIVERED IN v50
 - Recurring Tasks and due-until-completed behaviour
-- Weekly injection remains visible until marked complete
 - Daily, weekly, every-N-weeks, monthly and yearly schedules
 - Home and Lists integration
-- Pause/resume and search support
+- Today's Focus migration safety mirror
 
-DELIVERED IN v49
-- Expandable Home projects and forgiving Lists search
+ADDED IN v51a (INTERNAL)
+- Schema version 51 embedded in saved data
+- Reusable ordered migration engine
+- Automatic pre-migration backups
+- Migration validation and rollback protection
+- Migration diagnostic log
 
-PLANNED — v51
-- Smart Lists
-
-Today's Focus upgrade safety mirror — Added in corrected v50.
-Purpose: protect quick one-off entries during future schema migrations while retaining lifePlannerData as the authoritative record.
+PLANNED FOR LATER v51 MILESTONES
+- Tags, Smart Lists, saved searches, dashboard, priorities, Quick Add and Planner Health

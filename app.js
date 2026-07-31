@@ -1,5 +1,5 @@
 /*
- * My Life Planner v50 — corrected data-preservation build.
+ * My Life Planner v51a — migration infrastructure build.
  * Recurring tasks are added without changing the main saved-data key.
  * Today's Focus is protected by migration recovery and a standalone safety mirror.
  */
@@ -47,6 +47,96 @@ const choicePools = {
   low: ["Delete ten unwanted photographs.", "Put away five things.", "Unsubscribe from three unwanted emails.", "Choose one Vinted item to list later.", "Make a drink and note tomorrow's first task."],
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
+
+const APP_VERSION = "51a";
+const SCHEMA_VERSION = 51;
+const DATABASE_VERSION = "2";
+const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
+const MIGRATION_LOG_KEY = "lifePlannerMigrationLog";
+
+function appendMigrationLog(entry) {
+  try {
+    const log = JSON.parse(localStorage.getItem(MIGRATION_LOG_KEY) || "[]");
+    const rows = Array.isArray(log) ? log : [];
+    rows.unshift({ at: new Date().toISOString(), ...entry });
+    localStorage.setItem(MIGRATION_LOG_KEY, JSON.stringify(rows.slice(0, 20)));
+  } catch (error) { console.warn("Could not write migration log", error); }
+}
+
+function createMigrationBackup(rawData, fromVersion, toVersion) {
+  const backup = {
+    id: `migration-${Date.now()}`,
+    savedAt: new Date().toISOString(),
+    fromVersion,
+    toVersion,
+    data: rawData
+  };
+  const existing = JSON.parse(localStorage.getItem(MIGRATION_BACKUP_KEY) || "[]");
+  const backups = Array.isArray(existing) ? existing : [];
+  backups.unshift(backup);
+  localStorage.setItem(MIGRATION_BACKUP_KEY, JSON.stringify(backups.slice(0, 5)));
+  return backup;
+}
+
+const DATA_MIGRATIONS = Object.freeze({
+  50: function migrate50To51(previous) {
+    return {
+      ...previous,
+      schemaVersion: 51,
+      migrationMeta: {
+        ...(previous.migrationMeta && typeof previous.migrationMeta === "object" ? previous.migrationMeta : {}),
+        lastMigratedAt: new Date().toISOString(),
+        lastMigration: "50-to-51"
+      }
+    };
+  }
+});
+
+function validatePlannerData(candidate) {
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("Planner data is not an object");
+  const requiredLists = ["todos","projects","annualDates","cleaningTasks","appointments","recurringTasks","inbox","waiting","customLists","todayFocus"];
+  for (const field of requiredLists) if (!Array.isArray(candidate[field])) throw new Error(`Invalid ${field} collection`);
+  if (Number(candidate.schemaVersion) !== SCHEMA_VERSION) throw new Error("Schema version verification failed");
+  return true;
+}
+
+function migratePlannerData(rawData) {
+  const original = rawData && typeof rawData === "object" ? rawData : {};
+  let version = Number(original.schemaVersion);
+  if (!Number.isInteger(version) || version < 1) version = 50;
+  if (version > SCHEMA_VERSION) {
+    appendMigrationLog({ status:"blocked", fromVersion:version, toVersion:SCHEMA_VERSION, message:"Data is newer than this app" });
+    return normaliseData(original);
+  }
+  if (version === SCHEMA_VERSION) {
+    const current = normaliseData(original);
+    validatePlannerData(current);
+    return current;
+  }
+
+  const backup = createMigrationBackup(original, version, SCHEMA_VERSION);
+  let working = { ...original };
+  const startVersion = version;
+  try {
+    while (version < SCHEMA_VERSION) {
+      const migration = DATA_MIGRATIONS[version];
+      if (typeof migration !== "function") throw new Error(`No migration registered for schema ${version}`);
+      working = migration(working);
+      version += 1;
+    }
+    working = normaliseData(working);
+    validatePlannerData(working);
+    appendMigrationLog({ status:"success", fromVersion:startVersion, toVersion:SCHEMA_VERSION, backupId:backup.id });
+    return working;
+  } catch (error) {
+    appendMigrationLog({ status:"rollback", fromVersion:startVersion, toVersion:SCHEMA_VERSION, backupId:backup.id, message:String(error.message || error) });
+    console.error("Migration failed; original data retained", error);
+    const rollback = normaliseData(original);
+    rollback.schemaVersion = SCHEMA_VERSION;
+    rollback.migrationMeta = { ...(rollback.migrationMeta || {}), rollbackAt:new Date().toISOString(), rollbackReason:String(error.message || error) };
+    return rollback;
+  }
+}
 
 function normaliseLegacyShape(value = {}) {
   const source = value && typeof value === "object" ? value : {};
@@ -124,10 +214,10 @@ function getData() {
     } catch {}
   }
 
-  if (!candidates.length) return normaliseData({});
+  if (!candidates.length) return migratePlannerData({});
   candidates.sort((a,b) => a.priority-b.priority);
   const preferred = candidates[0].value;
-  const merged = normaliseData({
+  const mergedLegacyData = {
     ...preferred,
     todos: mergeUniqueLists(candidates,"todos"),
     projects: mergeUniqueLists(candidates,"projects"),
@@ -139,7 +229,8 @@ function getData() {
     waiting: mergeUniqueLists(candidates,"waiting"),
     customLists: mergeUniqueLists(candidates,"customLists"),
     todayFocus: mergeUniqueLists(candidates,"todayFocus")
-  });
+  };
+  const merged = migratePlannerData(mergedLegacyData);
   try {
     localStorage.setItem("lifePlannerMigrationSafety", JSON.stringify({savedAt:new Date().toISOString(), sourceKeys:candidates.map(x=>x.key), data:merged}));
     localStorage.setItem("lifePlannerData", JSON.stringify(merged));
@@ -158,8 +249,6 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "50";
-const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
   attachments: "1.1",
@@ -171,6 +260,8 @@ let saveIndicatorTimer = null;
 
 function normaliseData(loaded = {}) {
   return {
+    schemaVersion: SCHEMA_VERSION,
+    migrationMeta: loaded.migrationMeta && typeof loaded.migrationMeta === "object" ? loaded.migrationMeta : {},
     todos: Array.isArray(loaded.todos) ? loaded.todos : [],
     projects: Array.isArray(loaded.projects) ? loaded.projects : [],
     annualDates: Array.isArray(loaded.annualDates) ? loaded.annualDates : [],
@@ -239,6 +330,7 @@ function showSaved(message = "Saved on this device") {
 function saveData() {
   try {
     data = normaliseData(data);
+    validatePlannerData(data);
     const serialised = JSON.stringify(data);
     createRecoveryCopy(serialised);
     localStorage.setItem(DATA_KEY, serialised);

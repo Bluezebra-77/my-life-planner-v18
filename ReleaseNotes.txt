@@ -1,16 +1,15 @@
-My Life Planner v50 — Corrected Release
+My Life Planner v51a — Migration Infrastructure
 
-This corrected v50 build fixes the data-retention failure found during acceptance testing.
+Added
+- Saved planner data now carries schemaVersion 51.
+- Generic ordered migration registry for future releases.
+- Automatic pre-migration snapshots, retaining the five newest copies.
+- Post-migration validation of all core collections.
+- Rollback protection and diagnostic migration logging.
+- Database diagnostics increased to version 2.
 
-Corrected
-- Today's Focus quick one-offs are now included when migration candidates are scored.
-- A fresh v50 rescue pass checks the migration safety copy and daily backups, even when an older migration marker already exists.
-- Today's Focus is also saved to an independent local safety mirror for protection during future upgrades.
-- Existing appointments, to-dos, projects, lists and other planner information continue to use the established lifePlannerData storage key.
-
-Included from v50
-- New separate Recurring Tasks list.
-- Daily, weekly, every N weeks, monthly and yearly intervals.
-- Due and overdue tasks remain visible until completed.
-- Completing a recurring task advances its next due date.
-- Pause, resume, edit, delete, Home and search integration.
+Preserved
+- The authoritative storage key remains lifePlannerData.
+- Today's Focus continues to use its independent safety mirror.
+- All v50 recurring-task behaviour remains unchanged.
+- No user-facing workflow changes are intended in this milestone.

@@ -1,17 +1,15 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
 FIXED IN v50
-- Recurring appointments advanced even when the underlying responsibility was not completed. A true recurring-task type now remains overdue until completion.
+- Recurring obligations now remain overdue until completion.
+- Today's Focus quick one-offs are preserved during upgrades.
 
-FIXED IN v49
-- Home project workflow and exact-phrase search issues.
+RISK CONTROL ADDED IN v51a
+- Future schema changes now create a backup before migration.
+- Migrated data is validated before use.
+- Failed migrations record diagnostics and retain a rollback copy.
 
 OPEN DESIGN ITEMS
 - Home/Timeline duplication review
 - Progress indicator purpose
 - Generated-task timer
-
-v50 correction — Today's Focus migration loss
-Status: Fixed, awaiting acceptance retest.
-Cause: migration candidate scoring ignored data sets containing only Today's Focus, and the older migration marker could prevent a fresh backup rescue pass.
-Fix: include all current collections in scoring, run a dedicated v50 rescue pass, and maintain a standalone Today's Focus safety mirror.

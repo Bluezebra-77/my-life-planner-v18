@@ -1,41 +1,29 @@
-MY LIFE PLANNER v50 — CORRECTED ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51a — ACCEPTANCE CHECKLIST
 
 Before updating
-[ ] In the currently installed planner, add two Today's Focus quick one-offs.
-[ ] Leave at least one item incomplete.
-[ ] Note one or two existing appointments, to-dos, projects and list items for comparison.
+[ ] Add or note examples in Today's Focus, To-dos, Appointments, Recurring Tasks, Projects, Brain Inbox and a Custom List.
 
-Installation and version
-[ ] Install/update with the corrected v50 files.
-[ ] Header shows v50.
-[ ] About shows Version 50.
-[ ] Developer information shows the v50 cache/version details.
+Installation and identifiers
+[ ] Header shows v51a.
+[ ] About shows Version 51a.
+[ ] Developer Dashboard shows my-life-planner-v51a.
+[ ] Database version shows 2.
 
-Critical data-retention test
-[ ] Both Today's Focus quick one-offs are still present after the update.
-[ ] Close and reopen the app; the quick one-offs remain present.
-[ ] Refresh the page; the quick one-offs remain present.
-[ ] Add another quick one-off, close/reopen, and confirm it remains.
-[ ] Existing appointments remain intact.
-[ ] Existing to-dos remain intact.
-[ ] Existing projects and steps remain intact.
-[ ] Existing custom lists remain intact.
-
-Recurring Tasks — separate list
-[ ] Open Lists and locate the separate Recurring Tasks list.
-[ ] Add Weekly Injection with a past due date.
-[ ] Confirm it appears overdue in Recurring Tasks and on Home.
-[ ] Complete it and confirm the next due date advances beyond today.
-[ ] Add daily, monthly and yearly examples.
-[ ] Edit, pause, resume, search for and delete a test recurring task.
+Critical migration and retention
+[ ] All pre-existing data remains present after update.
+[ ] Today's Focus quick one-offs remain present.
+[ ] Refresh the page and confirm all data remains.
+[ ] Close and reopen the installed app and confirm all data remains.
+[ ] Add a new item after upgrading, refresh, and confirm it remains.
 
 Regression
-[ ] Today's Focus add, complete, reinstate and delete controls work.
+[ ] Recurring Tasks can be added, completed, paused, resumed and edited.
 [ ] Appointments and Timeline work.
 [ ] Projects and project steps work.
-[ ] List search works.
-[ ] Data persists after refresh and reopening.
+[ ] Lists search works.
+[ ] Export backup still works.
+[ ] No unexpected warning or save-failed message appears.
 
 Result
-[ ] ACCEPT v50
-[ ] REJECT v50 — record the failed item(s)
+[ ] ACCEPT v51a as the baseline for v51b.
+[ ] REJECT v51a — record failed item(s).
