@@ -1,33 +1,58 @@
-MY LIFE PLANNER v47 — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v48 — ACCEPTANCE CHECKLIST
 
 INSTALLATION AND VERSION
 ☐ Upload all files, replacing the previous GitHub Pages files
 ☐ Use Settings → App maintenance → Check for updates
-☐ Header shows v47
-☐ About shows Version 47
-☐ Developer Dashboard shows cache my-life-planner-v47
+☐ Header shows v48
+☐ About shows Version 48
+☐ Developer Dashboard shows cache my-life-planner-v48
 ☐ Existing information is still present
 
+TODAY'S FOCUS
+☐ Type “Empty dishwasher” and press Return
+☐ Confirm it appears immediately and the input remains ready
+☐ Add two more items quickly using Return
+☐ Tick one item and confirm it moves below active items and is struck through
+☐ Untick it and confirm it returns to the active group
+☐ Leave Home and return; confirm the items remain
+☐ Confirm Remove completed items deletes only completed Focus items
+
+COLLAPSIBLE HOME
+☐ Collapse Today's Focus
+☐ Collapse Needs Attention
+☐ Collapse Brain Inbox
+☐ Collapse Today and This week
+☐ Collapse Projects Moving Forward
+☐ Collapse Daily Rhythm
+☐ Leave Home and return; confirm each chosen state is remembered
+
+PROJECTS
+☐ Projects initially show project names and step counts without all steps
+☐ Expand one project and confirm its steps appear
+☐ Collapse it again
+☐ Complete or edit a step and confirm normal behaviour remains
+
 LISTS SEARCH
-☐ Search for a known to-do and confirm the To-do section remains visible
-☐ Search for a project name
-☐ Search for text contained in a project step
 ☐ Search for an appointment title
-☐ Search for a Brain Inbox entry
-☐ Search for a custom-list name
-☐ Search for an item inside a custom list
-☐ Search for a term with no matches and confirm “No matching items” appears
-☐ Clear the box and confirm all list sections return
-☐ Repeat a search after leaving Lists and returning
+☐ Search for appointment notes, location or repeat wording
+☐ Search for a project name
+☐ Search for text in a collapsed project step and confirm it is revealed
+☐ Clear the search and confirm every Lists section returns immediately
+☐ Leave Lists, return and repeat a search
+
+CUSTOM LISTS
+☐ Tick a Custom List item
+☐ Confirm it is struck through and sorted below active items
+☐ Untick it and confirm it is reinstated
+☐ Confirm deletion remains available in Manage
 
 REGRESSION SPOT CHECK
-☐ Custom-list item text is visible in its editor
-☐ Lists screen stays at normal scale on iPhone
+☐ Brain Inbox data and attachments remain present
+☐ Appointments and recurrence still work as in v47
 ☐ Home task text opens the task rather than completing it
-☐ Completion control still marks a task complete/incomplete
-☐ Progress bar updates after changing task completion
-☐ Random Task only suggests saved, visible tasks
+☐ Random Task only suggests saved visible tasks
+☐ iPhone layout stays at normal scale
 
 RESULT
-☐ PASS — approve v47 as the new stable baseline
+☐ PASS — approve v48 as the new stable baseline
 ☐ FAIL — report the failed checklist item and what happened

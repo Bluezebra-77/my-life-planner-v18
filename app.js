@@ -1,5 +1,5 @@
 /*
- * My Life Planner v47
+ * My Life Planner v48
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -57,7 +57,8 @@ function normaliseLegacyShape(value = {}) {
     annualDates: source.annualDates || source.birthdays || source.annualReminders || [],
     cleaningTasks: source.cleaningTasks || source.cleaning || source.cleaningJobs || source.householdTasks || [],
     appointments: source.appointments || source.events || [],
-    customLists: Array.isArray(source.customLists) ? source.customLists : []
+    customLists: Array.isArray(source.customLists) ? source.customLists : [],
+    todayFocus: Array.isArray(source.todayFocus) ? source.todayFocus : []
   };
 }
 
@@ -129,7 +130,8 @@ function getData() {
     appointments: mergeUniqueLists(candidates,"appointments"),
     inbox: mergeUniqueLists(candidates,"inbox"),
     waiting: mergeUniqueLists(candidates,"waiting"),
-    customLists: mergeUniqueLists(candidates,"customLists")
+    customLists: mergeUniqueLists(candidates,"customLists"),
+    todayFocus: mergeUniqueLists(candidates,"todayFocus")
   });
   try {
     localStorage.setItem("lifePlannerMigrationSafety", JSON.stringify({savedAt:new Date().toISOString(), sourceKeys:candidates.map(x=>x.key), data:merged}));
@@ -147,7 +149,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "47";
+const APP_VERSION = "48";
 const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
@@ -167,6 +169,7 @@ function normaliseData(loaded = {}) {
     inbox: Array.isArray(loaded.inbox) ? loaded.inbox : [],
     waiting: Array.isArray(loaded.waiting) ? loaded.waiting : [],
     customLists: Array.isArray(loaded.customLists) ? loaded.customLists.map(list => ({...list, items:Array.isArray(list.items)?list.items:[]})) : [],
+    todayFocus: Array.isArray(loaded.todayFocus) ? loaded.todayFocus : [],
     dailyTasks: Array.isArray(loaded.dailyTasks) ? loaded.dailyTasks : JSON.parse(JSON.stringify(dailyTasks)),
     eveningTasks: Array.isArray(loaded.eveningTasks) ? loaded.eveningTasks : JSON.parse(JSON.stringify(eveningTasks)),
     categoryTasks: loaded.categoryTasks && typeof loaded.categoryTasks === "object"
@@ -1212,6 +1215,8 @@ function renderAll() {
   setDate();
   renderChecklist("dailyChecklist",data.dailyTasks,"daily",false);
   renderChecklist("eveningChecklist",data.eveningTasks,"daily",false);
+  prepareTodayFocusForToday();
+  renderTodayFocus();
   renderFocusToday();
   renderInbox();
   renderWaiting();
@@ -1239,6 +1244,7 @@ function renderAll() {
   renderDailyBackups();
   applySettings();
   restorePanelStates();
+  initialiseHomeCollapsibles();
 }
 
 
@@ -1520,6 +1526,63 @@ function dueClass(value){
   const days=daysBetween(today,d);
   return days<0?'status-overdue':days<=2?'status-soon':'status-future';
 }
+function prepareTodayFocusForToday(){
+  const today=localDateKey();
+  data.todayFocus=Array.isArray(data.todayFocus)?data.todayFocus:[];
+  let changed=false;
+  data.todayFocus.forEach(item=>{
+    if(!item.completed && item.forDate!==today){item.forDate=today;changed=true;}
+  });
+  if(changed)saveData();
+}
+function addTodayFocusItem(event){
+  event?.preventDefault();
+  const input=document.getElementById('todayFocusInput');
+  const name=input?.value.trim();if(!name)return;
+  data.todayFocus=Array.isArray(data.todayFocus)?data.todayFocus:[];
+  data.todayFocus.push({id:uid(),name,completed:false,forDate:localDateKey(),createdAt:new Date().toISOString()});
+  if(input)input.value='';saveData();renderTodayFocus();updateProgress();input?.focus();
+}
+function toggleTodayFocusItem(id){
+  const item=(data.todayFocus||[]).find(x=>String(x.id)===String(id));if(!item)return;
+  item.completed=!item.completed;item.completedAt=item.completed?new Date().toISOString():'';item.forDate=localDateKey();
+  saveData();renderTodayFocus();
+}
+function deleteTodayFocusItem(id){
+  data.todayFocus=(data.todayFocus||[]).filter(x=>String(x.id)!==String(id));saveData();renderTodayFocus();
+}
+function clearCompletedTodayFocus(){
+  data.todayFocus=(data.todayFocus||[]).filter(x=>!x.completed);saveData();renderTodayFocus();
+}
+function renderTodayFocus(){
+  const area=document.getElementById('todayFocusArea');if(!area)return;area.innerHTML='';
+  const items=[...(data.todayFocus||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
+  if(!items.length){area.innerHTML='<div class="empty-state">Nothing added yet. Type the small jobs you want to do today.</div>';return;}
+  items.forEach(item=>{
+    const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''}`;
+    row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleTodayFocusItem('${item.id}')" aria-label="${item.completed?'Reinstate':'Complete'} ${escapeHtml(item.name)}">${item.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="toggleTodayFocusItem('${item.id}')"><span class="v10-row-title">${escapeHtml(item.name)}</span><span class="v10-row-meta">${item.completed?'Completed — tap to reinstate':'Today'}</span></button>${compactMenu(`<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`,item.name)}`;
+    area.appendChild(row);
+  });
+  if(items.some(x=>x.completed))area.insertAdjacentHTML('beforeend','<button type="button" class="small-button secondary-button clear-focus-completed" onclick="clearCompletedTodayFocus()">Remove completed items</button>');
+}
+function getHomePanelStates(){try{return JSON.parse(localStorage.getItem('myLifePlannerHomePanels')||'{}')}catch{return {}}}
+function saveHomePanelStates(state){localStorage.setItem('myLifePlannerHomePanels',JSON.stringify(state));}
+function applyHomePanelState(panel,collapsed){
+  panel.classList.toggle('home-section-collapsed',collapsed);
+  const button=panel.querySelector('.home-collapse-toggle');
+  if(button){button.textContent=collapsed?'Show':'Hide';button.setAttribute('aria-expanded',String(!collapsed));}
+}
+function toggleHomePanel(key){const panel=document.querySelector(`[data-home-section="${key}"]`);if(!panel)return;const state=getHomePanelStates();state[key]=!panel.classList.contains('home-section-collapsed');saveHomePanelStates(state);applyHomePanelState(panel,state[key]);}
+function initialiseHomeCollapsibles(){
+  const state=getHomePanelStates();
+  document.querySelectorAll('.home-collapsible').forEach(panel=>{
+    const key=panel.dataset.homeSection;if(!key)return;
+    const heading=panel.querySelector(':scope > .section-heading,:scope > .focus-heading');if(!heading)return;
+    let button=heading.querySelector('.home-collapse-toggle');
+    if(!button){button=document.createElement('button');button.type='button';button.className='small-button secondary-button home-collapse-toggle';button.onclick=()=>toggleHomePanel(key);heading.appendChild(button);}
+    applyHomePanelState(panel,Boolean(state[key]));
+  });
+}
 function focusCandidateRows(){
   const rows=[];
   const today=new Date(); today.setHours(12,0,0,0);
@@ -1735,28 +1798,26 @@ function filterMyLists(query=''){
  const sections=[...document.querySelectorAll('.managed-list-section')];
  let matchingSections=0;
  sections.forEach(section=>{
-   const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item,.step-compact-row')];
+   const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item,.step-compact-row,.appointment-card')];
    const headingText=String(section.dataset.listName||section.querySelector('h2')?.textContent||'').toLocaleLowerCase();
    const headingMatch=Boolean(q)&&headingText.includes(q);
    let visibleRows=0;
    rows.forEach(row=>{
      const match=!q||headingMatch||String(row.textContent||'').toLocaleLowerCase().includes(q);
-     row.classList.toggle('list-search-hidden',!match);
-     row.hidden=!match;
-     if(match)visibleRows++;
+     row.classList.toggle('list-search-hidden',!match);row.hidden=!match;if(match)visibleRows++;
+   });
+   section.querySelectorAll('.project-steps-group').forEach(group=>{
+     const groupMatch=!q||String(group.textContent||'').toLocaleLowerCase().includes(q);
+     if(q&&groupMatch)group.hidden=false;
+     else if(!q){const state=getProjectStepStates();group.hidden=!state[group.dataset.projectId];}
    });
    const show=!q||headingMatch||visibleRows>0;
-   section.classList.toggle('list-search-hidden',!show);
-   section.hidden=!show;
-   section.style.display=show?'':'none';
+   section.classList.toggle('list-search-hidden',!show);section.hidden=!show;
    if(show)matchingSections++;
  });
  const status=document.getElementById('listSearchStatus');
- if(status){
-   status.textContent=!q?'':matchingSections?`${matchingSections} matching ${matchingSections===1?'section':'sections'}`:'No matching items';
- }
+ if(status)status.textContent=!q?'':matchingSections?`${matchingSections} matching ${matchingSections===1?'section':'sections'}`:'No matching items';
 }
-
 function initialiseListSearch(){
  const search=document.getElementById('globalListSearch');
  if(!search||search.dataset.searchReady==='true')return;
@@ -1976,35 +2037,34 @@ function renderTodos() {
   });
 }
 
+function getProjectStepStates(){try{return JSON.parse(localStorage.getItem('myLifePlannerProjectSteps')||'{}')}catch{return {}}}
+function toggleProjectSteps(projectId){const state=getProjectStepStates();state[projectId]=!state[projectId];localStorage.setItem('myLifePlannerProjectSteps',JSON.stringify(state));renderProjects();}
 function renderProjects() {
   const area = document.getElementById('projectsArea');
   if (!area) return;
   area.innerHTML = '';
   const projects = Array.isArray(data.projects) ? data.projects : [];
-  if (!projects.length) {
-    area.innerHTML = '<div class="empty-state">No projects yet.</div>';
-    return;
-  }
+  if (!projects.length) { area.innerHTML = '<div class="empty-state">No projects yet.</div>'; return; }
+  const openStates=getProjectStepStates();
   [...projects].sort(sortByDueDate).forEach(project => {
     const steps = Array.isArray(project.steps) ? project.steps : [];
     const genuinelyComplete = steps.length > 0 && steps.every(step => step.completed);
     project.completed = genuinelyComplete;
     const completedCount=steps.filter(step=>step.completed).length;
-    const row=document.createElement('div');
-    row.className=`compact-manage-row project-compact-row ${genuinelyComplete?'completed-row':''}`;
+    const row=document.createElement('div');row.className=`compact-manage-row project-compact-row ${genuinelyComplete?'completed-row':''}`;
     const projectActions=`<button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}');refreshListsImmediately()">Delete project</button>`;
-    row.innerHTML=`<button type="button" class="compact-row-main" onclick="editProject('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${completedCount} of ${steps.length} steps`:'No steps'}${project.details?' · '+escapeHtml(project.details):''}</span></button>${compactMenu(projectActions,project.name||'project')}`;
+    row.innerHTML=`<button type="button" class="project-expand-button" onclick="toggleProjectSteps('${project.id}')" aria-expanded="${Boolean(openStates[project.id])}" aria-label="${openStates[project.id]?'Hide':'Show'} steps">${openStates[project.id]?'▾':'▸'}</button><button type="button" class="compact-row-main" onclick="toggleProjectSteps('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${completedCount} of ${steps.length} steps`:'No steps'}${project.details?' · '+escapeHtml(project.details):''}</span></button>${compactMenu(projectActions,project.name||'project')}`;
     area.appendChild(row);
+    const group=document.createElement('div');group.className='project-steps-group';group.dataset.projectId=project.id;group.hidden=!openStates[project.id];
     steps.forEach((step,index)=>{
-      const stepRow=document.createElement('div');
-      stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
+      const stepRow=document.createElement('div');stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
       const stepActions=`<button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete step'}</button><button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit step</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}');refreshListsImmediately()">Delete step</button>`;
       stepRow.innerHTML=`<button type="button" class="compact-row-main" onclick="toggleStep('${project.id}','${step.id}');refreshListsImmediately()"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'}</span></button>${compactMenu(stepActions,step.name||'project step')}`;
-      area.appendChild(stepRow);
+      group.appendChild(stepRow);
     });
+    area.appendChild(group);
   });
 }
-
 function toggleStep(projectId, stepId) {
   const project = (data.projects || []).find(item => item.id === projectId);
   const step = project && (project.steps || []).find(item => item.id === stepId);
@@ -2090,13 +2150,13 @@ function renderCustomListDialogItems(){
   const del=document.getElementById('deleteCustomListButton');if(del)del.hidden=!list;
   if(!list){area.innerHTML='<div class="empty-state">Save the list name, then add items.</div>';return;}
   if(!(list.items||[]).length){area.innerHTML='<div class="empty-state">No items yet.</div>';return;}
-  (list.items||[]).forEach(item=>{const row=document.createElement('div');row.className=`compact-manage-row ${item.completed?'completed-row':''}`;row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleCustomListItem('${list.id}','${item.id}')" aria-label="${item.completed?'Mark active':'Complete'}">${item.completed?'✓':''}</button><button type="button" class="compact-row-main" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span class="compact-row-title">${escapeHtml(item.name)}</span></button><button type="button" class="small-button danger-text" onclick="deleteCustomListItem('${list.id}','${item.id}')">Delete</button>`;area.appendChild(row);});
+  [...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).forEach(item=>{const row=document.createElement('div');row.className=`compact-manage-row ${item.completed?'completed-row':''}`;row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleCustomListItem('${list.id}','${item.id}')" aria-label="${item.completed?'Mark active':'Complete'}">${item.completed?'✓':''}</button><button type="button" class="compact-row-main" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span class="compact-row-title">${escapeHtml(item.name)}</span></button><button type="button" class="small-button danger-text" onclick="deleteCustomListItem('${list.id}','${item.id}')">Delete</button>`;area.appendChild(row);});
 }
 function renderCustomLists(){
   const area=document.getElementById('customListsArea');if(!area)return;area.innerHTML='';
   const lists=data.customLists||[];
   if(!lists.length){area.innerHTML='<div class="empty-state">No custom lists yet. Create one for shopping, packing, ideas or anything else.</div>';return;}
-  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${(list.items||[]).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
+  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${[...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
 }
 
 /* ===== Lists refresh ===== */

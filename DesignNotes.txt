@@ -1,0 +1,19 @@
+MY LIFE PLANNER — DESIGN NOTES
+
+TODAY'S FOCUS
+One-off daily intentions should not require dates, reminders or permanent task records. Entry must be rapid. Incomplete items carry forward; completed items remain visible until removed so mistakes can be reversed.
+
+HOME SCREEN
+Home is a dashboard for what needs attention now. Every substantial section is collapsible and remembers its state so the user controls how much detail is visible.
+
+PLANNER
+Planner remains the time-based view. Duplication between Home and Planner will be reviewed after v48 is tested with real data.
+
+PROJECTS
+Project names and progress summaries are visible first. Steps use progressive disclosure and appear only when the project is expanded or a search matches a step.
+
+CUSTOM LISTS
+Completed items are not immediately destroyed. They move below active items, are struck through, and can be reinstated. Deletion remains a deliberate Manage action.
+
+RECURRENCE
+Calendar appointments occur and advance. Recurring tasks remain due/overdue until explicitly completed. This distinction is planned for the Smart Planner release.

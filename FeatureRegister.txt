@@ -1,0 +1,22 @@
+MY LIFE PLANNER — FEATURE REGISTER
+
+DELIVERED IN v48
+- Today's Focus
+- Quick Return-key Focus entry
+- Focus completion, reinstatement and carry-over
+- Collapsible Home dashboard
+- Collapsible project steps
+- Better Lists search/reset
+
+HIGH PRIORITY NEXT
+- Smart Lists: Basic, Checklist and Action List
+- Recurring tasks distinct from appointments
+
+PLANNED
+- Advanced recurrence
+- Appointment reminders and advance visibility
+- Random Task timer
+- Global search
+- Brain Inbox improvements
+- Developer diagnostics
+- Backup and sync preparation

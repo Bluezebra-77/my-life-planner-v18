@@ -1,20 +1,31 @@
 My Life Planner
-Version 47
+Version 48
 Date: 31 July 2026
 
-BUILT FROM
-- Stable v46 release.
+RELEASE OBJECTIVE
+Make the planner easier to use at the start of each day by providing fast capture for one-off daily intentions and a calmer, collapsible Home dashboard.
 
-FIXED
-- Lists search now uses a dedicated event listener and reliably filters all rendered list sections.
-- Search status reports matching sections or no matches.
-- Clearing the search restores every list section.
-- Whole-number versioning restored across every release file.
+NEW
+- Today's Focus: type a one-off job and press Return to add it immediately.
+- Unfinished Today's Focus items automatically carry into the current day.
+- Completed Focus items move below active items, are struck through and can be reinstated.
+- Every main Home section can be collapsed or expanded; the chosen state is remembered.
+- Project steps are collapsed by default in the Projects list and can be expanded per project.
+
+FIXED / IMPROVED
+- Lists search now includes appointment cards.
+- Clearing Lists search restores all sections and respects saved project expansion states.
+- A project is automatically expanded when a matching step is found by search.
+- Completed Custom List items are struck through and sorted below active items; unticking reinstates them.
+- The unclear header progress bar has been hidden pending a later redesign around meaningful daily progress.
 
 PRESERVED
-- All v46 stability fixes.
-- Existing localStorage keys and saved-data structure.
-- Existing tasks, projects, appointments, custom lists and Brain Inbox information.
+- Existing saved data and localStorage keys.
+- Existing appointments, tasks, projects, custom lists, routines, Brain Inbox and settings.
+- Existing v47 stability fixes.
 
 DEFERRED
-- Collapsible project steps is recorded for an appropriate usability release.
+- Recurring tasks that stay overdue until completed (for example, a weekly injection).
+- Smart List types, dates and reminders.
+- Built-in task timer.
+- Larger Home/Planner duplication review.

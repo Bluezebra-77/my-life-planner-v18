@@ -1,0 +1,56 @@
+MY LIFE PLANNER — MASTER ROADMAP (updated for v48)
+
+CURRENT
+v48 — Daily Workflow (this build)
+- Today's Focus quick entry and carry-over
+- Collapsible Home sections
+- Collapsible project steps
+- Search fixes/reset
+- Improved completed Custom List behaviour
+
+NEXT PLANNED
+v49 — Smart Lists
+- Basic List, Checklist and Action List behaviours
+- Rapid line-by-line entry
+- Reusable checklist reset (whole list and individual items)
+- Optional dates and reminders for Action Lists
+- Convert list behaviour without losing data
+
+v50 — Smart Planner and Recurring Tasks
+- Separate appointment and recurring-task behaviour
+- Recurring tasks remain overdue until completed
+- Advanced recurrence such as second Thursday / last Friday
+- Appointment visibility in advance
+- Optional reminders and notifications
+
+v51 — Brain Inbox 2
+- Better previews and attachment handling
+- Capture and conversion refinements
+- Shortcut/share workflow improvements
+
+v52 — Global Search
+- Search all planner data and open the exact result
+
+v53 — Developer Tools
+- Diagnostics, storage, cache, self-tests and exportable report
+
+v54 — Backup / Sync Foundation
+- Backup, restore and multi-device preparation
+
+ACTIVE BACKLOG / WORKFLOW DISCOVERIES
+- Built-in timer for Random Task / focused work sessions
+- Review duplication between Home and Planner timeline
+- Decide the long-term role of the Home week view
+- Meaningful replacement for, or permanent removal of, the old progress bar
+- Reorder project steps
+- Shopping-specific Smart List behaviour
+- Favourite lists, saved searches and recent items
+
+DESIGN PRINCIPLES
+- Real-world usage drives the roadmap.
+- One piece of information has one logical home; other screens are views, not duplicates.
+- The 30-Second Rule: a quick thought must be quick to capture.
+- The planner adapts to the user's life, not the other way around.
+- Keep screens calm through progressive disclosure and collapsible detail.
+- Home answers: “What needs my attention now?”
+- Planner answers: “What is happening over time?”

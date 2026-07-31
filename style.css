@@ -1193,3 +1193,17 @@ html,body{max-width:100%;overflow-x:clip}
 
 /* v47 Lists search reliability */
 .list-search-hidden{display:none!important}.list-search-status{min-height:1.2em;margin:.45rem 0 0;color:var(--muted);font-size:.82rem;font-weight:700}
+
+
+/* ===== Version 48 Daily Workflow ===== */
+.home-section-collapsed > *:not(.section-heading):not(.focus-heading){display:none!important}
+.home-collapse-toggle{margin-left:auto;flex:0 0 auto;width:auto!important;min-width:66px}
+.today-focus-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:12px 0}
+.today-focus-entry .section-plus{align-self:center}
+.today-focus-row.completed-row .v10-row-title,.custom-preview-item.completed-row span:last-child{text-decoration:line-through;opacity:.62}
+.clear-focus-completed{margin-top:8px;width:100%}
+.project-expand-button{width:34px;height:34px;min-width:34px;padding:0;border-radius:50%;background:transparent!important;color:var(--accent)!important;box-shadow:none;font-size:1.25rem}
+.project-steps-group{display:grid;gap:6px;margin:0 0 8px 34px}
+.project-steps-group[hidden]{display:none!important}
+.appointment-card.list-search-hidden{display:none!important}
+@media(max-width:560px){.home-collapse-toggle{width:auto!important}.today-focus-entry{grid-template-columns:1fr auto}.today-focus-entry button{width:38px}.project-steps-group{margin-left:12px}}

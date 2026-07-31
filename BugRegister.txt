@@ -1,0 +1,15 @@
+MY LIFE PLANNER — BUG / ISSUE REGISTER
+
+FIXED IN v48
+- Lists search did not reliably include appointments.
+- Clearing Lists search did not immediately restore all sections.
+- Completed Custom List items remained mixed with active items without a clear crossed-through state.
+- Project lists displayed every step, causing excessive scrolling.
+- Brain Inbox and other Home sections could not be collapsed.
+
+PLANNED
+- Recurring action such as weekly injection advances like an appointment instead of remaining overdue until completed. Planned for recurring-task engine.
+
+UNDER REVIEW
+- Home and Planner timeline contain some duplicated information.
+- Previous progress bar did not communicate meaningful progress; hidden in v48 while its role is reviewed.

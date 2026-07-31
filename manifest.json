@@ -1,8 +1,8 @@
 {
-  "name": "My Life Planner V47",
+  "name": "My Life Planner V48",
   "short_name": "Life Planner",
   "description": "A calm personal planner with a unified Timeline, Brain Inbox, lists, projects, routines and appointments.",
-  "start_url": "./index.html?v=47",
+  "start_url": "./index.html?v=48",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8ff",
@@ -23,7 +23,7 @@
     }
   ],
   "id": "./",
-  "version": "47",
+  "version": "48",
   "shortcuts": [
     {
       "name": "Brain Inbox",
