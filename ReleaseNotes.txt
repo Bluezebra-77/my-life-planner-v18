@@ -1,13 +1,11 @@
-My Life Planner v51e — Quick Add
+My Life Planner v51e — Corrected
 
-ADDED
-- Floating Quick Add button available from every main screen.
-- Direct choices for Today’s Focus, To-do, Appointment, Recurring Task, Project, Cleaning Task, Waiting For and Brain Inbox.
-- Last-used Quick Add choice is highlighted.
-- Voice shortcut to Brain Inbox.
-- Cmd/Ctrl+K keyboard shortcut on desktop.
+CORRECTED
+- Cleaning-list three-dot actions remain visible in iPhone portrait.
+- The Cleaning row now reserves a fixed action column instead of allowing text to push the menu off-screen.
+- Quick Add moves above the minimised timer whenever both are visible on iPhone or Mac.
 
 PRESERVED
-- All accepted v51d data and workflows.
-- Existing lifePlannerData and Today’s Focus safety mirror.
-- Migration, backup and rollback framework.
+- All accepted v51e Quick Add behaviour.
+- All accepted v51d timer, Convert, Today’s Focus, Waiting For and Gentle close-down behaviour.
+- Existing data, migrations, tags and recurring tasks.

@@ -1287,3 +1287,40 @@ html,body{max-width:100%;overflow-x:clip}
 .quick-add-grid button span{font-size:1.25rem}.quick-add-grid button.last-used{outline:3px solid var(--accent,#537462);outline-offset:1px}
 .quick-add-footer{margin-top:14px}.quick-add-voice{width:100%}
 @media(max-width:560px){.quick-add-fab{right:14px;bottom:88px;width:50px;height:50px;min-width:50px}.quick-add-dialog{padding:16px}.quick-add-grid{grid-template-columns:1fr}.quick-add-grid button{width:100%;min-height:52px}}
+
+/* v51e corrected: keep Cleaning actions visible and separate Quick Add from timer */
+#cleaningArea .compact-manage-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 42px;
+  align-items:center;
+  width:100%;
+  min-width:0;
+}
+#cleaningArea .compact-row-main{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%;
+}
+#cleaningArea .item-menu-anchor{
+  grid-column:2;
+  justify-self:end;
+  margin-left:0;
+  width:42px;
+  min-width:42px;
+}
+#cleaningArea .item-menu-trigger{
+  width:38px!important;
+  min-width:38px!important;
+}
+
+/* When a minimised focus timer is visible, lift Quick Add clear of it. */
+body:has(.focus-timer-mini:not(.hidden)) .quick-add-fab{
+  bottom:calc(174px + env(safe-area-inset-bottom));
+}
+@media(max-width:560px){
+  #cleaningArea .compact-manage-row{grid-template-columns:minmax(0,1fr) 40px;gap:6px}
+  #cleaningArea .item-menu-anchor{width:40px;min-width:40px}
+  body:has(.focus-timer-mini:not(.hidden)) .quick-add-fab{
+    bottom:calc(154px + env(safe-area-inset-bottom));
+  }
+}

@@ -1,31 +1,29 @@
-MY LIFE PLANNER v51e — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51e — CORRECTED CHECKLIST
 
 INSTALLATION AND DATA
 [ ] Header, About and Developer information show v51e.
-[ ] Existing Today’s Focus, lists, appointments, recurring tasks, projects, routines and tags remain present.
+[ ] Existing data remains present.
 
-QUICK ADD
-[ ] Quick Add + appears on Home, Lists and Planner without covering bottom navigation.
-[ ] Open and close the Quick Add menu.
-[ ] Add a Today’s Focus item; cursor goes directly to the Focus entry.
-[ ] Add a To-do.
-[ ] Add an Appointment.
-[ ] Add a Recurring Task.
-[ ] Add a Project.
-[ ] Add a Cleaning Task.
-[ ] Add a Waiting For item.
-[ ] Add a Brain Inbox item.
-[ ] Confirm each correct form opens and saving returns to the screen you were using.
-[ ] Reopen Quick Add and confirm the last-used choice is highlighted.
-[ ] Test the Brain Inbox voice shortcut if available.
-[ ] On MacBook, Cmd/Ctrl+K opens Quick Add.
+CLEANING LIST — IPHONE PORTRAIT
+[ ] Open Lists → Cleaning while the iPhone is in portrait.
+[ ] Every cleaning row shows its three-dot menu without rotating the phone.
+[ ] Open the menu and test Edit, Complete and Delete on test data.
+[ ] Long task names/details truncate or wrap without pushing the menu off-screen.
+[ ] No horizontal page scrolling appears.
 
-MOBILE AND REGRESSION
-[ ] Test iPhone portrait and landscape; menu fits and scrolls if needed.
-[ ] Quick Add does not cover the timer strip when a timer is minimised.
-[ ] Today’s Focus, timer, Convert, Waiting For, Gentle close-down, Timeline, search and recurrence remain stable.
+TIMER AND QUICK ADD
+[ ] Start and minimise a Focus timer on iPhone.
+[ ] Confirm the timer and Quick Add + do not overlap.
+[ ] Open Quick Add while the timer is minimised.
+[ ] Repeat on MacBook.
+[ ] Cancel or complete the timer and confirm Quick Add returns to its normal position.
+
+REGRESSION
+[ ] Quick Add destinations still open the correct forms.
+[ ] Today’s Focus, Convert, Waiting For and Gentle close-down work.
+[ ] Recurring Tasks, Timeline, search and tags work.
 [ ] Refresh and reopen; data persists.
 
 RESULT
 [ ] ACCEPT v51e
-[ ] REJECT v51e — record failed item(s).
+[ ] REJECT v51e — record the failed item(s)

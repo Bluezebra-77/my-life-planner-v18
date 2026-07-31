@@ -1,16 +1,16 @@
-My Life Planner v51e — Build Report
+My Life Planner v51e — Corrected Build Report
 
-Baseline: accepted v51d Final Corrected.
-Scope: Quick Add milestone.
+Baseline: user-tested v51e.
+Scope: focused responsive-layout patch.
 
-PASS — floating Quick Add control added
-PASS — eight creation destinations connected to existing forms
-PASS — current view remains unchanged after save
-PASS — last-used choice stored separately in localStorage
-PASS — compact mobile layout and bottom-navigation clearance
+PASS — Cleaning action menu given a reserved visible column
+PASS — iPhone portrait layout constrained without horizontal overflow
+PASS — Quick Add lifted when minimised timer is visible
+PASS — normal Quick Add position retained when no timer is minimised
 PASS — JavaScript syntax
 PASS — manifest JSON
 PASS — duplicate HTML ID scan
 PASS — CSS brace balance
-PASS — version/cache consistency
-PASS — required files and ZIP integrity
+PASS — v51e version/cache consistency
+PASS — required files present
+PASS — ZIP integrity

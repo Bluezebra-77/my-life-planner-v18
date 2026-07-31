@@ -15,3 +15,7 @@ OPEN DESIGN ITEMS
 v51e MONITOR
 - Quick Add placement on iPhone portrait/landscape and MacBook.
 - Correct destination form opens from every current screen.
+
+FIXED IN v51e CORRECTED
+- Cleaning three-dot actions could be pushed outside the visible iPhone portrait row.
+- A minimised Focus timer overlapped the floating Quick Add button.
