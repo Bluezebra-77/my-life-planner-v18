@@ -1324,3 +1324,14 @@ body.timer-minimised .quick-add-fab{
     bottom:calc(154px + env(safe-area-inset-bottom));
   }
 }
+
+/* v51e iPhone timer/Quick Add final layout patch */
+body.timer-minimised .quick-add-fab{
+  bottom:calc(92px + env(safe-area-inset-bottom) + var(--focus-timer-mini-height, 74px) + 14px)!important;
+}
+@media(max-width:560px){
+  body.timer-minimised .quick-add-fab{
+    bottom:calc(82px + env(safe-area-inset-bottom) + var(--focus-timer-mini-height, 78px) + 16px)!important;
+    right:14px!important;
+  }
+}

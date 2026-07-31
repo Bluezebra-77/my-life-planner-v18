@@ -1,37 +1,24 @@
-MY LIFE PLANNER v51e — CORRECTED CHECKLIST
+MY LIFE PLANNER v51e — IPHONE TIMER PATCH CHECKLIST
 
-INSTALLATION AND DATA
-[ ] Header, About and Developer information show v51e.
+INSTALLATION
+[ ] Header, About and Developer information remain v51e.
 [ ] Existing data remains present.
 
-CLEANING LIST — IPHONE PORTRAIT
-[ ] Open Lists → Cleaning while the iPhone is in portrait.
-[ ] Every cleaning row shows its three-dot menu without rotating the phone.
-[ ] Open the menu and test Edit, Complete and Delete on test data.
-[ ] Long task names/details truncate or wrap without pushing the menu off-screen.
-[ ] No horizontal page scrolling appears.
+IPHONE — REQUIRED TEST
+[ ] Open on iPhone in portrait.
+[ ] Start a Today’s Focus timer and minimise it.
+[ ] Confirm Quick Add + is fully visible above the timer bar with a clear gap.
+[ ] Open Quick Add while the timer remains minimised.
+[ ] Rotate to landscape and confirm there is still no overlap.
+[ ] Return to portrait and confirm the position recalculates correctly.
+[ ] Restore the timer; Quick Add returns to its normal position.
+[ ] Minimise again, then cancel; Quick Add returns to normal.
+[ ] Complete from the timer; Quick Add returns to normal.
 
-TIMER AND QUICK ADD
-[ ] Start and minimise a Focus timer on iPhone.
-[ ] Confirm the timer and Quick Add + do not overlap.
-[ ] Open Quick Add while the timer is minimised.
-[ ] Repeat on MacBook.
-[ ] Cancel or complete the timer and confirm Quick Add returns to its normal position.
+MAC / DESKTOP
+[ ] Minimise the timer and confirm Quick Add remains clear of it.
 
 REGRESSION
-[ ] Quick Add destinations still open the correct forms.
-[ ] Today’s Focus, Convert, Waiting For and Gentle close-down work.
-[ ] Recurring Tasks, Timeline, search and tags work.
-[ ] Refresh and reopen; data persists.
-
-RESULT
-[ ] ACCEPT v51e
-[ ] REJECT v51e — record the failed item(s)
-
-FINAL TIMER / QUICK ADD PATCH
-[ ] Start a timer from Today's Focus and minimise it.
-[ ] Confirm Quick Add moves above the timer on iPhone portrait.
-[ ] Confirm Quick Add moves above the timer on MacBook.
-[ ] Restore the timer and confirm Quick Add returns to its normal position.
-[ ] Cancel or complete the timer and confirm Quick Add returns to its normal position.
-[ ] Close and reopen the app; confirm the timer bar is not shown automatically.
+[ ] Cleaning-list action menu remains visible on iPhone portrait.
+[ ] Today’s Focus, Convert, Waiting For, Gentle close-down, Timeline and recurring tasks work.
+[ ] Refresh and reopen; data remains present.

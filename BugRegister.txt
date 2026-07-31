@@ -22,3 +22,6 @@ FIXED IN v51e CORRECTED
 
 FIXED IN v51e FINAL PATCH
 - Quick Add could still be covered by the minimised timer because the previous CSS :has() selector was not applied reliably in the installed PWA. Replaced with an explicit JavaScript timer-minimised state.
+
+v51e iPhone final patch
+- Fixed: minimised timer still overlapped Quick Add on iPhone because fixed offsets did not account for the rendered timer height and safe-area layout.

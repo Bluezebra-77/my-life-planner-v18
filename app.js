@@ -2768,3 +2768,28 @@ function chooseQuickAdd(type){
 document.addEventListener('keydown',event=>{
   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();openQuickAdd();}
 });
+
+/* ===== v51e iPhone timer/Quick Add final layout patch ===== */
+function syncQuickAddTimerClearance(){
+  const mini=document.getElementById('focusTimerMini');
+  const visible=Boolean(mini && !mini.classList.contains('hidden') && document.body.classList.contains('timer-minimised'));
+  if(!visible){
+    document.documentElement.style.removeProperty('--focus-timer-mini-height');
+    return;
+  }
+  requestAnimationFrame(()=>{
+    const height=Math.ceil(mini.getBoundingClientRect().height||78);
+    document.documentElement.style.setProperty('--focus-timer-mini-height',`${height}px`);
+  });
+}
+const minimiseFocusTimerV51eIphone=minimiseFocusTimer;
+minimiseFocusTimer=function(){minimiseFocusTimerV51eIphone();syncQuickAddTimerClearance();};
+const restoreFocusTimerDialogV51eIphone=restoreFocusTimerDialog;
+restoreFocusTimerDialog=function(){restoreFocusTimerDialogV51eIphone();syncQuickAddTimerClearance();};
+const cancelFocusTimerV51eIphone=cancelFocusTimer;
+cancelFocusTimer=function(){cancelFocusTimerV51eIphone();syncQuickAddTimerClearance();};
+const completeFocusFromTimerV51eIphone=completeFocusFromTimer;
+completeFocusFromTimer=function(){completeFocusFromTimerV51eIphone();syncQuickAddTimerClearance();};
+window.addEventListener('resize',syncQuickAddTimerClearance);
+window.addEventListener('orientationchange',()=>setTimeout(syncQuickAddTimerClearance,150));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(syncQuickAddTimerClearance,0);});
