@@ -1,19 +1,16 @@
 MY LIFE PLANNER — MASTER ROADMAP
 
 CURRENT INTERNAL MILESTONE
-v51b — Advanced Recurrence and Tags
-- Nth-weekday monthly recurring-task rules
-- Tag entry, display and search
-- Brain Inbox control-layout correction
+v51c — Smart Lists and dashboard foundation
 
-COMPLETED INTERNAL MILESTONE
-v51a — Migration infrastructure and routine customisation
+COMPLETED
+- v51a migration infrastructure and editable routines
+- v51b advanced recurrence and tags
 
-NEXT INTERNAL MILESTONES
-v51c — Smart Lists
-v51d — Dashboard
-v51e — Quick Add
-v51f — Planner Health phase 1
+NEXT
+- v51d Dashboard refinement
+- v51e Quick Add
+- v51f Planner Health phase 1
 
 PUBLIC RELEASE
-v51 — Package only after all agreed milestones pass acceptance testing.
+- v51 only after all internal milestones pass acceptance testing.

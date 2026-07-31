@@ -1,23 +1,30 @@
-MY LIFE PLANNER v51b — CORRECTED CHECKLIST
+MY LIFE PLANNER v51c — ACCEPTANCE CHECKLIST
 
 INSTALLATION
-[ ] Header, About and Developer information all show v51b.
-[ ] Existing data, Today's Focus, routines, tags and recurring tasks remain present.
+[ ] Header, About and Developer information show v51c.
+[ ] Existing data, Today’s Focus, routines, tags and recurring tasks remain present.
 
-RECURRING DIALOG
-[ ] Select week(s): Monthly rule, Occurrence and Weekday are not shown.
-[ ] Select day(s): monthly controls are not shown.
-[ ] Select year(s): monthly controls are not shown.
-[ ] Select month(s): Monthly rule appears.
-[ ] Choose Same calendar date: Occurrence and Weekday remain hidden.
-[ ] Choose Weekday position: Occurrence and Weekday appear.
-[ ] Change occurrence/weekday and confirm the summary updates.
-[ ] Save a weekly task and confirm it displays only a weekly rule.
-[ ] Save second Thursday monthly and confirm it works.
-[ ] Edit between weekly, same-date monthly and nth-weekday monthly.
+SMART LISTS
+[ ] Open Lists and find Smart Lists near the top.
+[ ] Today contains items due today.
+[ ] Overdue contains incomplete dated items before today.
+[ ] Next 7 days contains upcoming dated items.
+[ ] Recently added shows items created in the last 14 days.
+[ ] Waiting For, Brain Inbox and Recurring due show the expected records.
+[ ] Opening an item from a Smart List opens its normal editor.
+
+HOME SUMMARY
+[ ] Summary card counts match the Smart Lists.
+[ ] Tap each card and confirm it opens Lists at Smart Lists.
+[ ] Counts update after adding, completing or editing an item.
+
+SEARCH
+[ ] Partial search still works.
+[ ] Exact/stronger matches appear before weaker matches within a section.
+[ ] Clearing search restores all sections and their normal order.
+[ ] Tags and tag search still work.
 
 REGRESSION
-[ ] Tags and tag search work.
-[ ] Brain Inbox controls do not overlap.
-[ ] Today's Focus, Projects, Lists, Timeline and Recurring Tasks remain stable.
-[ ] Close/reopen and refresh; data persists.
+[ ] Recurring rules including second Thursday still work.
+[ ] Today’s Focus, Projects, Appointments, Timeline, Brain Inbox and routines remain stable.
+[ ] Refresh and close/reopen; data persists.

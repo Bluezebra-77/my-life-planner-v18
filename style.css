@@ -1255,3 +1255,7 @@ html,body{max-width:100%;overflow-x:clip}
 /* v51b recurrence-dialog correction */
 [hidden]{display:none!important}
 .recurring-rule-summary{margin:.25rem 0;padding:.8rem 1rem;border:1px solid var(--line,#d8ddd8);border-radius:12px;background:var(--accent-soft,#e9f1ec);color:var(--ink,#20312a);font-weight:700;line-height:1.45}
+
+
+/* v51c Smart Lists and dashboard foundation */
+.smart-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.smart-summary-card{display:grid;gap:2px;text-align:left;padding:13px 14px;background:rgba(255,255,255,.92);color:var(--ink,#20312a);border:1px solid var(--line,rgba(42,69,57,.12));box-shadow:var(--shadow,0 10px 30px rgba(37,58,48,.08))}.smart-summary-card strong{font-size:1.45rem}.smart-summary-card span{font-size:.78rem;color:var(--muted,#68766f)}.smart-summary-card.has-alert{border-color:#d78b8b;background:#fff7f7}.smart-lists-panel{scroll-margin-top:130px}.smart-list-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;-webkit-overflow-scrolling:touch}.smart-list-tabs button{flex:0 0 auto;width:auto;padding:9px 12px;background:#f3f7f4;color:#425448;border:1px solid #b9c8bd;box-shadow:none}.smart-list-tabs button.active{background:var(--accent,#537462);color:white;border-color:transparent}@media(max-width:600px){.smart-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.smart-summary-card{width:100%}}

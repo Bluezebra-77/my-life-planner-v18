@@ -1,11 +1,9 @@
-My Life Planner v51b — Corrected Release
+My Life Planner v51c — Smart Lists
 
-Corrected
-- Recurring-task forms now show only controls relevant to the selected period.
-- Monthly rule is hidden for daily, weekly and yearly recurrence.
-- Occurrence and Weekday are shown only when Monthly + Weekday position is selected.
-- Added a live plain-English recurrence summary.
-- Hidden recurrence fields are ignored when saving non-monthly rules.
+ADDED
+- Live Smart Lists for Today, Overdue, Next 7 days, Recently added, Waiting For, Brain Inbox and Recurring due.
+- Home summary cards that open the matching Smart List.
+- Relevance ordering within matching Lists search results.
 
-Preserved
-- Advanced monthly recurrence, tags, tag-aware search, data migration framework and all accepted v51a/v50 data.
+PRESERVED
+- Advanced recurrence, tags, tag search, migration/backup framework, Today’s Focus, editable routines and all accepted v51b data.

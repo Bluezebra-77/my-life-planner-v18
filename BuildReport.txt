@@ -1,15 +1,16 @@
-My Life Planner v51b — Corrected Build Report
+My Life Planner v51c — Build Report
 
-Baseline: user-tested v51b.
-Scope: recurrence-dialog usability correction only.
+Baseline: accepted corrected v51b source.
+Scope: Smart Lists, Home summary foundation and ranked Lists search.
 
-PASS — irrelevant recurrence controls hidden dynamically
-PASS — live recurrence summary included
-PASS — weekly, daily and yearly rules save without monthly fields
-PASS — monthly same-date and nth-weekday rules retained
-PASS — JavaScript syntax
-PASS — manifest JSON
-PASS — duplicate HTML ID scan
-PASS — CSS brace balance
-PASS — v51b version/cache consistency
-PASS — ZIP integrity
+VALIDATION
+- JavaScript syntax: checked
+- manifest.json: checked
+- HTML duplicate IDs: checked
+- CSS brace balance: checked
+- Version/cache consistency: checked
+- Required files and ZIP integrity: checked
+
+DATA
+- Existing storage keys and schema version retained.
+- Smart Lists are computed views and do not duplicate user records.

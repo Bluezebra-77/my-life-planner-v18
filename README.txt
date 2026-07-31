@@ -1,7 +1,7 @@
-My Life Planner v51b — Internal Test Build
+My Life Planner v51c — Internal Test Build
 
-Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
+Upload every file to the root of the GitHub Pages repository, replacing the previous files.
 
-This build adds advanced monthly recurring-task rules (including second Thursday and last weekday patterns), tags on core planner items, tag-aware Lists search, and a corrected Home Brain Inbox control layout.
+v51c adds Smart Lists, Home summary shortcuts and relevance-ranked Lists search. It preserves the accepted v51b recurrence, tags, migration framework, routines and existing data.
 
-The accepted v51a migration framework, all existing data keys, Today's Focus safety mirror, routines and recurring-task data are preserved. Follow TestChecklist.txt before accepting this milestone.
+Follow TestChecklist.txt before accepting this milestone.

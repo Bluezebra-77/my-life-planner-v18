@@ -1,20 +1,7 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-CORE PRINCIPLES
-- One item has one logical home; other screens are views.
-- Existing user data is preserved through every internal and public release.
-- Internal lettered milestones are test builds; public versions remain whole numbers.
-
-RECURRING TASKS
-- Obligations remain due until completed.
-- Same-date monthly recurrence retains the intended day where possible.
-- Weekday-position recurrence is anchored to the selected ordinal and weekday, such as second Thursday.
-- Late completion advances to the first matching occurrence after today, not from the completion date.
-
-TAGS
-- Tags are lightweight labels stored on the item.
-- Input is comma-separated, trimmed and de-duplicated case-insensitively.
-- Tags are visible and searchable; they do not move the item from its logical home.
-
-DATA SAFETY
-- v51a migration, backup, validation and rollback framework remains the foundation.
+CORE
+- One item has one logical home; Smart Lists are computed views, never duplicate records.
+- Home summaries should answer what needs attention now and link to detail rather than repeat it.
+- Search should favour the most relevant matches without hiding valid partial matches.
+- Existing data must be preserved through every internal milestone.
