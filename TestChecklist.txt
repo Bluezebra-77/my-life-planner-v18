@@ -1,29 +1,36 @@
-MY LIFE PLANNER v51a — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51a — CORRECTED ACCEPTANCE CHECKLIST
 
-Before updating
-[ ] Add or note examples in Today's Focus, To-dos, Appointments, Recurring Tasks, Projects, Brain Inbox and a Custom List.
+Installation and data
+[ ] Header and About show v51a.
+[ ] Existing Today's Focus, lists, appointments, projects and recurring tasks remain.
+[ ] Close/reopen and refresh; data remains.
 
-Installation and identifiers
-[ ] Header shows v51a.
-[ ] About shows Version 51a.
-[ ] Developer Dashboard shows my-life-planner-v51a.
-[ ] Database version shows 2.
+Home collapse-control fix
+[ ] Brain Inbox Show/Hide button has no dark square or overlapping control behind it.
+[ ] Expand Brain Inbox and confirm microphone, add and Hide controls are all visible and usable.
+[ ] Check Show/Hide on Today's Focus, Needs Attention, Recurring Tasks, Today, This week, Projects and Daily Rhythm.
+[ ] No heading control overlaps another on the phone screen.
 
-Critical migration and retention
-[ ] All pre-existing data remains present after update.
-[ ] Today's Focus quick one-offs remain present.
-[ ] Refresh the page and confirm all data remains.
-[ ] Close and reopen the installed app and confirm all data remains.
-[ ] Add a new item after upgrading, refresh, and confirm it remains.
+Daily Rhythm customisation
+[ ] Open Daily Rhythm → Manage list.
+[ ] Add a new routine item and optional note/time.
+[ ] Add another item by pressing Return.
+[ ] Edit an existing item.
+[ ] Move an item up and down.
+[ ] Delete a test item.
+[ ] Close the manager and confirm the Daily Rhythm boxes match the edited list.
+[ ] Refresh and reopen the app; customised items and order remain.
+
+Gentle close-down
+[ ] Open Planner → Gentle close-down → Manage list.
+[ ] Add, edit, reorder and remove a test item.
+[ ] Confirm the changes persist after reopening.
 
 Regression
-[ ] Recurring Tasks can be added, completed, paused, resumed and edited.
-[ ] Appointments and Timeline work.
-[ ] Projects and project steps work.
-[ ] Lists search works.
-[ ] Export backup still works.
-[ ] No unexpected warning or save-failed message appears.
+[ ] Recurring Tasks still remain due until completed.
+[ ] Home, Lists, Timeline, Projects, search and settings work normally.
+[ ] No new errors or noticeable slowdown.
 
 Result
-[ ] ACCEPT v51a as the baseline for v51b.
-[ ] REJECT v51a — record failed item(s).
+[ ] ACCEPT corrected v51a
+[ ] REJECT corrected v51a — record failed item(s)

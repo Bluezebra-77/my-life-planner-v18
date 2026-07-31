@@ -4,18 +4,19 @@ CORE PRINCIPLES
 - The planner adapts to how the user lives.
 - One item has one logical home; other screens are views.
 - Real-world usage drives development.
-- Upgrades must not discard user data.
+- User-created information must survive upgrades.
 
-RECURRING BEHAVIOUR
-- Appointments happen at a time and may advance automatically.
-- Recurring tasks remain overdue until completed.
-- Their schedule remains anchored to the intended recurrence.
+MIGRATION FRAMEWORK
+- Saved data carries schemaVersion 51.
+- Migrations run in order and create a safety backup first.
+- Migrated data is verified; failure restores the pre-migration snapshot.
 
-MIGRATION ARCHITECTURE — v51a
-- lifePlannerData remains authoritative.
-- Every saved record carries schemaVersion.
-- Migrations run in ordered, one-version steps.
-- A snapshot is created before any schema change.
-- Core collections are validated after migration.
-- Diagnostics are retained locally; failed work leaves a rollback snapshot.
-- Today's Focus remains additionally mirrored in lifePlannerTodayFocus.
+ROUTINE DESIGN
+- Daily Rhythm and Gentle close-down are user-owned lists, not hard-coded prescriptions.
+- Defaults apply only when no saved list exists.
+- Users can add, edit, remove and reorder items.
+- Routine arrays remain in the authoritative lifePlannerData record.
+
+HOME CONTROL DESIGN
+- Panel action buttons and Show/Hide controls share a dedicated responsive control group.
+- Collapse controls must never cover or obscure capture, manage or refresh actions.

@@ -1,7 +1,9 @@
-My Life Planner v51a — Infrastructure Test Build
+My Life Planner v51a — Corrected Internal Test Build
 
 Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
 
-v51a is an internal milestone built from the accepted corrected v50 release. It introduces data schema versioning, a reusable migration engine, automatic backups before schema changes, validation, rollback protection and a migration log. User-facing planner features should otherwise behave exactly as v50.
+This build retains the v51a migration infrastructure and corrects two issues found in phone testing:
+- overlapping Home Show/Hide controls
+- Daily Rhythm customisation and reordering
 
-After uploading, use Settings → App maintenance → Check for updates. Confirm v51a in the header, Version 51a in About, and my-life-planner-v51a in the Developer Dashboard.
+After upload, use Settings → App maintenance → Check for updates. Confirm v51a, verify existing data, then follow TestChecklist.txt.

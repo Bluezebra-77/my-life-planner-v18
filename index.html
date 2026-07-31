@@ -385,16 +385,16 @@
       </div>
       <button type="button" class="dialog-close" onclick="closeRoutineManager()" aria-label="Close">×</button>
     </div>
-    <p class="card-meta">Add, edit or delete items here. The main planner stays uncluttered.</p>
+    <p class="card-meta">Add, edit, remove or reorder your own routine items. Changes are saved on this device and retained through upgrades.</p>
     <div id="routineManagerList" class="manager-list"></div>
     <div class="manager-add">
       <label>
         New item
-        <input id="routineNewName" type="text" placeholder="Type a new routine item">
+        <input id="routineNewName" type="text" placeholder="Type a new routine item" onkeydown="if(event.key==='Enter'){event.preventDefault();addRoutineFromManager()}">
       </label>
       <label>
         Note or time (optional)
-        <input id="routineNewTime" type="text" placeholder="For example: after breakfast">
+        <input id="routineNewTime" type="text" placeholder="For example: after breakfast" onkeydown="if(event.key==='Enter'){event.preventDefault();addRoutineFromManager()}">
       </label>
       <button type="button" onclick="addRoutineFromManager()">Add to list</button>
     </div>

@@ -1,17 +1,19 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
+DELIVERED IN v51a
+- Schema version 51
+- Generic migration engine
+- Pre-migration backup, verification, rollback and diagnostics
+
+DELIVERED IN v51a CORRECTED
+- Reliable grouped controls for collapsible Home headings
+- Fully customisable Daily Rhythm and Gentle close-down lists
+- Add, edit, delete, reorder and Return-to-add routine workflow
+
 DELIVERED IN v50
 - Recurring Tasks and due-until-completed behaviour
 - Daily, weekly, every-N-weeks, monthly and yearly schedules
-- Home and Lists integration
-- Today's Focus migration safety mirror
+- Home, Lists, pause/resume and search integration
 
-ADDED IN v51a (INTERNAL)
-- Schema version 51 embedded in saved data
-- Reusable ordered migration engine
-- Automatic pre-migration backups
-- Migration validation and rollback protection
-- Migration diagnostic log
-
-PLANNED FOR LATER v51 MILESTONES
-- Tags, Smart Lists, saved searches, dashboard, priorities, Quick Add and Planner Health
+PLANNED NEXT — v51b
+- Tags

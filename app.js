@@ -578,8 +578,11 @@ function renderRoutineManager() {
   list.forEach(item => {
     const row = document.createElement("div");
     row.className = "manager-row";
+    const index = list.findIndex(entry => entry.id === item.id);
     row.innerHTML = `<div><strong>${escapeHtml(item.title)}</strong>${item.time ? `<div class="card-meta">${escapeHtml(item.time)}</div>` : ""}</div>
-      <div class="mini-actions">
+      <div class="mini-actions routine-manager-actions">
+        <button type="button" class="small-button" onclick="moveRoutineInManager('${item.id}',-1)" ${index === 0 ? 'disabled' : ''} aria-label="Move ${escapeHtml(item.title)} up">↑</button>
+        <button type="button" class="small-button" onclick="moveRoutineInManager('${item.id}',1)" ${index === list.length - 1 ? 'disabled' : ''} aria-label="Move ${escapeHtml(item.title)} down">↓</button>
         <button type="button" class="small-button" onclick="editRoutineInManager('${item.id}')">Edit</button>
         <button type="button" class="small-button danger-button" onclick="deleteRoutineInManager('${item.id}')">Delete</button>
       </div>`;
@@ -596,6 +599,18 @@ function addRoutineFromManager() {
   saveData();
   nameInput.value = "";
   timeInput.value = "";
+  renderRoutineManager();
+  renderAll();
+}
+
+
+function moveRoutineInManager(id, direction) {
+  const list = routineList(managedRoutineGroup);
+  const index = list.findIndex(item => item.id === id);
+  const nextIndex = index + Number(direction);
+  if (index < 0 || nextIndex < 0 || nextIndex >= list.length) return;
+  [list[index], list[nextIndex]] = [list[nextIndex], list[index]];
+  saveData();
   renderRoutineManager();
   renderAll();
 }
@@ -1685,8 +1700,14 @@ function initialiseHomeCollapsibles(){
   document.querySelectorAll('.home-collapsible').forEach(panel=>{
     const key=panel.dataset.homeSection;if(!key)return;
     const heading=panel.querySelector(':scope > .section-heading,:scope > .focus-heading');if(!heading)return;
-    let button=heading.querySelector('.home-collapse-toggle');
-    if(!button){button=document.createElement('button');button.type='button';button.className='small-button secondary-button home-collapse-toggle';button.onclick=()=>toggleHomePanel(key);heading.appendChild(button);}
+    let controls=heading.querySelector(':scope > .home-heading-controls');
+    if(!controls){
+      controls=document.createElement('div');controls.className='home-heading-controls';
+      [...heading.children].filter(child=>child!==controls && (child.matches('button') || child.classList.contains('section-actions'))).forEach(child=>controls.appendChild(child));
+      heading.appendChild(controls);
+    }
+    let button=controls.querySelector('.home-collapse-toggle');
+    if(!button){button=document.createElement('button');button.type='button';button.className='small-button secondary-button home-collapse-toggle';button.onclick=()=>toggleHomePanel(key);controls.appendChild(button);}
     applyHomePanelState(panel,Boolean(state[key]));
   });
 }

@@ -1,13 +1,12 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED IN v50
-- Recurring obligations now remain overdue until completion.
-- Today's Focus quick one-offs are preserved during upgrades.
+FIXED IN v51a CORRECTED
+- Home Brain Inbox collapse control overlapped an existing action button, appearing as a dark square behind Show.
+- Daily Rhythm customisation was not sufficiently discoverable and lacked reordering controls.
 
-RISK CONTROL ADDED IN v51a
-- Future schema changes now create a backup before migration.
-- Migrated data is validated before use.
-- Failed migrations record diagnostics and retain a rollback copy.
+FIXED IN v50
+- Recurring appointments advanced without completion; true recurring tasks now remain overdue until completed.
+- Today's Focus migration loss corrected with rescue and safety mirror handling.
 
 OPEN DESIGN ITEMS
 - Home/Timeline duplication review

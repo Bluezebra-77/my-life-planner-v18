@@ -1,20 +1,18 @@
 MY LIFE PLANNER — MASTER ROADMAP
 
-CURRENT ACCEPTED
-v50 — Recurring Tasks and corrected data preservation
-
-IN DEVELOPMENT — v51
-v51a — Migration infrastructure (current internal test build)
+CURRENT DEVELOPMENT
+v51a — Migration infrastructure
 - Schema versioning
-- Generic migration engine
-- Automatic pre-migration backup
-- Validation, rollback and diagnostics
+- Migration backup, verification and rollback
+- Corrected Home collapse controls
+- Restored routine customisation and reordering
 
+NEXT INTERNAL BUILDS
 v51b — Tags
-v51c — Smart Lists and saved searches
-v51d — Dashboard and priority colours
-v51e — Quick Add
+v51c — Smart Lists
+v51d — Dashboard
+v51e — Quick Add and priority colours
 v51f — Planner Health phase 1
 
 PUBLIC RELEASE
-v51 — Package after all internal milestones are accepted.
+v51 — Package only after all internal builds are stable and accepted.

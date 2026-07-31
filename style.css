@@ -1231,3 +1231,19 @@ html,body{max-width:100%;overflow-x:clip}
 .recurring-task-card .badge.overdue{background:#f8d7d7;color:#7d2d2d}.recurring-task-card .badge.due{background:#fff0cf;color:#795718}
 .recurring-task-card button:disabled{opacity:.55;cursor:not-allowed}
 #recurringTaskForm{padding:22px;display:grid;gap:16px}
+
+
+/* v51a corrected: Home heading controls and routine customisation */
+.home-heading-controls{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto;min-width:0}
+.home-heading-controls>.section-actions{display:flex;align-items:center;gap:8px;margin:0}
+.home-heading-controls .home-collapse-toggle{margin-left:0}
+.routine-manager-actions{align-items:center}
+.routine-manager-actions button[disabled]{opacity:.38;cursor:not-allowed}
+@media(max-width:560px){
+  .section-heading,.focus-heading{align-items:flex-start}
+  .home-heading-controls{width:auto;max-width:100%;flex-wrap:wrap;justify-content:flex-end}
+  .home-heading-controls>.section-actions{width:auto}
+  .home-heading-controls button{width:auto!important}
+  .routine-manager-actions{width:100%;justify-content:flex-start}
+  .routine-manager-actions button{width:auto!important;flex:0 0 auto}
+}

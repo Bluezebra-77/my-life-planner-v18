@@ -1,15 +1,16 @@
-My Life Planner v51a — Migration Infrastructure
+My Life Planner v51a — Corrected Internal Build
 
-Added
-- Saved planner data now carries schemaVersion 51.
-- Generic ordered migration registry for future releases.
-- Automatic pre-migration snapshots, retaining the five newest copies.
-- Post-migration validation of all core collections.
-- Rollback protection and diagnostic migration logging.
-- Database diagnostics increased to version 2.
+This correction follows the first v51a stability test.
 
-Preserved
-- The authoritative storage key remains lifePlannerData.
-- Today's Focus continues to use its independent safety mirror.
-- All v50 recurring-task behaviour remains unchanged.
-- No user-facing workflow changes are intended in this milestone.
+Fixed
+- Removed the overlapping dark control behind Home Show/Hide buttons by grouping each panel's action controls correctly.
+- Checked the same heading arrangement across all collapsible Home panels.
+
+Restored and improved
+- Daily Rhythm and Gentle close-down remain fully user-customisable.
+- Add, edit and remove routine items in the Manage list dialog.
+- Reorder routine items with Up and Down controls.
+- Press Return in either new-item field to add the item.
+- Custom routines continue to be stored in lifePlannerData and survive upgrades.
+
+The v51a schema migration, backup and rollback framework remains unchanged.

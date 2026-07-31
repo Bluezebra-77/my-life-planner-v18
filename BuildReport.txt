@@ -1,21 +1,21 @@
-My Life Planner v51a — Build Report
+My Life Planner v51a — Corrected Build Report
 
-Baseline: user-accepted corrected v50 source.
-Target: internal v51a infrastructure milestone.
+Baseline
+- Accepted corrected v50 source plus the v51a migration framework.
 
-Code changes
-- Added schemaVersion 51 to normalised and saved planner data.
-- Added migration registry and 50-to-51 migration.
-- Added automatic migration backup storage (five snapshots).
-- Added validation, rollback path and migration diagnostics (twenty entries).
-- Preserved lifePlannerData and lifePlannerTodayFocus keys.
-- Updated app, manifest, cache and About identifiers to v51a.
+Corrections
+- Home panel controls are now placed inside a dedicated flex control group, preventing the collapse button from covering Brain Inbox and other action buttons.
+- Routine manager now supports add, edit, delete and ordered movement of Daily Rhythm and Gentle close-down items.
+- Routine item entry accepts Return-to-add.
+
+Data safety
+- Existing lifePlannerData key retained.
+- Schema version remains 51.
+- Today's Focus safety mirror retained.
+- User-created dailyTasks and eveningTasks arrays are preserved.
 
 Validation
 - JavaScript syntax checked with Node.
 - Manifest JSON parsed successfully.
-- Required files included.
-- ZIP integrity checked.
-
-Acceptance status
-- Awaiting user testing. v51a must remain an internal build until accepted.
+- Required source and documentation files checked.
+- ZIP integrity checked after packaging.
