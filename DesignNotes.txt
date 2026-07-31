@@ -1,19 +1,25 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-TODAY'S FOCUS
-One-off daily intentions should not require dates, reminders or permanent task records. Entry must be rapid. Incomplete items carry forward; completed items remain visible until removed so mistakes can be reversed.
+CORE PRINCIPLES
+- The planner adapts to how the user lives.
+- Real-world usage drives development.
+- One item has one logical home; other screens are views, not duplicate records.
+- The 30-Second Rule: a quick thought should be quick to capture.
+- Keep screens calm through progressive disclosure.
 
-HOME SCREEN
-Home is a dashboard for what needs attention now. Every substantial section is collapsible and remembers its state so the user controls how much detail is visible.
+HOME PROJECT BEHAVIOUR
+- Home is a working dashboard, not merely a shortcut page.
+- A project title expands its existing steps.
+- A step can be completed directly from Home.
+- Editing/adding/reorganising remains an explicit Manage action.
 
-PLANNER
-Planner remains the time-based view. Duplication between Home and Planner will be reviewed after v48 is tested with real data.
+SEARCH BEHAVIOUR
+- Users should not need to remember exact wording.
+- Search is case-insensitive and punctuation-tolerant.
+- Each entered word must occur somewhere in the searchable item, but words need not be adjacent or in the saved order.
+- Partial terms are accepted.
 
-PROJECTS
-Project names and progress summaries are visible first. Steps use progressive disclosure and appear only when the project is expanded or a search matches a step.
-
-CUSTOM LISTS
-Completed items are not immediately destroyed. They move below active items, are struck through, and can be reinstated. Deletion remains a deliberate Manage action.
-
-RECURRENCE
-Calendar appointments occur and advance. Recurring tasks remain due/overdue until explicitly completed. This distinction is planned for the Smart Planner release.
+RECURRING BEHAVIOUR
+- Appointments happen at a time and can advance automatically.
+- Recurring tasks represent obligations and remain overdue until completed.
+- The weekly injection belongs to recurring-task behaviour, planned for v50.

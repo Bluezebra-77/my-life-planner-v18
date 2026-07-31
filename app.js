@@ -1,5 +1,5 @@
 /*
- * My Life Planner v48
+ * My Life Planner v49
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -149,7 +149,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "48";
+const APP_VERSION = "49";
 const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
@@ -1602,7 +1602,35 @@ function makeV10Row(item,{complete=true,menu='' }={}){
 }
 function renderFocusToday(){const area=document.getElementById('focusTodayArea');if(!area)return;area.innerHTML='';const items=focusCandidateRows();if(!items.length){area.innerHTML='<div class="empty-state calm-empty"><strong>You are clear for now.</strong><span>Capture a thought or add a task when something comes to mind.</span></div>';return;}items.forEach(x=>area.appendChild(makeV10Row(x)));}
 function refreshFocusToday(){renderFocusToday();const el=document.getElementById('focusTodayArea');el?.animate([{opacity:.35,transform:'translateY(4px)'},{opacity:1,transform:'none'}],{duration:260});}
-function renderProjectNextActions(){const area=document.getElementById('projectNextActionsArea');if(!area)return;area.innerHTML='';const active=data.projects.filter(p=>!p.completed).map(p=>({p,s:(p.steps||[]).find(x=>!x.completed)})).filter(x=>x.s);if(!active.length){area.innerHTML='<div class="empty-state">No project needs a next action.</div>';return;}active.forEach(({p,s})=>area.appendChild(makeV10Row({name:s.name,meta:`${p.name}${s.dueDate?' · '+formatDate(s.dueDate):''}`,dueDate:s.dueDate,action:()=>toggleStep(p.id,s.id),open:()=>editStep(p.id,s.id)})));}
+function getHomeProjectStates(){try{return JSON.parse(localStorage.getItem('myLifePlannerHomeProjects')||'{}')}catch{return {}}}
+function toggleHomeProject(projectId){
+  const state=getHomeProjectStates();
+  state[projectId]=!state[projectId];
+  localStorage.setItem('myLifePlannerHomeProjects',JSON.stringify(state));
+  renderProjectNextActions();
+}
+function renderProjectNextActions(){
+  const area=document.getElementById('projectNextActionsArea');if(!area)return;area.innerHTML='';
+  const projects=(data.projects||[]).filter(p=>!p.completed);
+  if(!projects.length){area.innerHTML='<div class="empty-state">No active projects.</div>';return;}
+  const openStates=getHomeProjectStates();
+  [...projects].sort(sortByDueDate).forEach(project=>{
+    const steps=Array.isArray(project.steps)?project.steps:[];
+    const completedCount=steps.filter(step=>step.completed).length;
+    const card=document.createElement('section');card.className='home-project-card';
+    const heading=document.createElement('div');heading.className='home-project-heading';
+    heading.innerHTML=`<button type="button" class="home-project-toggle" onclick="toggleHomeProject('${project.id}')" aria-expanded="${Boolean(openStates[project.id])}"><span aria-hidden="true">${openStates[project.id]?'▾':'▸'}</span><span><strong>${escapeHtml(project.name||'Untitled project')}</strong><small>${steps.length?`${completedCount} of ${steps.length} steps`:'No steps yet'}</small></span></button><button type="button" class="small-button secondary-button home-project-manage" onclick="editProject('${project.id}')">Manage</button>`;
+    card.appendChild(heading);
+    const body=document.createElement('div');body.className='home-project-steps';body.hidden=!openStates[project.id];
+    if(!steps.length){body.innerHTML=`<div class="empty-state">No steps yet. Use Manage to add the first step.</div>`;}
+    else steps.forEach(step=>{
+      const row=document.createElement('div');row.className=`v10-row home-project-step ${step.completed?'completed-row':''}`;
+      row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleStep('${project.id}','${step.id}')" aria-label="${step.completed?'Reinstate':'Complete'} ${escapeHtml(step.name||'step')}">${step.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="editStep('${project.id}','${step.id}')"><span class="v10-row-title">${escapeHtml(step.name||'Untitled step')}</span><span class="v10-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'} · Tap text to edit</span></button>`;
+      body.appendChild(row);
+    });
+    card.appendChild(body);area.appendChild(card);
+  });
+}
 function openCaptureDialog(type='inbox',id=''){
  const item=(data[type]||[]).find(x=>x.id===id);
  document.getElementById('captureType').value=type;document.getElementById('captureId').value=id;
@@ -1792,22 +1820,28 @@ function jumpToList(id){
    setTimeout(()=>el.classList.remove('list-highlight'),900);
  });
 }
+function normaliseSearchText(value=''){return String(value).toLocaleLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
+function searchTextMatches(text,query){
+ const q=normaliseSearchText(query);if(!q)return true;
+ const haystack=normaliseSearchText(text);const tokens=q.split(/\s+/).filter(Boolean);
+ return tokens.every(token=>haystack.includes(token));
+}
 function filterMyLists(query=''){
  const search=document.getElementById('globalListSearch');
- const q=String(query ?? search?.value ?? '').trim().toLocaleLowerCase();
+ const q=normaliseSearchText(query ?? search?.value ?? '');
  const sections=[...document.querySelectorAll('.managed-list-section')];
  let matchingSections=0;
  sections.forEach(section=>{
    const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item,.step-compact-row,.appointment-card')];
-   const headingText=String(section.dataset.listName||section.querySelector('h2')?.textContent||'').toLocaleLowerCase();
-   const headingMatch=Boolean(q)&&headingText.includes(q);
+   const headingText=String(section.dataset.listName||section.querySelector('h2')?.textContent||'');
+   const headingMatch=Boolean(q)&&searchTextMatches(headingText,q);
    let visibleRows=0;
    rows.forEach(row=>{
-     const match=!q||headingMatch||String(row.textContent||'').toLocaleLowerCase().includes(q);
+     const match=!q||headingMatch||searchTextMatches(row.textContent||'',q);
      row.classList.toggle('list-search-hidden',!match);row.hidden=!match;if(match)visibleRows++;
    });
    section.querySelectorAll('.project-steps-group').forEach(group=>{
-     const groupMatch=!q||String(group.textContent||'').toLocaleLowerCase().includes(q);
+     const groupMatch=!q||searchTextMatches(group.textContent||'',q);
      if(q&&groupMatch)group.hidden=false;
      else if(!q){const state=getProjectStepStates();group.hidden=!state[group.dataset.projectId];}
    });

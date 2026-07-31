@@ -1,56 +1,54 @@
-MY LIFE PLANNER — MASTER ROADMAP (updated for v48)
+MY LIFE PLANNER — MASTER ROADMAP (updated for v49)
 
 CURRENT
-v48 — Daily Workflow (this build)
-- Today's Focus quick entry and carry-over
-- Collapsible Home sections
-- Collapsible project steps
-- Search fixes/reset
-- Improved completed Custom List behaviour
+v49 — Daily Workflow Refinement
+- Readable Home collapse controls
+- Expand/collapse complete project steps directly on Home
+- Separate Home project Manage action
+- More forgiving partial and multi-word Lists search
 
-NEXT PLANNED
-v49 — Smart Lists
-- Basic List, Checklist and Action List behaviours
-- Rapid line-by-line entry
-- Reusable checklist reset (whole list and individual items)
-- Optional dates and reminders for Action Lists
-- Convert list behaviour without losing data
+NEXT
+v50 — Recurring Tasks and Smart Recurrence
+- Recurring tasks distinct from appointments
+- Weekly injection behaviour
+- Remain overdue until completion
+- Create/show the next occurrence after completion
+- Shared recurrence patterns for tasks and appointments
+- Home and Today’s Focus integration
+- Advanced weekly/monthly recurrence patterns
 
-v50 — Smart Planner and Recurring Tasks
-- Separate appointment and recurring-task behaviour
-- Recurring tasks remain overdue until completed
-- Advanced recurrence such as second Thursday / last Friday
-- Appointment visibility in advance
-- Optional reminders and notifications
+v51 — Smart Lists
+- Basic Lists
+- Reusable Checklists
+- Action Lists with optional dates and reminders
+- Rapid Return-to-add entry
+- Completed items crossed through and moved down
+- Reset one item or the entire list
+- Convert list behaviour without losing contents
 
-v51 — Brain Inbox 2
-- Better previews and attachment handling
-- Capture and conversion refinements
-- Shortcut/share workflow improvements
+v52 — Brain Inbox 2
+- Better previews and attachments
+- Image compression
+- Quick Actions and shortcut/share refinements
 
-v52 — Global Search
-- Search all planner data and open the exact result
+v53 — Global Search
+- Search all planner information and jump directly to results
 
-v53 — Developer Tools
-- Diagnostics, storage, cache, self-tests and exportable report
+v54 — Developer Tools
+- Diagnostics, versions, storage statistics, self-test and export diagnostics
 
-v54 — Backup / Sync Foundation
-- Backup, restore and multi-device preparation
+v55 — Sync Foundation
+- Backup, restore and multiple-device preparation
 
-ACTIVE BACKLOG / WORKFLOW DISCOVERIES
-- Built-in timer for Random Task / focused work sessions
-- Review duplication between Home and Planner timeline
-- Decide the long-term role of the Home week view
-- Meaningful replacement for, or permanent removal of, the old progress bar
-- Reorder project steps
-- Shopping-specific Smart List behaviour
-- Favourite lists, saved searches and recent items
+ACTIVE DESIGN REVIEWS
+- Clarify the long-term distinction between Home and Planner/Timeline
+- Decide whether a week summary belongs on Home or only in Planner
+- Replace or permanently remove the previous progress bar
+- Add an in-app timer for generated/random tasks in an appropriate release
 
-DESIGN PRINCIPLES
-- Real-world usage drives the roadmap.
-- One piece of information has one logical home; other screens are views, not duplicates.
-- The 30-Second Rule: a quick thought must be quick to capture.
-- The planner adapts to the user's life, not the other way around.
-- Keep screens calm through progressive disclosure and collapsible detail.
-- Home answers: “What needs my attention now?”
-- Planner answers: “What is happening over time?”
+PROCESS
+- Whole-number releases only
+- Build only from the last user-approved release
+- Preserve existing data
+- Validate before packaging
+- User tests with real-life data before the next build

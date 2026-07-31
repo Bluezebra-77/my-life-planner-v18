@@ -1,15 +1,22 @@
-MY LIFE PLANNER — BUG / ISSUE REGISTER
+MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED IN v48
-- Lists search did not reliably include appointments.
-- Clearing Lists search did not immediately restore all sections.
-- Completed Custom List items remained mixed with active items without a clear crossed-through state.
-- Project lists displayed every step, causing excessive scrolling.
-- Brain Inbox and other Home sections could not be collapsed.
+FIXED IN v49
+- Home Hide controls had insufficient contrast.
+- Home project titles opened editing rather than revealing the project steps.
+- Home did not allow normal step completion without moving to Lists.
+- Lists search required words to appear as one exact phrase/order in some cases.
 
-PLANNED
-- Recurring action such as weekly injection advances like an appointment instead of remaining overdue until completed. Planned for recurring-task engine.
+FIXED/PRESERVED FROM v48
+- Lists search reset restores all sections.
+- Appointment search coverage improved.
+- Home sections are collapsible.
+- Project steps are collapsible in Lists.
+- Custom-list completed items move down and show strike-through.
 
-UNDER REVIEW
-- Home and Planner timeline contain some duplicated information.
-- Previous progress bar did not communicate meaningful progress; hidden in v48 while its role is reviewed.
+PLANNED FOR v50
+- A recurring appointment advances even when the underlying responsibility was not completed. Resolve with a true recurring-task type that remains overdue until completed.
+
+OPEN DESIGN ITEMS
+- Home/Timeline duplication review.
+- Progress indicator purpose and possible removal/replacement.
+- Generated-task timer.

@@ -1,22 +1,28 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
+DELIVERED IN v49
+- Expandable Home projects with all steps
+- Direct project-step completion from Home
+- Separate Home project Manage control
+- Token-based partial and out-of-order multi-word Lists search
+- Higher-contrast Home collapse controls
+
 DELIVERED IN v48
-- Today's Focus
-- Quick Return-key Focus entry
-- Focus completion, reinstatement and carry-over
+- Today's Focus rapid daily entry
+- Carry-forward of unfinished Today’s Focus items
 - Collapsible Home dashboard
-- Collapsible project steps
-- Better Lists search/reset
+- Completed custom-list item sorting and strike-through
 
-HIGH PRIORITY NEXT
-- Smart Lists: Basic, Checklist and Action List
-- Recurring tasks distinct from appointments
+HIGH PRIORITY — v50
+- Recurring Tasks and Smart Recurrence
+- Weekly injection remains visible and overdue until marked complete
 
-PLANNED
-- Advanced recurrence
-- Appointment reminders and advance visibility
-- Random Task timer
-- Global search
-- Brain Inbox improvements
-- Developer diagnostics
-- Backup and sync preparation
+PLANNED — v51
+- Smart Lists: Basic, Checklist and Action List behaviours
+- Dates/reminders where appropriate
+- Rapid list creation and reset options
+
+BACKLOG
+- In-app timer for random/generated tasks
+- Home versus Planner/Timeline refinement
+- Project-step reordering

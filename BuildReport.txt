@@ -1,47 +1,37 @@
 My Life Planner — Build Report
-Version: 48
+Version: 49
 Build date: 31 July 2026
-Built from: approved stable v47 source supplied by the user
+Built from: user-approved v48
 
 SCOPE
-PASS — Today's Focus rapid-entry workflow included
-PASS — Home sections made collapsible with remembered state
-PASS — Project steps made collapsible per project
-PASS — Appointment search and search reset corrected
-PASS — Custom List completed-item ordering and strike-through included
-PASS — Existing saved-data structure preserved and extended safely
+PASS — Home collapse-button contrast refinement included
+PASS — Expandable Home project details included
+PASS — Direct Home project-step completion included
+PASS — Separate Home project Manage action included
+PASS — Forgiving token-based Lists search included
+PASS — No recurrence-engine changes introduced
+PASS — Existing saved-data format preserved
 
 VERSION AUDIT
-PASS — Header displays v48
-PASS — About displays Version 48
-PASS — APP_VERSION is 48
-PASS — HTML asset references use v48
-PASS — Manifest identifies V48/version 48
-PASS — Service-worker cache is my-life-planner-v48
-PASS — ZIP filename identifies v48
-PASS — No decimal release number used
+PASS — Header displays v49
+PASS — About displays Version 49
+PASS — APP_VERSION is 49
+PASS — HTML asset references use v49
+PASS — Manifest identifies V49/version 49
+PASS — Service-worker cache is my-life-planner-v49
+PASS — ZIP filename identifies v49
+PASS — Whole-number release used throughout
 
 STATIC VALIDATION
 PASS — JavaScript syntax
 PASS — Manifest JSON parsing
 PASS — HTML duplicate-ID scan
 PASS — CSS brace balance
-PASS — Required asset references present
-PASS — Required v48 functions and controls present
+PASS — Required assets present
+PASS — Required v49 functions and controls present
 PASS — ZIP integrity
 
-DATA SAFETY
-PASS — Existing lifePlannerData key retained
-PASS — Existing arrays and settings retained
-PASS — todayFocus added as a backward-compatible optional array
-PASS — No destructive migration introduced
-
-USER ACCEPTANCE REQUIRED
-- Add several Today's Focus items using Return
-- Complete and reinstate a Focus item
-- Confirm unfinished Focus items remain available
-- Collapse and reopen every Home section
-- Expand and collapse project steps
-- Search appointments and project steps
-- Clear search and confirm all Lists return
-- Complete and reinstate a Custom List item
+DATA COMPATIBILITY
+PASS — Existing storage key retained
+PASS — Existing tasks, projects, appointments, lists and Today’s Focus data retained
+PASS — New Home project expansion preference stored separately

@@ -1207,3 +1207,20 @@ html,body{max-width:100%;overflow-x:clip}
 .project-steps-group[hidden]{display:none!important}
 .appointment-card.list-search-hidden{display:none!important}
 @media(max-width:560px){.home-collapse-toggle{width:auto!important}.today-focus-entry{grid-template-columns:1fr auto}.today-focus-entry button{width:38px}.project-steps-group{margin-left:12px}}
+
+/* ===== Version 49 Daily Workflow Refinement ===== */
+.home-collapse-toggle{background:#eef4f0!important;color:#31483a!important;border:1px solid #b8c9bd!important;box-shadow:none!important}
+.home-collapse-toggle:hover{background:#e2ece5!important;color:#24382c!important}
+.home-project-list{display:grid;gap:10px}
+.home-project-card{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.72);overflow:hidden}
+.home-project-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px}
+.home-project-toggle{width:100%!important;display:flex!important;align-items:center;gap:10px;text-align:left;background:transparent!important;color:var(--ink)!important;box-shadow:none!important;padding:8px!important}
+.home-project-toggle>span:first-child{font-size:1.25rem;color:var(--accent);width:22px;text-align:center}
+.home-project-toggle>span:last-child{display:grid;gap:3px;min-width:0}
+.home-project-toggle strong{overflow:hidden;text-overflow:ellipsis}
+.home-project-toggle small{color:var(--muted);font-weight:700}
+.home-project-manage{width:auto!important;min-width:78px;padding:9px 12px!important}
+.home-project-steps{display:grid;gap:7px;padding:0 10px 10px 40px}
+.home-project-steps[hidden]{display:none!important}
+.home-project-step.completed-row .v10-row-title{text-decoration:line-through;opacity:.62}
+@media(max-width:560px){.home-project-heading{grid-template-columns:minmax(0,1fr) auto}.home-project-manage{min-width:70px}.home-project-steps{padding-left:12px}}

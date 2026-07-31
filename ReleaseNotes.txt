@@ -1,31 +1,27 @@
 My Life Planner
-Version 48
+Version 49
 Date: 31 July 2026
 
-RELEASE OBJECTIVE
-Make the planner easier to use at the start of each day by providing fast capture for one-off daily intentions and a calmer, collapsible Home dashboard.
+BUILT FROM
+- User-approved v48 Daily Workflow release.
 
-NEW
-- Today's Focus: type a one-off job and press Return to add it immediately.
-- Unfinished Today's Focus items automatically carry into the current day.
-- Completed Focus items move below active items, are struck through and can be reinstated.
-- Every main Home section can be collapsed or expanded; the chosen state is remembered.
-- Project steps are collapsed by default in the Projects list and can be expanded per project.
-
-FIXED / IMPROVED
-- Lists search now includes appointment cards.
-- Clearing Lists search restores all sections and respects saved project expansion states.
-- A project is automatically expanded when a matching step is found by search.
-- Completed Custom List items are struck through and sorted below active items; unticking reinstates them.
-- The unclear header progress bar has been hidden pending a later redesign around meaningful daily progress.
+IMPROVED
+- Home section Show/Hide buttons now use a lighter, higher-contrast style.
+- Home Projects now show project titles first.
+- Tapping a Home project title expands or collapses its existing steps.
+- Project steps can be completed or reinstated directly from Home.
+- Tapping step text opens that step for editing.
+- Each Home project has a separate Manage button for project editing and adding/reorganising steps.
+- Lists search now uses word-token matching rather than requiring the complete phrase in the saved order.
+- Partial terms are supported: for example, "batt" can find "battery".
+- Multiple words can be entered in a different order when all words occur in the item.
 
 PRESERVED
-- Existing saved data and localStorage keys.
-- Existing appointments, tasks, projects, custom lists, routines, Brain Inbox and settings.
-- Existing v47 stability fixes.
+- Today's Focus rapid entry and carry-forward behaviour.
+- Collapsible Home sections and remembered collapse state.
+- Custom-list completed-item behaviour.
+- Appointment and project-step search coverage.
+- Existing localStorage data and saved-data structure.
 
-DEFERRED
-- Recurring tasks that stay overdue until completed (for example, a weekly injection).
-- Smart List types, dates and reminders.
-- Built-in task timer.
-- Larger Home/Planner duplication review.
+NEXT PLANNED RELEASE
+- v50: Recurring Tasks and Smart Recurrence, including the weekly injection behaviour that remains overdue until completed.

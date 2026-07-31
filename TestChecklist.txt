@@ -1,58 +1,46 @@
-MY LIFE PLANNER v48 — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v49 — ACCEPTANCE CHECKLIST
 
 INSTALLATION AND VERSION
 ☐ Upload all files, replacing the previous GitHub Pages files
 ☐ Use Settings → App maintenance → Check for updates
-☐ Header shows v48
-☐ About shows Version 48
-☐ Developer Dashboard shows cache my-life-planner-v48
+☐ Header shows v49
+☐ About shows Version 49
+☐ Developer Dashboard shows cache my-life-planner-v49
 ☐ Existing information is still present
 
-TODAY'S FOCUS
-☐ Type “Empty dishwasher” and press Return
-☐ Confirm it appears immediately and the input remains ready
-☐ Add two more items quickly using Return
-☐ Tick one item and confirm it moves below active items and is struck through
-☐ Untick it and confirm it returns to the active group
-☐ Leave Home and return; confirm the items remain
-☐ Confirm Remove completed items deletes only completed Focus items
+HOME COLLAPSE BUTTONS
+☐ Show/Hide wording is easy to read
+☐ Collapse and reopen several Home sections
+☐ Leave Home and return; confirm states remain remembered
 
-COLLAPSIBLE HOME
-☐ Collapse Today's Focus
-☐ Collapse Needs Attention
-☐ Collapse Brain Inbox
-☐ Collapse Today and This week
-☐ Collapse Projects Moving Forward
-☐ Collapse Daily Rhythm
-☐ Leave Home and return; confirm each chosen state is remembered
+HOME PROJECTS
+☐ Home initially shows project titles without all steps
+☐ Tap a project title and confirm its existing steps appear
+☐ Tap the title again and confirm the steps collapse
+☐ Tick a step and confirm it completes directly from Home
+☐ Untick/reinstate a completed step
+☐ Tap step text and confirm the step editor opens
+☐ Tap Manage and confirm the project editor opens
+☐ Add a step using Manage and confirm it appears on Home
+☐ Confirm project expansion remains after completing a step
 
-PROJECTS
-☐ Projects initially show project names and step counts without all steps
-☐ Expand one project and confirm its steps appear
-☐ Collapse it again
-☐ Complete or edit a step and confirm normal behaviour remains
-
-LISTS SEARCH
-☐ Search for an appointment title
-☐ Search for appointment notes, location or repeat wording
-☐ Search for a project name
-☐ Search for text in a collapsed project step and confirm it is revealed
-☐ Clear the search and confirm every Lists section returns immediately
-☐ Leave Lists, return and repeat a search
-
-CUSTOM LISTS
-☐ Tick a Custom List item
-☐ Confirm it is struck through and sorted below active items
-☐ Untick it and confirm it is reinstated
-☐ Confirm deletion remains available in Manage
+FORGIVING LISTS SEARCH
+☐ Search with part of a word, such as “batt” for “battery”
+☐ Search using two words from an item
+☐ Reverse the order of those two words and confirm the item is still found
+☐ Search for an appointment title or notes
+☐ Search for a project step
+☐ Use different capitalisation
+☐ Clear the search and confirm all list sections return immediately
 
 REGRESSION SPOT CHECK
-☐ Brain Inbox data and attachments remain present
-☐ Appointments and recurrence still work as in v47
-☐ Home task text opens the task rather than completing it
-☐ Random Task only suggests saved visible tasks
-☐ iPhone layout stays at normal scale
+☐ Add several Today’s Focus items using Return
+☐ Complete and reinstate a Today’s Focus item
+☐ Confirm unfinished Focus items remain present
+☐ Confirm custom-list completed items move down and are crossed through
+☐ Confirm Timeline and appointments still work
+☐ Confirm Brain Inbox and Projects remain stable
 
 RESULT
-☐ PASS — approve v48 as the new stable baseline
+☐ PASS — approve v49 as the new stable baseline
 ☐ FAIL — report the failed checklist item and what happened
