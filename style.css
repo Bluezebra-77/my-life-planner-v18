@@ -1190,3 +1190,6 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:560px){
   .custom-list-dialog-items .danger-text{min-width:84px!important;padding:9px 10px!important}
 }
+
+/* v47 Lists search reliability */
+.list-search-hidden{display:none!important}.list-search-status{min-height:1.2em;margin:.45rem 0 0;color:var(--muted);font-size:.82rem;font-weight:700}

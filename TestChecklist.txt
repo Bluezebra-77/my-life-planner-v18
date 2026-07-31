@@ -1,0 +1,33 @@
+MY LIFE PLANNER v47 — ACCEPTANCE CHECKLIST
+
+INSTALLATION AND VERSION
+☐ Upload all files, replacing the previous GitHub Pages files
+☐ Use Settings → App maintenance → Check for updates
+☐ Header shows v47
+☐ About shows Version 47
+☐ Developer Dashboard shows cache my-life-planner-v47
+☐ Existing information is still present
+
+LISTS SEARCH
+☐ Search for a known to-do and confirm the To-do section remains visible
+☐ Search for a project name
+☐ Search for text contained in a project step
+☐ Search for an appointment title
+☐ Search for a Brain Inbox entry
+☐ Search for a custom-list name
+☐ Search for an item inside a custom list
+☐ Search for a term with no matches and confirm “No matching items” appears
+☐ Clear the box and confirm all list sections return
+☐ Repeat a search after leaving Lists and returning
+
+REGRESSION SPOT CHECK
+☐ Custom-list item text is visible in its editor
+☐ Lists screen stays at normal scale on iPhone
+☐ Home task text opens the task rather than completing it
+☐ Completion control still marks a task complete/incomplete
+☐ Progress bar updates after changing task completion
+☐ Random Task only suggests saved, visible tasks
+
+RESULT
+☐ PASS — approve v47 as the new stable baseline
+☐ FAIL — report the failed checklist item and what happened

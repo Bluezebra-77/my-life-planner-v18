@@ -1,24 +1,20 @@
 My Life Planner
-Version 46
+Version 47
 Date: 31 July 2026
 
 BUILT FROM
-- Version 45 supplied by the user after acceptance testing.
+- Stable v46 release.
 
-STABILITY FIXES
-- Custom-list editor now keeps item text visible alongside Complete and Delete controls on iPhone.
-- Lists side navigation is constrained to the visual viewport and can no longer widen the page and trigger Safari page shrinking.
-- Home task text opens the task; completion remains a separate circular control.
-- Header progress now includes saved to-do completion as well as Daily Rhythm and evening checks, and refreshes immediately.
-- Lists search now filters rendered to-dos, appointments, Brain Inbox, Waiting For, annual dates, projects, cleaning tasks and custom lists.
-- Random task choices now use user-saved tasks only; built-in examples such as Vinted and “Sort one small box” are excluded.
+FIXED
+- Lists search now uses a dedicated event listener and reliably filters all rendered list sections.
+- Search status reports matching sections or no matches.
+- Clearing the search restores every list section.
+- Whole-number versioning restored across every release file.
 
-DATA COMPATIBILITY
-- Existing localStorage keys and database format remain unchanged.
-- Existing tasks, projects, appointments, custom lists, Brain Inbox items and settings remain readable.
+PRESERVED
+- All v46 stability fixes.
+- Existing localStorage keys and saved-data structure.
+- Existing tasks, projects, appointments, custom lists and Brain Inbox information.
 
-DEFERRED TO LATER STAGES
-- Reordering project steps.
-- Advanced monthly weekday recurrence.
-- Early appointment visibility and notifications.
-- Broader global search and navigation improvements.
+DEFERRED
+- Collapsible project steps is recorded for an appropriate usability release.

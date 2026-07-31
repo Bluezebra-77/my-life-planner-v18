@@ -1,5 +1,5 @@
 /*
- * My Life Planner v46
+ * My Life Planner v47
  * Code-quality release: duplicate top-level function declarations removed.
  * Behaviour and saved-data format are unchanged from the stable v19 baseline.
  */
@@ -147,7 +147,7 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "46";
+const APP_VERSION = "47";
 const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
@@ -1730,30 +1730,41 @@ function jumpToList(id){
  });
 }
 function filterMyLists(query=''){
- const q=String(query).trim().toLowerCase();
- const sections=document.querySelectorAll('.managed-list-section');
+ const search=document.getElementById('globalListSearch');
+ const q=String(query ?? search?.value ?? '').trim().toLocaleLowerCase();
+ const sections=[...document.querySelectorAll('.managed-list-section')];
+ let matchingSections=0;
  sections.forEach(section=>{
-   const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item')];
-   let visible=0;
+   const rows=[...section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item,.step-compact-row')];
+   const headingText=String(section.dataset.listName||section.querySelector('h2')?.textContent||'').toLocaleLowerCase();
+   const headingMatch=Boolean(q)&&headingText.includes(q);
+   let visibleRows=0;
    rows.forEach(row=>{
-     const match=!q||String(row.textContent||'').toLowerCase().includes(q);
+     const match=!q||headingMatch||String(row.textContent||'').toLocaleLowerCase().includes(q);
+     row.classList.toggle('list-search-hidden',!match);
      row.hidden=!match;
-     if(match) visible++;
+     if(match)visibleRows++;
    });
-   const sectionText=String(section.dataset.listName||'').toLowerCase();
-   const headingMatch=Boolean(q)&&sectionText.includes(q);
-   if(headingMatch){rows.forEach(row=>row.hidden=false);visible=rows.length||1;}
-   section.hidden=Boolean(q)&&visible===0;
-   section.classList.toggle('search-no-match',false);
+   const show=!q||headingMatch||visibleRows>0;
+   section.classList.toggle('list-search-hidden',!show);
+   section.hidden=!show;
+   section.style.display=show?'':'none';
+   if(show)matchingSections++;
  });
- const customSection=document.getElementById('customListsSection');
- if(customSection){
-   const cards=[...customSection.querySelectorAll('.custom-list-card')];
-   let visible=0;
-   cards.forEach(card=>{const match=!q||String(card.textContent||'').toLowerCase().includes(q);card.hidden=!match;if(match)visible++;});
-   customSection.hidden=Boolean(q)&&visible===0;
+ const status=document.getElementById('listSearchStatus');
+ if(status){
+   status.textContent=!q?'':matchingSections?`${matchingSections} matching ${matchingSections===1?'section':'sections'}`:'No matching items';
  }
 }
+
+function initialiseListSearch(){
+ const search=document.getElementById('globalListSearch');
+ if(!search||search.dataset.searchReady==='true')return;
+ search.dataset.searchReady='true';
+ search.addEventListener('input',event=>filterMyLists(event.target.value));
+ search.addEventListener('search',event=>filterMyLists(event.target.value));
+}
+
 
 
 /* ===== V11.6 core appointments rebuild ===== */
@@ -2106,3 +2117,5 @@ renderAll = function() {
   originalRenderAllV15();
   refreshListsImmediately();
 };
+
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initialiseListSearch);}else{initialiseListSearch();}

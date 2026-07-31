@@ -1,37 +1,37 @@
 My Life Planner — Build Report
-Version: 46
+Version: 47
 Build date: 31 July 2026
-Built from: v45 files supplied by the user
+Built from: stable v46 plus corrected Lists search patch
 
 SCOPE
-PASS — BUG-001 custom-list item text layout corrected
-PASS — BUG-002 Lists rail constrained inside iPhone viewport
-PASS — BUG-003 task text opens task; completion uses separate control
-PASS — BUG-004 progress calculation includes to-dos and refreshes through renderAll
-PASS — BUG-005 Lists search covers all rendered list sections and custom lists
-PASS — BUG-006 random choice excludes built-in sample/category suggestions
+PASS — Lists search reliability correction included
+PASS — No other functional changes introduced
+PASS — Existing saved-data format preserved
 
 VERSION AUDIT
-PASS — Header displays v46
-PASS — APP_VERSION is 46
-PASS — Asset query strings identify v46
-PASS — Manifest identifies V46/version 46
-PASS — Service-worker cache is my-life-planner-v46
-PASS — Package filename identifies v46
+PASS — Header displays v47
+PASS — About displays Version 47
+PASS — APP_VERSION is 47
+PASS — HTML asset references use v47
+PASS — Manifest identifies V47/version 47
+PASS — Service-worker cache is my-life-planner-v47
+PASS — ZIP filename identifies v47
+PASS — No decimal release number remains in package files
 
 STATIC VALIDATION
-PASS — JavaScript syntax (node --check)
+PASS — JavaScript syntax
 PASS — Manifest JSON parsing
 PASS — HTML duplicate-ID scan
 PASS — CSS brace balance
-PASS — Required fix-marker scan
-PASS — Existing saved-data keys and database format unchanged
+PASS — Required search elements and handlers present
 PASS — ZIP integrity
 
-USER ACCEPTANCE STILL REQUIRED
-- iPhone portrait and landscape Lists rail behaviour
-- Custom-list editor item visibility
-- Home task opening versus completion
-- Immediate progress update
-- Search across each list type
-- Random task source using real saved data only
+USER ACCEPTANCE REQUIRED
+- Search a known to-do
+- Search a project name
+- Search a project step
+- Search an appointment
+- Search a Brain Inbox item
+- Search a custom-list name and item
+- Search a term that has no matches
+- Clear the search and confirm all sections return
