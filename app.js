@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="51e";
+const APP_VERSION="51f";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2793,3 +2793,52 @@ completeFocusFromTimer=function(){completeFocusFromTimerV51eIphone();syncQuickAd
 window.addEventListener('resize',syncQuickAddTimerClearance);
 window.addEventListener('orientationchange',()=>setTimeout(syncQuickAddTimerClearance,150));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(syncQuickAddTimerClearance,0);});
+
+
+/* ===== v51f Planner Health and Home optimisation ===== */
+const PLANNER_HEALTH_MEMORY_KEY='myLifePlannerHealthMemory';
+function healthMemory(){try{return JSON.parse(localStorage.getItem(PLANNER_HEALTH_MEMORY_KEY)||'{}')||{};}catch(e){return {};}}
+function saveHealthMemory(memory){localStorage.setItem(PLANNER_HEALTH_MEMORY_KEY,JSON.stringify(memory));}
+function healthHidden(key){const entry=healthMemory()[key];if(!entry)return false;if(entry.dismissed)return true;return Number(entry.snoozeUntil||0)>Date.now();}
+function rememberHealth(key,mode){const memory=healthMemory();memory[key]=mode==='dismiss'?{dismissed:true}:{snoozeUntil:Date.now()+7*86400000};saveHealthMemory(memory);renderPlannerHealth();}
+function ageInDays(value){if(!value)return null;const date=new Date(value);if(Number.isNaN(date.getTime()))return null;return Math.floor((Date.now()-date.getTime())/86400000);}
+function plannerHealthSuggestions(){
+ const suggestions=[];
+ (data.projects||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=7){suggestions.push({key:`project:${x.id}`,severity:Math.min(3,1+Math.floor(age/14)),title:'Project needs a look',copy:`${x.name||'A project'} has not been updated for ${age} days.`,open:()=>{showAppView('home');setTimeout(()=>{document.getElementById('homeProjectsPanel')?.scrollIntoView({behavior:'smooth',block:'start'});editProject(x.id);},120);}});}});
+ (data.inbox||[]).filter(x=>x.status!=='processed').forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=7)suggestions.push({key:`inbox:${x.id}`,severity:1,title:'Brain Inbox item waiting',copy:`${x.name||'An inbox item'} has been waiting for ${age} days.`,open:()=>{showAppView('tasks');setTimeout(()=>editCapture('inbox',x.id),100);}});});
+ (data.waiting||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=10)suggestions.push({key:`waiting:${x.id}`,severity:2,title:'Waiting For follow-up',copy:`${x.name||'A waiting item'} has been pending for ${age} days.`,open:()=>{showAppView('tasks');setTimeout(()=>editCapture('waiting',x.id),100);}});});
+ (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).forEach(x=>{const days=Math.abs(daysBetween(new Date(),dateOnly(x.nextDue)));suggestions.push({key:`clean:${x.id}`,severity:2,title:'Cleaning task overdue',copy:`${x.name||'A cleaning task'} is overdue${days?` by ${days} day${days===1?'':'s'}`:''}.`,open:()=>editCleaning(x.id)});});
+ return suggestions.filter(x=>!healthHidden(x.key)).sort((a,b)=>b.severity-a.severity);
+}
+function renderPlannerHealth(){
+ const area=document.getElementById('plannerHealthArea');if(!area)return;
+ const all=plannerHealthSuggestions();
+ const overdueCount=(data.todos||[]).filter(x=>!x.completed&&x.dueDate&&x.dueDate<localDateKey()).length+(data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.nextDue&&x.nextDue<localDateKey()).length+(data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).length;
+ const status=overdueCount>=4||all.some(x=>x.severity>=3)?['attention','🟠 Needs attention']:overdueCount||all.length?['good','🟡 Good']:['excellent','🟢 Excellent'];
+ if(!all.length){area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span></div><div class="planner-health-empty">Nothing needs a special nudge right now.</div></div>`;return;}
+ const item=all[0];area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span><span class="badge">1 suggestion</span></div><div class="planner-suggestion-title">${escapeHtml(item.title)}</div><div class="planner-suggestion-copy">${escapeHtml(item.copy)}</div><div class="planner-suggestion-actions"><button type="button" id="healthOpenButton">Open</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','snooze')">Snooze 7 days</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','dismiss')">Dismiss</button></div></div>`;
+ document.getElementById('healthOpenButton').onclick=item.open;
+}
+function setupHomeInfoButtons(){
+ const help={todayFocus:'Quick one-off jobs and intentions for today. Unfinished items stay until you deal with them.',needsAttention:'Dated and important items that need attention now.',timeSensitive:'Appointments and other fixed-time commitments for today.',thisWeek:'A brief look at what is coming up this week.',projects:'Active projects and their next steps.',waitingFor:'Things other people or circumstances need to move forward.',brainInbox:'Capture first and organise later.',recurringTasks:'Repeating responsibilities that remain visible until completed.',dailyRhythm:'Your editable everyday routine.',eveningRoutine:'Your editable end-of-day routine.',plannerHealth:'One considerate suggestion at a time. Snoozed or dismissed suggestions will not keep nagging.'};
+ document.querySelectorAll('.home-collapsible').forEach(panel=>{
+   const key=panel.dataset.homeSection,heading=panel.querySelector('.section-heading>div,.focus-heading>div');if(!key||!heading||heading.dataset.infoReady)return;
+   heading.dataset.infoReady='1';const h2=heading.querySelector('h2');if(!h2)return;
+   const explanation=[...heading.querySelectorAll('p')].find(p=>!p.classList.contains('eyebrow'));
+   if(explanation)explanation.remove();
+   const line=document.createElement('div');line.className='section-title-line';h2.parentNode.insertBefore(line,h2);line.appendChild(h2);
+   const button=document.createElement('button');button.type='button';button.className='section-info-button';button.textContent='i';button.setAttribute('aria-label',`About ${h2.textContent}`);line.appendChild(button);
+   const text=document.createElement('p');text.className='section-help-text hidden';text.textContent=help[key]||'More information about this section.';line.parentNode.insertBefore(text,line.nextSibling);
+   button.onclick=e=>{e.stopPropagation();text.classList.toggle('hidden');};
+ });
+}
+function optimiseHomeOrder(){
+ const quick=document.querySelector('.home-quick-actions');if(!quick||quick.dataset.orderReady)return;quick.dataset.orderReady='1';const parent=quick.parentNode;
+ const ids=['homeTodayPanel','needsAttentionPanel','todayFocusPanel','plannerHealthPanel','homeProjectsPanel','homeWaitingPanel','homeBrainInboxPanel','homeRecurringPanel','homeDailyRhythmPanel','homeEveningPanel'];
+ let anchor=quick;
+ ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const node=el.closest('.dashboard-grid')&&id==='homeTodayPanel'?el.closest('.dashboard-grid'):el;if(node===anchor)return;parent.insertBefore(node,anchor.nextSibling);anchor=node;});
+}
+const renderAllV51f=renderAll;
+renderAll=function(){renderAllV51f();setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();};
+window.addEventListener('pageshow',()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();});
+setTimeout(()=>{setupHomeInfoButtons();optimiseHomeOrder();renderPlannerHealth();},0);

@@ -1,27 +1,10 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED IN v51d CORRECTED
-- Top About version mismatch.
-- Today’s Focus reordering required repeatedly reopening the menu.
-- Focus Timer reset when closed and could not be minimised.
-- Converted monthly Cleaning Task did not reliably advance/refresh Timeline after completion.
-- Waiting For working view disappeared from Home.
+FIXED IN v51f
+- Home explanatory text permanently occupied working space.
+- Time-sensitive Today appeared too far down Home.
 
-OPEN DESIGN ITEMS
-- Home/Timeline duplication review.
-- Generated-task timer integration with the new persistent timer.
-
-
-v51e MONITOR
-- Quick Add placement on iPhone portrait/landscape and MacBook.
-- Correct destination form opens from every current screen.
-
-FIXED IN v51e CORRECTED
-- Cleaning three-dot actions could be pushed outside the visible iPhone portrait row.
-- A minimised Focus timer overlapped the floating Quick Add button.
-
-FIXED IN v51e FINAL PATCH
-- Quick Add could still be covered by the minimised timer because the previous CSS :has() selector was not applied reliably in the installed PWA. Replaced with an explicit JavaScript timer-minimised state.
-
-v51e iPhone final patch
-- Fixed: minimised timer still overlapped Quick Add on iPhone because fixed offsets did not account for the rendered timer height and safe-area layout.
+OPEN DESIGN REVIEW
+- Decide whether the progress bar motivates or communicates enough value; retain for now.
+- Review Home/Timeline distinction after extended real-life use.
+- Generated-task timer remains a future enhancement.

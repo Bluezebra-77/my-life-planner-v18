@@ -1,18 +1,10 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
-DELIVERED IN v51d CORRECTED
-- Today’s Focus notes, estimates, pinning and faster reordering.
-- Persistent minimisable Focus Timer.
-- Convert Focus items into other planner item types.
-- Waiting For restored to Home.
-- Correct monthly Cleaning conversion/next-date workflow.
+DELIVERED IN v51f
+- Planner Health phase 1
+- Inactive project and ageing-item suggestions
+- Suggestion snooze/dismiss memory
+- Home information icons and morning-priority ordering
 
 DELIVERED EARLIER IN v51
-- Migration framework, editable routines, advanced recurrence, tags and improved search.
-
-
-DELIVERED IN v51e
-- Global Quick Add button.
-- Direct add choices for core planner item types.
-- Remembered last-used Quick Add choice.
-- Brain Inbox voice shortcut from Quick Add.
+- Migration framework, advanced recurrence, tags, Today’s Focus workspace, timer, Convert and Quick Add.

@@ -1,10 +1,16 @@
-My Life Planner v51e — iPhone Timer Patch
+My Life Planner v51f — Planner Health and Home Optimisation
 
-Corrected
-- Quick Add now measures the actual minimised timer height and positions itself above it.
-- The iPhone portrait position includes bottom navigation and safe-area clearance.
-- Position recalculates after orientation changes, resizing, minimising, restoring, completing and cancelling the timer.
+ADDED
+- Planner Health shows one considerate suggestion at a time.
+- Inactive-project, old Brain Inbox, Waiting For follow-up and overdue-cleaning suggestions.
+- Open, Snooze 7 days and Dismiss actions.
+- Simple Excellent / Good / Needs attention status.
 
-Preserved
-- All accepted v51e Quick Add features and v51d workflows.
-- Existing data, schema, storage keys and Today’s Focus safety mirror.
+HOME
+- Time-sensitive Today is moved near the top.
+- Persistent explanatory paragraphs are replaced by optional information buttons.
+- Home sections are ordered around the morning workflow.
+
+PRESERVED
+- Progress bar retained for later usefulness review.
+- All accepted v51e features and data safety mechanisms.

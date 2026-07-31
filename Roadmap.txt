@@ -1,19 +1,16 @@
 MY LIFE PLANNER — MASTER ROADMAP
 
 CURRENT INTERNAL MILESTONE
-v51e — Quick Add
-- Add core item types from anywhere
-- Remember last-used choice
-- Compact mobile layout
+v51f — Planner Health phase 1 and Home optimisation
 
 COMPLETED INTERNAL MILESTONES
-- v51a Migration infrastructure and routine customisation
-- v51b Advanced recurrence and tags
-- v51c Simplification and search cleanup
-- v51d Today’s Focus workspace, timer and Convert workflow
+- v51a migration infrastructure
+- v51b advanced recurrence and tags
+- v51c simplification/search cleanup
+- v51d Today’s Focus, timer and Convert
+- v51e Quick Add
 
-NEXT INTERNAL MILESTONE
-v51f — Planner Health phase 1
-
-PUBLIC RELEASE
-v51 — Package only after all agreed milestones pass acceptance testing.
+NEXT
+- Acceptance test v51f
+- Whole-app review and official v51 packaging
+- Revisit progress-bar usefulness after more real use

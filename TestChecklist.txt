@@ -1,24 +1,26 @@
-MY LIFE PLANNER v51e — IPHONE TIMER PATCH CHECKLIST
+MY LIFE PLANNER v51f — ACCEPTANCE CHECKLIST
 
-INSTALLATION
-[ ] Header, About and Developer information remain v51e.
-[ ] Existing data remains present.
+INSTALLATION AND DATA
+[ ] Header, About and Developer information show v51f.
+[ ] Existing Today’s Focus, appointments, projects, recurring tasks, lists and routines remain.
 
-IPHONE — REQUIRED TEST
-[ ] Open on iPhone in portrait.
-[ ] Start a Today’s Focus timer and minimise it.
-[ ] Confirm Quick Add + is fully visible above the timer bar with a clear gap.
-[ ] Open Quick Add while the timer remains minimised.
-[ ] Rotate to landscape and confirm there is still no overlap.
-[ ] Return to portrait and confirm the position recalculates correctly.
-[ ] Restore the timer; Quick Add returns to its normal position.
-[ ] Minimise again, then cancel; Quick Add returns to normal.
-[ ] Complete from the timer; Quick Add returns to normal.
+HOME
+[ ] Time-sensitive Today is near the top.
+[ ] Needs Attention and Today’s Focus follow in a useful order.
+[ ] Explanatory paragraphs no longer take permanent space.
+[ ] Tap each i button and confirm its explanation opens/closes.
+[ ] Home collapse controls still work and remember state.
 
-MAC / DESKTOP
-[ ] Minimise the timer and confirm Quick Add remains clear of it.
+PLANNER HEALTH
+[ ] Planner Health shows a status and no more than one suggestion.
+[ ] An inactive project (7+ days old) produces a project suggestion when applicable.
+[ ] Open takes you to the relevant item.
+[ ] Snooze removes the suggestion for now.
+[ ] Dismiss removes it permanently from suggestions.
+[ ] The panel does not nag when there are no useful suggestions.
 
 REGRESSION
-[ ] Cleaning-list action menu remains visible on iPhone portrait.
-[ ] Today’s Focus, Convert, Waiting For, Gentle close-down, Timeline and recurring tasks work.
-[ ] Refresh and reopen; data remains present.
+[ ] Quick Add and minimised timer remain separate on iPhone and Mac.
+[ ] Convert, recurring rules, tags, search, Timeline and Waiting For work.
+[ ] Refresh and reopen; data and Planner Health memory persist.
+[ ] Progress bar remains present for later review.

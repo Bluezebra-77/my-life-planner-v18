@@ -1,17 +1,17 @@
-My Life Planner v51e — iPhone Timer Patch Build Report
+My Life Planner v51f — Build Report
 
-Baseline: accepted v51e Final Corrected build.
-Scope: iPhone minimised-timer / Quick Add overlap only.
+Baseline: accepted v51e iPhone timer patch.
+
+Implemented
+- Planner Health phase 1 with one suggestion, snooze/dismiss memory and health state.
+- Home explanatory text moved behind information buttons.
+- Home order prioritises time-sensitive information.
+- Progress bar retained and recorded for later design review.
 
 Validation
-- PASS JavaScript syntax
-- PASS manifest JSON
-- PASS duplicate HTML ID scan
-- PASS CSS brace balance
-- PASS version/cache consistency remains v51e
-- PASS required files present
-- PASS ZIP integrity
-
-Implementation
-- Quick Add clearance now uses the measured timer-bar height rather than a fixed guessed offset.
-- Clearance recalculates on iPhone orientation and viewport changes.
+- JavaScript syntax checked with Node.
+- manifest.json parsed successfully.
+- Duplicate HTML IDs checked.
+- CSS braces checked.
+- Version/cache references audited.
+- ZIP integrity checked.

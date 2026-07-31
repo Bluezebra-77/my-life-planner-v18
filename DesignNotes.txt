@@ -1,21 +1,15 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-CORE PRINCIPLES
-- Capture first, organise later.
-- One item has one logical home; Home provides useful working views.
-- Existing user data is preserved through every release.
+CORE
+- Capture first, organise later, improve over time.
+- One item has one logical home; other screens are useful views.
+- Home should show what matters now, not explain the application.
 
-TODAY WORKSPACE
-- Reordering must not require repetitive reopening.
-- A running timer may be minimised but only an explicit cancel clears it.
-- Timer state is restored from an absolute finish time after app suspension.
+PLANNER HEALTH
+- Show one useful suggestion at a time.
+- Suggestions must be dismissible and snoozable.
+- Avoid nagging and gamification.
+- Project inactivity is a prompt to review, not a judgement.
 
-CONVERSION
-- Converted items prefill the destination form.
-- Recurrence and due dates must behave exactly like items created directly in that destination.
-
-
-QUICK ADD
-- Capture should be available without navigating away first.
-- Quick Add launches the authoritative item editor; it does not create duplicate records.
-- The floating control must not obscure bottom navigation or active timer controls.
+PROGRESS BAR
+- Retained temporarily; review after extended real-world usage.
