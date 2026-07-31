@@ -1273,3 +1273,7 @@ html,body{max-width:100%;overflow-x:clip}
 .focus-timer-mini-pause,.focus-timer-mini-close{width:auto!important;min-width:40px;padding:8px 10px!important}.focus-timer-mini-close{border-radius:50%;background:#eef3ef!important;color:var(--ink)!important;box-shadow:none!important}
 #homeWaitingPanel .v10-row{margin-bottom:6px}
 @media(max-width:560px){.focus-reorder-controls{grid-template-columns:1fr 1fr}.focus-timer-mini{left:8px;right:8px;width:auto;bottom:calc(82px + env(safe-area-inset-bottom))}.focus-timer-mini-pause{font-size:.78rem}.focus-timer-mini-main{padding:6px!important}}
+
+
+/* v51d final corrections */
+.focus-timer-mini.hidden{display:none!important}

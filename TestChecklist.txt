@@ -1,32 +1,32 @@
-MY LIFE PLANNER v51d — CORRECTED ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v51d — FINAL CORRECTED CHECKLIST
 
-INSTALLATION AND DATA
-[ ] Header, both About locations and Developer information show v51d.
-[ ] Existing data and Today’s Focus remain present.
-
-TODAY’S FOCUS ORDER
-[ ] Open an item and use Move up/down several times without the editor closing.
-[ ] Move an item directly to top and bottom.
-[ ] Refresh/reopen and confirm the order remains.
+INSTALLATION
+[ ] Header, About and Developer information show v51d.
+[ ] Existing data remains present.
 
 TIMER
-[ ] Start a short timer and minimise it.
-[ ] Use the planner while the mini timer remains visible.
-[ ] Leave/reopen the app and confirm the timer restores with the correct remaining time.
-[ ] Pause/continue from the mini timer.
-[ ] Cancel explicitly and confirm it clears.
-[ ] Mark complete from the timer.
+[ ] Open the app with no timer running: no timer strip is visible.
+[ ] Start a timer and keep the dialog open: no mini strip appears.
+[ ] Minimise it: the mini strip appears and continues counting.
+[ ] Reopen the timer, cancel it and confirm the strip disappears.
 
-CONVERT TO CLEANING
-[ ] Convert a Focus item to a monthly Cleaning Task.
-[ ] Save it, mark it complete, and confirm next due advances by one month.
-[ ] Confirm Timeline updates immediately.
+TODAY’S FOCUS ORDER
+[ ] Use Move Up repeatedly without manually reopening the menu each time.
+[ ] Use Move Down repeatedly.
+[ ] Move to top and Move to bottom still work.
 
-WAITING FOR ON HOME
-[ ] Waiting For appears on Home and is collapsible.
-[ ] Active items appear and View all opens the full Lists section.
-[ ] Collapse state is remembered.
+CONVERTED CLEANING TASK
+[ ] Convert a Focus item to a monthly cleaning task.
+[ ] Complete it.
+[ ] Confirm its next due date advances by one month.
+[ ] Confirm it disappears from Needs Attention immediately.
+[ ] Confirm Timeline shows only the next due occurrence.
+
+HOME
+[ ] Waiting For remains visible and collapsible.
+[ ] Gentle close-down is visible on Home.
+[ ] Add, edit, delete and reorder Gentle close-down items.
+[ ] Refresh/reopen and confirm the routine remains.
 
 REGRESSION
-[ ] Appointments, Recurring Tasks, Projects, Lists, search, Timeline, Brain Inbox and Daily Rhythm work.
-[ ] Data persists after refresh and reopen.
+[ ] Today’s Focus, Projects, Brain Inbox, Daily Rhythm, Lists, Timeline and Recurring Tasks remain stable.

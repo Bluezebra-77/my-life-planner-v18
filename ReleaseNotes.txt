@@ -1,11 +1,10 @@
-My Life Planner v51d — Corrected Release
+My Life Planner v51d — Final Corrected Release
 
-Corrected after acceptance testing:
-- Corrected the top About version to v51d.
-- Added Move to top/bottom and in-dialog reordering for Today’s Focus.
-- Added a minimisable, persistent Focus Timer that restores after reopening.
-- Corrected converted monthly Cleaning Tasks so completion advances the due date and refreshes Timeline immediately.
-- Restored a collapsible Waiting For working view on Home.
+Corrected
+- Mini timer is hidden on normal app launch and appears only after a running timer is minimised.
+- Today’s Focus Move Up/Move Down can be repeated without manually reopening the item each time.
+- Completed converted cleaning tasks disappear from Needs Attention immediately after their next date is calculated.
+- Gentle close-down has been restored to Home as an editable collapsible panel.
 
-Preserved:
-- Existing data, Today’s Focus, recurrence, tags, routines, Projects, Lists and Timeline.
+Preserved
+- All accepted v51d features, data, recurrence, tags, routines, Timeline and migration protections.

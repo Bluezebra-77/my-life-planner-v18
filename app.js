@@ -2577,7 +2577,7 @@ renderTodayFocus=function(){
   items.forEach(item=>{
     const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''} ${item.pinned?'pinned-focus-row':''}`;
     const meta=[item.completed?'Completed':'Today',item.estimatedMinutes?`${item.estimatedMinutes} min`:'',item.notes?item.notes:''].filter(Boolean).join(' · ');
-    const actions=`<button onclick="closeAnchoredMenu();openTodayFocusEdit('${item.id}')">Edit details</button><button onclick="closeAnchoredMenu();openFocusTimer('${item.id}')">Start timer</button><button onclick="closeAnchoredMenu();toggleTodayFocusPin('${item.id}')">${item.pinned?'Unpin':'Pin to top'}</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','top')">Move to top</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',-1)">Move up</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',1)">Move down</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','bottom')">Move to bottom</button>${todayFocusConvertMenu(item.id)}<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`;
+    const actions=`<button onclick="closeAnchoredMenu();openTodayFocusEdit('${item.id}')">Edit details</button><button onclick="closeAnchoredMenu();openFocusTimer('${item.id}')">Start timer</button><button onclick="closeAnchoredMenu();toggleTodayFocusPin('${item.id}')">${item.pinned?'Unpin':'Pin to top'}</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','top')">Move to top</button><button onclick="moveTodayFocusItemKeepMenu('${item.id}',-1,this)">Move up</button><button onclick="moveTodayFocusItemKeepMenu('${item.id}',1,this)">Move down</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}','bottom')">Move to bottom</button>${todayFocusConvertMenu(item.id)}<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`;
     row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleTodayFocusItem('${item.id}')" aria-label="${item.completed?'Reinstate':'Complete'} ${escapeHtml(item.name)}">${item.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="openTodayFocusEdit('${item.id}')"><span class="v10-row-title">${item.pinned?'★ ':''}${escapeHtml(item.name)}</span><span class="v10-row-meta">${escapeHtml(meta)}</span></button>${!item.completed?`<button type="button" class="focus-start-button" onclick="openFocusTimer('${item.id}')" aria-label="Start timer for ${escapeHtml(item.name)}">▶</button>`:''}${compactMenu(actions,item.name)}`;
     area.appendChild(row);
   });
@@ -2678,3 +2678,51 @@ renderTodayFocus=function(){renderTodayFocusV51dCorrected();document.querySelect
 window.addEventListener('pageshow',()=>{restoreStoredFocusTimer();renderWaitingHome();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateFocusTimerDisplay();renderWaitingHome();}});
 setTimeout(()=>{restoreStoredFocusTimer();renderWaitingHome();},0);
+
+
+/* ===== v51d final acceptance corrections ===== */
+function moveTodayFocusItemKeepMenu(id,direction,button){
+  const menu=button?.closest('.anchored-item-menu');
+  const rect=menu?.getBoundingClientRect();
+  moveTodayFocusItem(id,direction);
+  // Reopen the same item menu after rendering so repeated moves are quick.
+  setTimeout(()=>{
+    const row=[...document.querySelectorAll('#todayFocusArea .today-focus-row')].find(r=>r.querySelector(`[onclick*="${id}"]`));
+    const trigger=row?.querySelector('.item-menu-trigger');
+    if(trigger){trigger.click();const reopened=document.querySelector('.anchored-item-menu');if(reopened&&rect){reopened.style.top=`${Math.max(8,rect.top)}px`;reopened.style.left=`${Math.max(8,rect.left)}px`;}}
+  },0);
+}
+
+// Keep the mini timer completely hidden until a running timer is deliberately minimised.
+function restoreStoredFocusTimer(){
+  const mini=document.getElementById('focusTimerMini');
+  mini?.classList.add('hidden');
+  try{
+    const state=JSON.parse(localStorage.getItem(FOCUS_TIMER_STORAGE_KEY)||'null');
+    if(!state||!state.active)return;
+    focusTimerItemId=String(state.itemId||'');focusTimerRemaining=Math.max(0,Number(state.remaining)||0);focusTimerPaused=Boolean(state.paused);focusTimerEndAt=focusTimerPaused?0:Number(state.endAt)||0;
+    recalculateFocusTimer();
+    if(focusTimerRemaining>0){ensureFocusTimerInterval();updateFocusTimerDisplay();}
+    else clearFocusTimerState();
+  }catch(e){clearFocusTimerState();}
+}
+
+function renderHomeEveningRoutine(){
+  const area=document.getElementById('homeEveningChecklist');
+  if(!area)return;
+  renderChecklist('homeEveningChecklist',data.eveningTasks,'daily',false);
+}
+
+// Cleaning completion must refresh Needs Attention after its next date advances.
+function completeCleaning(id){
+  const task=(data.cleaningTasks||[]).find(item=>String(item.id)===String(id));if(!task)return;
+  const completedOn=localDateKey();task.lastCompleted=completedOn;
+  const anchor=(!task.nextDue||task.nextDue<completedOn)?completedOn:task.nextDue;
+  task.nextDue=nextCleaningDate(anchor,task.frequency||'weekly');
+  saveData();renderAll();renderFocusToday();renderTimeline();refreshListsImmediately();
+}
+
+const renderAllV51dFinal=renderAll;
+renderAll=function(){renderAllV51dFinal();renderWaitingHome();renderHomeEveningRoutine();};
+window.addEventListener('pageshow',()=>{document.getElementById('focusTimerMini')?.classList.add('hidden');renderHomeEveningRoutine();});
+setTimeout(()=>{document.getElementById('focusTimerMini')?.classList.add('hidden');renderHomeEveningRoutine();},0);
