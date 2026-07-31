@@ -1,22 +1,12 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
+FIXED IN v50
+- Recurring appointments advanced even when the underlying responsibility was not completed. A true recurring-task type now remains overdue until completion.
+
 FIXED IN v49
-- Home Hide controls had insufficient contrast.
-- Home project titles opened editing rather than revealing the project steps.
-- Home did not allow normal step completion without moving to Lists.
-- Lists search required words to appear as one exact phrase/order in some cases.
-
-FIXED/PRESERVED FROM v48
-- Lists search reset restores all sections.
-- Appointment search coverage improved.
-- Home sections are collapsible.
-- Project steps are collapsible in Lists.
-- Custom-list completed items move down and show strike-through.
-
-PLANNED FOR v50
-- A recurring appointment advances even when the underlying responsibility was not completed. Resolve with a true recurring-task type that remains overdue until completed.
+- Home project workflow and exact-phrase search issues.
 
 OPEN DESIGN ITEMS
-- Home/Timeline duplication review.
-- Progress indicator purpose and possible removal/replacement.
-- Generated-task timer.
+- Home/Timeline duplication review
+- Progress indicator purpose
+- Generated-task timer

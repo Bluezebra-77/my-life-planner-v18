@@ -1,46 +1,25 @@
-MY LIFE PLANNER v49 — ACCEPTANCE CHECKLIST
+MY LIFE PLANNER v50 — ACCEPTANCE CHECKLIST
 
-INSTALLATION AND VERSION
-☐ Upload all files, replacing the previous GitHub Pages files
-☐ Use Settings → App maintenance → Check for updates
-☐ Header shows v49
-☐ About shows Version 49
-☐ Developer Dashboard shows cache my-life-planner-v49
-☐ Existing information is still present
+INSTALLATION
+☐ Header shows v50
+☐ About shows Version 50
+☐ Developer Dashboard shows my-life-planner-v50
+☐ Existing information is present
 
-HOME COLLAPSE BUTTONS
-☐ Show/Hide wording is easy to read
-☐ Collapse and reopen several Home sections
-☐ Leave Home and return; confirm states remain remembered
+RECURRING TASKS
+☐ Add Weekly Injection with a past due date
+☐ Confirm it appears Overdue on Home and in Lists
+☐ Complete it and confirm the next due date is the next scheduled day after today
+☐ Add a daily, monthly and yearly task
+☐ Edit name, notes, date and repeat interval
+☐ Pause a task and confirm it leaves Home but remains in Lists
+☐ Resume it
+☐ Search using part of its name
+☐ Delete a test task
 
-HOME PROJECTS
-☐ Home initially shows project titles without all steps
-☐ Tap a project title and confirm its existing steps appear
-☐ Tap the title again and confirm the steps collapse
-☐ Tick a step and confirm it completes directly from Home
-☐ Untick/reinstate a completed step
-☐ Tap step text and confirm the step editor opens
-☐ Tap Manage and confirm the project editor opens
-☐ Add a step using Manage and confirm it appears on Home
-☐ Confirm project expansion remains after completing a step
-
-FORGIVING LISTS SEARCH
-☐ Search with part of a word, such as “batt” for “battery”
-☐ Search using two words from an item
-☐ Reverse the order of those two words and confirm the item is still found
-☐ Search for an appointment title or notes
-☐ Search for a project step
-☐ Use different capitalisation
-☐ Clear the search and confirm all list sections return immediately
-
-REGRESSION SPOT CHECK
-☐ Add several Today’s Focus items using Return
-☐ Complete and reinstate a Today’s Focus item
-☐ Confirm unfinished Focus items remain present
-☐ Confirm custom-list completed items move down and are crossed through
-☐ Confirm Timeline and appointments still work
-☐ Confirm Brain Inbox and Projects remain stable
-
-RESULT
-☐ PASS — approve v49 as the new stable baseline
-☐ FAIL — report the failed checklist item and what happened
+REGRESSION
+☐ Today’s Focus works
+☐ Appointments and Timeline work
+☐ Projects and project steps work
+☐ Existing Lists search works
+☐ Refresh/reopen and confirm data persists

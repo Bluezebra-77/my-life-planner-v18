@@ -1224,3 +1224,10 @@ html,body{max-width:100%;overflow-x:clip}
 .home-project-steps[hidden]{display:none!important}
 .home-project-step.completed-row .v10-row-title{text-decoration:line-through;opacity:.62}
 @media(max-width:560px){.home-project-heading{grid-template-columns:minmax(0,1fr) auto}.home-project-manage{min-width:70px}.home-project-steps{padding-left:12px}}
+
+
+/* Version 50 recurring tasks */
+.recurring-task-card{border-left:5px solid var(--accent,#537462)}
+.recurring-task-card .badge.overdue{background:#f8d7d7;color:#7d2d2d}.recurring-task-card .badge.due{background:#fff0cf;color:#795718}
+.recurring-task-card button:disabled{opacity:.55;cursor:not-allowed}
+#recurringTaskForm{padding:22px;display:grid;gap:16px}

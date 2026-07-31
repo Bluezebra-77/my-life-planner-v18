@@ -1,54 +1,14 @@
-MY LIFE PLANNER — MASTER ROADMAP (updated for v49)
+MY LIFE PLANNER — MASTER ROADMAP (updated for v50)
 
 CURRENT
-v49 — Daily Workflow Refinement
-- Readable Home collapse controls
-- Expand/collapse complete project steps directly on Home
-- Separate Home project Manage action
-- More forgiving partial and multi-word Lists search
+v50 — Recurring Tasks and Smart Recurrence
+- Recurring obligations distinct from appointments
+- Remain overdue until completion
+- Daily, weekly, monthly, yearly and interval patterns
+- Home and Lists integration
 
 NEXT
-v50 — Recurring Tasks and Smart Recurrence
-- Recurring tasks distinct from appointments
-- Weekly injection behaviour
-- Remain overdue until completion
-- Create/show the next occurrence after completion
-- Shared recurrence patterns for tasks and appointments
-- Home and Today’s Focus integration
-- Advanced weekly/monthly recurrence patterns
-
 v51 — Smart Lists
-- Basic Lists
-- Reusable Checklists
-- Action Lists with optional dates and reminders
-- Rapid Return-to-add entry
+- Basic Lists, reusable Checklists and Action Lists
+- Rapid Return-to-add and reset options
 - Completed items crossed through and moved down
-- Reset one item or the entire list
-- Convert list behaviour without losing contents
-
-v52 — Brain Inbox 2
-- Better previews and attachments
-- Image compression
-- Quick Actions and shortcut/share refinements
-
-v53 — Global Search
-- Search all planner information and jump directly to results
-
-v54 — Developer Tools
-- Diagnostics, versions, storage statistics, self-test and export diagnostics
-
-v55 — Sync Foundation
-- Backup, restore and multiple-device preparation
-
-ACTIVE DESIGN REVIEWS
-- Clarify the long-term distinction between Home and Planner/Timeline
-- Decide whether a week summary belongs on Home or only in Planner
-- Replace or permanently remove the previous progress bar
-- Add an in-app timer for generated/random tasks in an appropriate release
-
-PROCESS
-- Whole-number releases only
-- Build only from the last user-approved release
-- Preserve existing data
-- Validate before packaging
-- User tests with real-life data before the next build

@@ -2,24 +2,10 @@ MY LIFE PLANNER — DESIGN NOTES
 
 CORE PRINCIPLES
 - The planner adapts to how the user lives.
+- One item has one logical home; other screens are views.
 - Real-world usage drives development.
-- One item has one logical home; other screens are views, not duplicate records.
-- The 30-Second Rule: a quick thought should be quick to capture.
-- Keep screens calm through progressive disclosure.
-
-HOME PROJECT BEHAVIOUR
-- Home is a working dashboard, not merely a shortcut page.
-- A project title expands its existing steps.
-- A step can be completed directly from Home.
-- Editing/adding/reorganising remains an explicit Manage action.
-
-SEARCH BEHAVIOUR
-- Users should not need to remember exact wording.
-- Search is case-insensitive and punctuation-tolerant.
-- Each entered word must occur somewhere in the searchable item, but words need not be adjacent or in the saved order.
-- Partial terms are accepted.
 
 RECURRING BEHAVIOUR
-- Appointments happen at a time and can advance automatically.
+- Appointments happen at a time and may advance automatically.
 - Recurring tasks represent obligations and remain overdue until completed.
-- The weekly injection belongs to recurring-task behaviour, planned for v50.
+- Their schedule remains anchored to the intended recurrence, not the late completion date.

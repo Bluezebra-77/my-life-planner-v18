@@ -1,37 +1,24 @@
 My Life Planner — Build Report
-Version: 49
+Version: 50
 Build date: 31 July 2026
-Built from: user-approved v49
+Built from: user-approved v49 source
 
 SCOPE
-PASS — Home collapse-button contrast refinement included
-PASS — Expandable Home project details included
-PASS — Direct Home project-step completion included
-PASS — Separate Home project Manage action included
-PASS — Forgiving token-based Lists search included
-PASS — No recurrence-engine changes introduced
-PASS — Existing saved-data format preserved
+PASS — Recurring-task data collection added without changing the storage key
+PASS — Due-until-completed recurrence engine added
+PASS — Daily, weekly, monthly, yearly and interval patterns added
+PASS — Home and Lists interfaces added
+PASS — Add/edit/pause/resume/delete controls added
+PASS — Search compatibility added through managed-list rendering
 
 VERSION AUDIT
-PASS — Header displays v49
-PASS — About displays Version 49
-PASS — APP_VERSION is 49
-PASS — HTML asset references use v49
-PASS — Manifest identifies V49/version 49
-PASS — Service-worker cache is my-life-planner-v49
-PASS — ZIP filename identifies v49
-PASS — Whole-number release used throughout
+PASS — Header and About display 50
+PASS — APP_VERSION is 50
+PASS — HTML assets, manifest and service-worker cache use 50
 
 STATIC VALIDATION
 PASS — JavaScript syntax
-PASS — Manifest JSON parsing
-PASS — HTML duplicate-ID scan
+PASS — Manifest JSON
 PASS — CSS brace balance
 PASS — Required assets present
-PASS — Required v49 functions and controls present
 PASS — ZIP integrity
-
-DATA COMPATIBILITY
-PASS — Existing storage key retained
-PASS — Existing tasks, projects, appointments, lists and Today’s Focus data retained
-PASS — New Home project expansion preference stored separately

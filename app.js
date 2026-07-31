@@ -128,6 +128,7 @@ function getData() {
     annualDates: mergeUniqueLists(candidates,"annualDates"),
     cleaningTasks: mergeUniqueLists(candidates,"cleaningTasks"),
     appointments: mergeUniqueLists(candidates,"appointments"),
+    recurringTasks: mergeUniqueLists(candidates,"recurringTasks"),
     inbox: mergeUniqueLists(candidates,"inbox"),
     waiting: mergeUniqueLists(candidates,"waiting"),
     customLists: mergeUniqueLists(candidates,"customLists"),
@@ -149,13 +150,14 @@ const RECOVERY_KEY = "lifePlannerDailyBackups";
 const LEGACY_RECOVERY_KEYS = ["lifePlannerDailyBackupsV9"];
 const SETTINGS_KEY = "lifePlannerSettings";
 const LEGACY_SETTINGS_KEYS = ["lifePlannerSettingsV9","lifePlannerSettingsV8","lifePlannerSettingsV7"];
-const APP_VERSION = "49";
+const APP_VERSION = "50";
 const DATABASE_VERSION = "1";
 const MODULE_VERSIONS = Object.freeze({
   brainCapture: "2.1",
   attachments: "1.1",
   appointments: "2.0",
-  quickActions: "1.0"
+  quickActions: "1.0",
+  recurringTasks: "1.0"
 });
 let saveIndicatorTimer = null;
 
@@ -166,6 +168,7 @@ function normaliseData(loaded = {}) {
     annualDates: Array.isArray(loaded.annualDates) ? loaded.annualDates : [],
     cleaningTasks: Array.isArray(loaded.cleaningTasks) ? loaded.cleaningTasks : Array.isArray(loaded.cleaning) ? loaded.cleaning : Array.isArray(loaded.cleaningJobs) ? loaded.cleaningJobs : [],
     appointments: Array.isArray(loaded.appointments) ? loaded.appointments : [],
+    recurringTasks: Array.isArray(loaded.recurringTasks) ? loaded.recurringTasks : [],
     inbox: Array.isArray(loaded.inbox) ? loaded.inbox : [],
     waiting: Array.isArray(loaded.waiting) ? loaded.waiting : [],
     customLists: Array.isArray(loaded.customLists) ? loaded.customLists.map(list => ({...list, items:Array.isArray(list.items)?list.items:[]})) : [],
@@ -820,6 +823,7 @@ function renderMainOverview() {
     <div class="overview-card"><strong>Projects</strong><span class="overview-number">${data.projects.length}</span></div>
     <div class="overview-card"><strong>Annual dates</strong><span class="overview-number">${data.annualDates.length}</span></div>
     <div class="overview-card"><strong>Cleaning tasks</strong><span class="overview-number">${data.cleaningTasks.length}</span></div>
+    <div class="overview-card"><strong>Recurring tasks</strong><span class="overview-number">${data.recurringTasks.length}</span></div>
     <div class="overview-card"><strong>Thoughts</strong><span class="overview-number">${data.inbox.length}</span></div>
     <div class="overview-card"><strong>Waiting For</strong><span class="overview-number">${data.waiting.length}</span></div>
   `;
@@ -1390,6 +1394,7 @@ function showAppView(view, button) {
   if (view === 'tasks') {
     renderTodos();
     renderAppointments();
+    renderRecurringTasks();
     renderInbox();
     renderWaiting();
     renderAnnualDates();
@@ -2213,3 +2218,81 @@ renderAll = function() {
 };
 
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initialiseListSearch);}else{initialiseListSearch();}
+
+
+/* ===== Version 50 recurring tasks ===== */
+function recurringDate(value){ return value ? new Date(`${value}T12:00:00`) : null; }
+function recurringDateKey(date){ return localDateKey(date); }
+function addRecurringInterval(date, unit, interval){
+  const next=new Date(date); const n=Math.max(1,Number(interval)||1);
+  if(unit==='day') next.setDate(next.getDate()+n);
+  else if(unit==='week') next.setDate(next.getDate()+(7*n));
+  else if(unit==='month') { const day=next.getDate(); next.setDate(1); next.setMonth(next.getMonth()+n); next.setDate(Math.min(day,new Date(next.getFullYear(),next.getMonth()+1,0).getDate())); }
+  else if(unit==='year') { const month=next.getMonth(),day=next.getDate(); next.setDate(1); next.setFullYear(next.getFullYear()+n); next.setMonth(month); next.setDate(Math.min(day,new Date(next.getFullYear(),month+1,0).getDate())); }
+  return next;
+}
+function recurringPatternLabel(task){
+  const n=Math.max(1,Number(task.interval)||1), unit=task.unit||'week';
+  if(n===1) return ({day:'Daily',week:'Weekly',month:'Monthly',year:'Yearly'})[unit]||'Repeating';
+  return `Every ${n} ${unit}s`;
+}
+function recurringStatus(task){
+  if(task.status==='paused') return {label:'Paused',className:'ongoing'};
+  const due=recurringDate(task.nextDue), today=recurringDate(localDateKey());
+  if(!due) return {label:'No due date',className:'ongoing'};
+  if(due<today) return {label:'Overdue',className:'overdue'};
+  if(due.getTime()===today.getTime()) return {label:'Due today',className:'due'};
+  return {label:formatDate(task.nextDue),className:'ongoing'};
+}
+function openRecurringTaskDialog(id=''){
+  const dialog=document.getElementById('recurringTaskDialog'); if(!dialog) return;
+  const task=(data.recurringTasks||[]).find(x=>x.id===id);
+  document.getElementById('recurringTaskId').value=task?.id||'';
+  document.getElementById('recurringTaskName').value=task?.name||'';
+  document.getElementById('recurringTaskNotes').value=task?.notes||'';
+  document.getElementById('recurringTaskDueDate').value=task?.nextDue||localDateKey();
+  document.getElementById('recurringTaskInterval').value=task?.interval||1;
+  document.getElementById('recurringTaskUnit').value=task?.unit||'week';
+  document.getElementById('recurringTaskStatus').value=task?.status||'active';
+  document.getElementById('recurringTaskDialogTitle').textContent=task?'Edit recurring task':'New recurring task';
+  dialog.showModal();
+}
+function closeRecurringTaskDialog(){ document.getElementById('recurringTaskDialog')?.close(); }
+function saveRecurringTask(event){
+  event.preventDefault();
+  const id=document.getElementById('recurringTaskId').value;
+  const existing=(data.recurringTasks||[]).find(x=>x.id===id);
+  const task={id:id||uid(),name:document.getElementById('recurringTaskName').value.trim(),notes:document.getElementById('recurringTaskNotes').value.trim(),nextDue:document.getElementById('recurringTaskDueDate').value,interval:Math.max(1,Number(document.getElementById('recurringTaskInterval').value)||1),unit:document.getElementById('recurringTaskUnit').value,status:document.getElementById('recurringTaskStatus').value,createdAt:existing?.createdAt||new Date().toISOString(),lastCompleted:existing?.lastCompleted||''};
+  if(!task.name||!task.nextDue) return;
+  if(existing) Object.assign(existing,task); else data.recurringTasks.push(task);
+  saveData(); closeRecurringTaskDialog(); renderAll(); filterMyLists(document.getElementById('globalListSearch')?.value||'');
+}
+function completeRecurringTask(id){
+  const task=(data.recurringTasks||[]).find(x=>x.id===id); if(!task) return;
+  let next=recurringDate(task.nextDue)||recurringDate(localDateKey()); const today=recurringDate(localDateKey());
+  do { next=addRecurringInterval(next,task.unit,task.interval); } while(next<=today);
+  task.lastCompleted=new Date().toISOString(); task.nextDue=recurringDateKey(next); task.status='active';
+  saveData(); renderAll();
+}
+function toggleRecurringPause(id){ const task=data.recurringTasks.find(x=>x.id===id); if(!task)return; task.status=task.status==='paused'?'active':'paused'; saveData();renderAll(); }
+function deleteRecurringTask(id){ if(!confirm('Delete this recurring task?'))return; data.recurringTasks=data.recurringTasks.filter(x=>x.id!==id);saveData();renderAll(); }
+function recurringTaskCard(task){
+  const status=recurringStatus(task), row=document.createElement('div'); row.className='list-card recurring-task-card v10-row';
+  row.innerHTML=`<div class="card-top"><div><div class="card-title">${escapeHtml(task.name)}</div><div class="card-meta">${escapeHtml(recurringPatternLabel(task))} · Next due ${escapeHtml(formatDate(task.nextDue))}</div></div><span class="badge ${status.className}">${escapeHtml(status.label)}</span></div>${task.notes?`<div class="card-details">${escapeHtml(task.notes)}</div>`:''}<div class="card-actions"><button type="button" onclick="completeRecurringTask('${task.id}')" ${task.status==='paused'?'disabled':''}>Complete</button><button type="button" class="secondary-button" onclick="openRecurringTaskDialog('${task.id}')">Edit</button><button type="button" class="secondary-button" onclick="toggleRecurringPause('${task.id}')">${task.status==='paused'?'Resume':'Pause'}</button><button type="button" class="danger-button" onclick="deleteRecurringTask('${task.id}')">Delete</button></div>`;
+  return row;
+}
+function renderRecurringTasks(){
+  const area=document.getElementById('recurringTasksArea'); if(!area)return; area.innerHTML='';
+  const tasks=[...(data.recurringTasks||[])].sort((a,b)=>(a.status==='paused')-(b.status==='paused')||String(a.nextDue).localeCompare(String(b.nextDue)));
+  if(!tasks.length){area.innerHTML='<div class="empty-state">No recurring tasks yet. Add one for an obligation that must remain visible until completed.</div>';return;}
+  tasks.forEach(task=>area.appendChild(recurringTaskCard(task)));
+}
+function renderRecurringHome(){
+  const area=document.getElementById('homeRecurringArea'); if(!area)return; area.innerHTML='';
+  const today=recurringDate(localDateKey()); const tasks=(data.recurringTasks||[]).filter(t=>t.status!=='paused'&&recurringDate(t.nextDue)<=today).sort((a,b)=>String(a.nextDue).localeCompare(String(b.nextDue)));
+  if(!tasks.length){area.innerHTML='<div class="empty-state">No recurring tasks are due.</div>';return;}
+  tasks.forEach(task=>{const st=recurringStatus(task);area.appendChild(compactReminderRow({id:task.id,name:task.name,dueDate:task.nextDue,itemType:'recurring'},{meta:`${recurringPatternLabel(task)} · ${st.label}`,badge:st.label,actionable:true,onComplete:()=>completeRecurringTask(task.id),clickable:false}));});
+}
+const renderAllV49=renderAll;
+renderAll=function(){ renderAllV49(); renderRecurringTasks(); renderRecurringHome(); };
+renderRecurringTasks(); renderRecurringHome(); initialiseListSearch();

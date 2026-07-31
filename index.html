@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=49">
-  <link rel="manifest" href="manifest.json?v=49">
+  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="manifest" href="manifest.json?v=50">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
           <h1 id="plannerTitle" class="brand-title">My Life Planner</h1>
           <img src="icon-192.png" class="header-zebra" alt="" aria-hidden="true">
         </div>
-        <p class="header-version">v49</p>
+        <p class="header-version">v50</p>
         <p id="todayDate" class="date-line"></p>
       </div>
       <div class="compact-progress hidden" aria-label="Daily progress">
@@ -61,6 +61,11 @@
       <div id="helpfulChoiceResult" class="decision-result hidden"></div>
     </section>
 
+    <section id="homeRecurringPanel" class="panel app-view-section home-collapsible" data-view="home" data-home-section="recurringTasks">
+      <div class="section-heading"><div><p class="eyebrow">Due until completed</p><h2>Recurring Tasks</h2><p class="card-meta">Repeating responsibilities stay visible when overdue.</p></div><button class="section-plus" type="button" onclick="openRecurringTaskDialog()" aria-label="Add recurring task">+</button></div>
+      <div id="homeRecurringArea" class="compact-list"></div>
+    </section>
+
     <section id="homeBrainInboxPanel" class="panel app-view-section home-collapsible" data-view="home" data-home-section="brainInbox">
       <div class="section-heading"><div><p class="eyebrow">Capture first, organise later</p><h2>Brain Inbox</h2></div><div class="section-actions"><button class="voice-button" type="button" onclick="startVoiceCapture('inbox')" aria-label="Dictate a thought" title="Dictate a thought">🎤</button><button class="section-plus" type="button" onclick="openCaptureDialog('inbox')" aria-label="Capture a thought">+</button></div></div>
       <div id="inboxPreviewArea" class="compact-list"></div>
@@ -87,7 +92,7 @@
       <div class="lists-nav-hint" aria-hidden="true">Choose a list</div>
       <nav class="lists-floating-nav" aria-label="Move between lists">
         <button type="button" onclick="jumpToList('todoListSection')">To-dos</button>
-        <button type="button" onclick="jumpToList('appointmentsListSection')">Appointments</button>
+        <button type="button" onclick="jumpToList('appointmentsListSection')">Appointments</button><button type="button" onclick="jumpToList('recurringTasksListSection')">Recurring</button>
         <button type="button" onclick="jumpToList('inboxListSection')">Brain Inbox</button>
         <button type="button" onclick="jumpToList('waitingListSection')">Waiting</button>
         <button type="button" onclick="jumpToList('annualListSection')">Birthdays</button>
@@ -122,6 +127,12 @@
       <div class="section-heading"><div><p class="eyebrow">Calendar commitments</p><h2>Appointments and events</h2></div><button class="section-plus" type="button" onclick="openAppointmentDialog()" aria-label="Add appointment">+</button></div>
       <p class="card-meta">Every appointment appears here. Select an item to edit it.</p>
       <div id="appointmentsArea" class="stack-list"></div>
+    </section>
+
+    <section id="recurringTasksListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Recurring Tasks">
+      <div class="section-heading"><div><p class="eyebrow">Repeating responsibilities</p><h2>Recurring tasks</h2></div><button class="section-plus" type="button" onclick="openRecurringTaskDialog()" aria-label="Add recurring task">+</button></div>
+      <p class="card-meta">These remain due or overdue until you mark them complete. Paused tasks stay saved but do not appear on Home.</p>
+      <div id="recurringTasksArea" class="stack-list"></div>
     </section>
 
     <section id="inboxListSection" class="panel app-view-section managed-list-section" data-view="tasks" data-list-name="Brain Inbox">
@@ -284,7 +295,7 @@
           </div>
           <div class="card-actions"><button type="button" class="secondary-button" onclick="refreshDeveloperDashboard()">Refresh dashboard</button></div>
         </details>
-        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 48</p><p><strong>Updated:</strong> 31 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v49</strong> — Added Today's Focus, collapsible Home sections, collapsible project steps, improved Lists search/reset and better completed custom-list behaviour.</li><li><strong>v47</strong> — Restored reliable Lists search and retained the v46 stability fixes.</li><li><strong>v46</strong> — Consolidated automatic image handling, attachment previews, Quick Actions, flexible appointment repeats, version verification and the Developer Dashboard.</li><li><strong>v43</strong> — Added automatic image resizing, in-app attachment previews and a Quick Actions helper for opening Brain Inbox directly.</li><li><strong>v42</strong> — Expanded the Lists drawer so its choices are clearly visible, added a More Lists scroll cue when needed, and anchored the control to the planner edge on wide screens.</li><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
+        <details class="storage-details"><summary>About My Life Planner</summary><p><strong>Version:</strong> 50</p><p><strong>Updated:</strong> 31 July 2026</p><p><strong>Designed by Blue Zebra 77</strong></p><p>Updates change the app layout but do not intentionally replace your personal information. Your data stays in this browser unless you export it.</p><h3>Recent changes</h3><ul class="change-log"><li><strong>v50</strong> — Added recurring tasks that remain overdue until completed, with daily, weekly, monthly and yearly schedules.</li><li><strong>v49</strong> — Added Today's Focus, collapsible Home sections, collapsible project steps, improved Lists search/reset and better completed custom-list behaviour.</li><li><strong>v47</strong> — Restored reliable Lists search and retained the v46 stability fixes.</li><li><strong>v46</strong> — Consolidated automatic image handling, attachment previews, Quick Actions, flexible appointment repeats, version verification and the Developer Dashboard.</li><li><strong>v43</strong> — Added automatic image resizing, in-app attachment previews and a Quick Actions helper for opening Brain Inbox directly.</li><li><strong>v42</strong> — Expanded the Lists drawer so its choices are clearly visible, added a More Lists scroll cue when needed, and anchored the control to the planner edge on wide screens.</li><li><strong>v40</strong> — Rebuilt Lists navigation as a closed-by-default right-side drawer that resets correctly on rotation and resizing, with a close button on iPhone and MacBook.</li><li><strong>v39</strong> — Added a close control and improved iPhone landscape Lists navigation scrolling and placement.</li><li><strong>v38</strong> — Added responsive side-mounted Lists navigation, corrected section scroll positioning and made Custom List Save close the editor.</li><li><strong>v37</strong> — Moved Lists navigation to a sticky top position and reduced the Planner header and progress area.</li><li><strong>v36</strong> — Compact Home shortcuts, permanently anchored Lists navigation and clearer mobile access to every list.</li><li><strong>v36</strong> — Improved iPhone Timeline controls, added Home shortcuts, floating Lists navigation and polished custom-list editing.</li><li><strong>v34</strong> — Corrected first-load Timeline rendering, added custom lists and aligned section headings consistently.</li><li><strong>v33</strong> — Earlier Timeline initial-load correction.</li><li><strong>v32</strong> — Unified Timeline with Today, Tomorrow, Next 7 Days, This Month and All Upcoming filters.</li><li><strong>v30</strong> — Brain Inbox core: timestamped capture, categories and status, editing, processing, and safe conversion to To-do, Project, Appointment or Waiting For.</li><li><strong>v29</strong> — Rebuilt the Lists shortcuts with permanent visible text labels.</li><li><strong>v28</strong> — Added distinct font choices and Home-on-return behaviour.</li><li><strong>v27</strong> — Fixed Lists-menu opening, made font changes immediate and distinctive, and restored Home as the opening page.</li><li><strong>v26</strong> — Collapsible Lists, named section controls, centred headings and clearer font choices.</li><li><strong>v25</strong> — Corrected header version, optional appointment end time and simplified bottom navigation.</li><li><strong>v24</strong> — Appointment meeting links, improved editor and clearer appointment cards.</li><li><strong>v23</strong> — Settings controls and customisation persistence.</li><li><strong>v22</strong> — Compact three-dot menus for Lists.</li><li><strong>v21</strong> — Centred personalised header.</li><li><strong>v20</strong> — Code-quality cleanup.</li><li><strong>v19</strong> — Stable rendering fix.</li></ul></details>
       </div>
     </dialog>
 
@@ -335,6 +346,23 @@
     </form>
   </dialog>
 
+
+  <dialog id="recurringTaskDialog" class="manager-dialog">
+    <form id="recurringTaskForm" onsubmit="saveRecurringTask(event)">
+      <div class="dialog-header"><div><p class="eyebrow">Due until completed</p><h2 id="recurringTaskDialogTitle">New recurring task</h2></div><button type="button" class="dialog-close" onclick="closeRecurringTaskDialog()" aria-label="Close">×</button></div>
+      <input id="recurringTaskId" type="hidden">
+      <label>Task name<input id="recurringTaskName" type="text" maxlength="120" required placeholder="For example: Weekly injection"></label>
+      <label>Notes (optional)<textarea id="recurringTaskNotes" rows="3" placeholder="Anything useful to remember"></textarea></label>
+      <div class="settings-grid">
+        <label>First due date<input id="recurringTaskDueDate" type="date" required></label>
+        <label>Repeat every<input id="recurringTaskInterval" type="number" min="1" max="999" value="1" required></label>
+        <label>Period<select id="recurringTaskUnit"><option value="day">day(s)</option><option value="week" selected>week(s)</option><option value="month">month(s)</option><option value="year">year(s)</option></select></label>
+        <label>Status<select id="recurringTaskStatus"><option value="active">Active</option><option value="paused">Paused</option></select></label>
+      </div>
+      <p class="card-meta">The schedule stays anchored to the due date. Completing an overdue task moves it to the next scheduled date after today.</p>
+      <div class="dialog-actions"><button type="button" class="secondary-button" onclick="closeRecurringTaskDialog()">Cancel</button><button type="submit">Save recurring task</button></div>
+    </form>
+  </dialog>
 
   <dialog id="customListDialog" class="manager-dialog custom-list-dialog">
     <div class="dialog-header"><div><p class="eyebrow">Your own collection</p><h2 id="customListDialogTitle">Create custom list</h2></div><button type="button" class="dialog-close" onclick="closeCustomListManager()" aria-label="Close">×</button></div>
@@ -514,6 +542,6 @@
     <div class="dialog-actions"><button type="button" class="secondary-button" onclick="downloadCurrentAttachment()">Download copy</button><button type="button" onclick="closeAttachmentViewer()">Close</button></div>
   </dialog>
 
-  <script src="app.js?v=49"></script>
+  <script src="app.js?v=50"></script>
 </body>
 </html>

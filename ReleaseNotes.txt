@@ -1,27 +1,16 @@
 My Life Planner
-Version 49
+Version 50
 Date: 31 July 2026
 
-BUILT FROM
-- User-approved v49 Daily Workflow release.
-
-IMPROVED
-- Home section Show/Hide buttons now use a lighter, higher-contrast style.
-- Home Projects now show project titles first.
-- Tapping a Home project title expands or collapses its existing steps.
-- Project steps can be completed or reinstated directly from Home.
-- Tapping step text opens that step for editing.
-- Each Home project has a separate Manage button for project editing and adding/reorganising steps.
-- Lists search now uses word-token matching rather than requiring the complete phrase in the saved order.
-- Partial terms are supported: for example, "batt" can find "battery".
-- Multiple words can be entered in a different order when all words occur in the item.
+NEW
+- Recurring Tasks are distinct from appointments.
+- Daily, weekly, every-N-weeks, monthly and yearly patterns.
+- Due and overdue tasks remain visible until completed.
+- Completing an overdue task advances to the next scheduled date after today.
+- Add, edit, pause, resume and delete recurring tasks.
+- Home and Lists integration.
+- Recurring tasks participate in Lists search.
 
 PRESERVED
-- Today's Focus rapid entry and carry-forward behaviour.
-- Collapsible Home sections and remembered collapse state.
-- Custom-list completed-item behaviour.
-- Appointment and project-step search coverage.
-- Existing localStorage data and saved-data structure.
-
-NEXT PLANNED RELEASE
-- v50: Recurring Tasks and Smart Recurrence, including the weekly injection behaviour that remains overdue until completed.
+- Existing v49 localStorage structure and all existing planner information.
+- Appointments, Today’s Focus, projects, lists, routines and search behaviour.

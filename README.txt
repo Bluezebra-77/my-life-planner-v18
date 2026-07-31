@@ -1,7 +1,7 @@
-My Life Planner v49
+My Life Planner v50
 
 Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
 
-Built from the user-approved v49 release. This whole-number release refines Home projects, Home collapse controls and Lists search. Existing saved information and storage keys are preserved.
+Version 50 adds true recurring tasks. They remain due or overdue until completed, then advance to the next scheduled date. Existing v49 data and the lifePlannerData storage key are preserved.
 
-After uploading, open Settings → App maintenance → Check for updates. Confirm v49 in the header and my-life-planner-v49 in the Developer Dashboard.
+After uploading, use Settings → App maintenance → Check for updates. Confirm v50 in the header, Version 50 in About, and my-life-planner-v50 in the Developer Dashboard.
