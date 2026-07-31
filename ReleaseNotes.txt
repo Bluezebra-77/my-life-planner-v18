@@ -3,7 +3,7 @@ Version 49
 Date: 31 July 2026
 
 BUILT FROM
-- User-approved v48 Daily Workflow release.
+- User-approved v49 Daily Workflow release.
 
 IMPROVED
 - Home section Show/Hide buttons now use a lighter, higher-contrast style.

@@ -1,7 +1,7 @@
 My Life Planner — Build Report
 Version: 49
 Build date: 31 July 2026
-Built from: user-approved v48
+Built from: user-approved v49
 
 SCOPE
 PASS — Home collapse-button contrast refinement included
