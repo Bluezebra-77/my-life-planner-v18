@@ -1255,3 +1255,12 @@ html,body{max-width:100%;overflow-x:clip}
 /* v51b recurrence-dialog correction */
 [hidden]{display:none!important}
 .recurring-rule-summary{margin:.25rem 0;padding:.8rem 1rem;border:1px solid var(--line,#d8ddd8);border-radius:12px;background:var(--accent-soft,#e9f1ec);color:var(--ink,#20312a);font-weight:700;line-height:1.45}
+
+
+/* v51d Today workspace */
+.today-focus-row{grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center}
+.focus-start-button{width:34px;height:34px;min-width:34px;padding:0;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);box-shadow:none}
+.pinned-focus-row{border-left:4px solid #d2a75a;background:#fffaf0}
+.inline-check{display:flex;grid-template-columns:auto 1fr;align-items:center;gap:10px}.inline-check input{width:22px;height:22px}
+.focus-timer-body{padding:12px 22px 24px}.focus-timer-display{text-align:center;font-size:clamp(3rem,14vw,5rem);font-weight:800;letter-spacing:-.05em;margin:18px 0}.timer-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.timer-choice-grid button{padding:12px 8px}.convert-menu-label{padding:.25rem .7rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+@media(max-width:560px){.today-focus-row{grid-template-columns:auto minmax(0,1fr) auto}.today-focus-row .item-menu-anchor{grid-column:3}.focus-start-button{grid-column:3}.timer-choice-grid{grid-template-columns:repeat(2,1fr)}}

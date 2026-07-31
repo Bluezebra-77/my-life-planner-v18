@@ -1,16 +1,9 @@
 MY LIFE PLANNER — BUG AND USABILITY REGISTER
 
-FIXED IN v51c CORRECTED
-- Smart Lists buttons did not display results.
-- Smart Lists duplicated Timeline date-range views.
-- Home summary counts were unclear/not visible.
-- Daily Rhythm “Decide for me” duplicated the working Needs Attention task-choice controls and no longer worked.
+FIXED/PRESERVED IN v51d
+- Today’s Focus previously allowed only name/completion. It now supports a useful daily working workflow.
+- No duplicate Smart Lists or redundant random-task control reintroduced.
 
 MONITOR
-- Search ranking with larger real-life data sets.
-- Home/Timeline distinction during normal use.
-
-OPEN DESIGN ITEMS
-- Dashboard design for v51d.
-- Progress indicator purpose.
-- Generated-task timer.
+- Timer behaviour when the app is backgrounded on iPhone.
+- Convert workflow clarity and data preservation.

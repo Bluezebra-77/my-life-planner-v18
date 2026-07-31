@@ -1,16 +1,13 @@
 MY LIFE PLANNER — FEATURE REGISTER
 
-DELIVERED IN v51c CORRECTED
-- Cleaner Home/Lists workflow with duplicate date-based Smart Lists removed.
-- Timeline retained as the single date-oriented view.
-- Ranked Lists search retained.
-- Redundant Daily Rhythm randomiser removed.
+DELIVERED IN v51d
+- Today Focus optional notes and estimated duration
+- Pinning and manual Up/Down ordering
+- In-app focus timer
+- Convert Focus items into structured planner records
 
-DELIVERED IN v51b
-- Nth-weekday monthly recurrence.
-- Tags and tag-aware search.
+DELIVERED EARLIER IN v51
+- Migration framework, editable routines, advanced recurrence, tags and simplified search.
 
-PLANNED NEXT IN v51
-- v51d: carefully designed Dashboard.
-- v51e: Quick Add.
-- v51f: Planner Health phase 1.
+PLANNED
+- Quick Add and Planner Health.

@@ -1,16 +1,14 @@
 MY LIFE PLANNER — DESIGN NOTES
 
-CORE PRINCIPLES
-- One item has one logical home; other screens are views.
-- Do not add a second route that merely duplicates Timeline.
-- Existing user data is preserved through every internal and public release.
-- Internal lettered milestones are test builds; public versions remain whole numbers.
+CAPTURE FIRST, ORGANISE LATER
+- Today’s Focus accepts a quick thought without demanding classification.
+- Convert offers a later path to the item’s logical home.
+- Conversion opens a pre-filled editor; the user remains in control of saving and removing the original.
 
-HOME AND TIMELINE
-- Home answers: what needs attention now?
-- Timeline answers: what happens over time?
-- Dashboard additions must provide clear value, not duplicate Timeline filters.
+TODAY WORKSPACE
+- Notes, estimates and pinning are optional.
+- The basic Return-to-add flow remains fast.
+- The timer supports action without leaving the planner.
 
-SEARCH
-- Partial terms and tags remain supported.
-- Within each list section, stronger matches should sort above weaker matches.
+DATA SAFETY
+- Existing lifePlannerData and Today Focus safety mirror remain authoritative.

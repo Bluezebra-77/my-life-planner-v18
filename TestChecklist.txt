@@ -1,25 +1,33 @@
-MY LIFE PLANNER v51c — CORRECTED CHECKLIST
+MY LIFE PLANNER v51d — ACCEPTANCE CHECKLIST
 
 INSTALLATION AND DATA
-[ ] Header, About and Developer information show v51c.
-[ ] Existing data, Today's Focus, routines, tags and recurring tasks remain present.
+[ ] Header, About and Developer information show v51d
+[ ] All existing data and Today’s Focus items remain present
 
-CLEAN WORKFLOW
-[ ] Lists no longer contains the broken Smart Lists panel.
-[ ] Timeline still provides Today, Tomorrow, Next 7 days, This month and All upcoming.
-[ ] Home no longer contains unclear summary-count cards.
-[ ] Daily Rhythm no longer contains the duplicate “Need a useful extra task? Decide for me” area.
-[ ] The three task-choice buttons under Needs Attention still work.
+TODAY WORKSPACE
+[ ] Add several items quickly using Return
+[ ] Tap item text and edit its name, notes and estimated minutes
+[ ] Pin and unpin an item; pinned item moves to the top
+[ ] Move active items Up and Down
+[ ] Complete and reinstate an item
+[ ] Refresh and reopen; details and order remain
 
-SEARCH
-[ ] Search using an exact title and confirm it appears above weaker matches in the same list.
-[ ] Search with a partial word and confirm relevant items are found.
-[ ] Search by tag.
-[ ] Clear search and confirm normal list order returns.
+TIMER
+[ ] Start 10-minute timer (briefly test countdown)
+[ ] Pause and continue
+[ ] Close timer without completing
+[ ] Start again and use Mark complete
+[ ] Check layout on iPhone portrait/landscape and MacBook
+
+CONVERT
+[ ] Convert a Focus item to To-do and confirm fields are pre-filled
+[ ] Convert one to Cleaning task and confirm Monthly is suggested
+[ ] Convert one to Recurring task and confirm Monthly is suggested
+[ ] Convert one to Appointment or Project
+[ ] Move one directly to Waiting For
+[ ] Confirm no existing data is lost
 
 REGRESSION
-[ ] Second-Thursday recurrence works.
-[ ] Tags and tag search work.
-[ ] Brain Inbox controls do not overlap.
-[ ] Today's Focus, Projects, Lists, Timeline and Recurring Tasks remain stable.
-[ ] Refresh and reopen; data persists.
+[ ] Needs Attention random/useful buttons work
+[ ] Timeline, Lists search, projects, recurrence, tags, Brain Inbox and routines work
+[ ] Refresh/reopen and confirm data persists

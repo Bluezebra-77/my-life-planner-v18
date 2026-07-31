@@ -1,7 +1,7 @@
-My Life Planner v51c — Corrected Internal Test Build
+My Life Planner v51d — Internal Test Build
 
-Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
+Upload every file to the root of the GitHub Pages repository, replacing the previous app files.
 
-This correction removes the broken/duplicative Smart Lists and unclear Home summary cards, keeps Timeline as the date-based view, removes the redundant Daily Rhythm randomiser and preserves ranked Lists search.
+v51d deepens Today’s Focus into a daily workspace with optional notes, estimates, pinning, reordering, an in-app focus timer and Convert actions. Existing data keys, migration safety, recurrence, tags and accepted v51c behaviour are preserved.
 
-All accepted v51b data, recurrence, tags, migration and backup behaviour is preserved. Follow TestChecklist.txt before accepting this milestone.
+Follow TestChecklist.txt before accepting this milestone.

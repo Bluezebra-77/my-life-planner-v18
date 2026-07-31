@@ -1,11 +1,11 @@
-My Life Planner v51c — Corrected Release
+My Life Planner v51d — Today Workspace
 
-Corrected
-- Removed the broken Smart Lists panel and its duplicate date-based views.
-- Timeline remains the single place for Today, upcoming and date-range views.
-- Removed the unclear Home summary-card area; dashboard summaries are deferred to v51d for a cleaner design.
-- Removed the redundant Daily Rhythm “Decide for me” control because the three working task-choice buttons already exist under Needs Attention.
-- Retained improved Lists search ordering so stronger text matches sort above weaker matches within each list section.
+NEW
+- Edit Today’s Focus items with optional notes and estimated minutes.
+- Pin important Focus items and move active items up or down.
+- Start a built-in 10/15/20/30/45/60 minute focus timer.
+- Convert a Focus thought into a To-do, Cleaning task, Recurring task, Appointment, Project or Waiting For item using pre-filled details.
+- Completed Focus items remain reusable/reinstatable until removed.
 
-Preserved
-- All accepted v51b recurrence, tags, migration, backup and data-retention behaviour.
+PRESERVED
+- Accepted v51c simplification, Timeline, recurrence, tags, routines, search and data safety.

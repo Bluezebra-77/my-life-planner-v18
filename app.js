@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION = "51c";
+const APP_VERSION="51d";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2500,7 +2500,7 @@ renderAll=function(){renderAllV51b();applyTagBadgesToRenderedLists();};
 setTimeout(()=>{updateRecurringRuleControls();applyTagBadgesToRenderedLists();},0);
 
 
-/* ===== v51c corrected: ranked Lists search without duplicate Smart Lists ===== */
+/* ===== v51d corrected: ranked Lists search without duplicate Smart Lists ===== */
 function searchMatchScore(text,query){const q=normaliseSearchText(query);if(!q)return 0;const hay=normaliseSearchText(text);const tokens=q.split(/\s+/).filter(Boolean);if(!tokens.every(t=>hay.includes(t)))return -1;if(hay===q)return 100;if(hay.startsWith(q))return 80;if(hay.includes(` ${q} `)||hay.includes(q))return 60;return 40+tokens.reduce((s,t)=>s+(hay.startsWith(t)?4:1),0);}
 const filterMyListsV51b=filterMyLists;
 filterMyLists=function(query=''){
@@ -2508,3 +2508,79 @@ filterMyLists=function(query=''){
  filterMyListsV51b(query);
  document.querySelectorAll('.managed-list-section').forEach(section=>{const rows=[...section.querySelectorAll(':scope > .stack-list > .compact-manage-row,:scope > .stack-list > .annual-manage-row,:scope > .stack-list > .list-card,:scope > .stack-list > .v10-row,:scope > .custom-lists-grid > .custom-list-card')];const parent=rows[0]?.parentElement;if(!parent)return;rows.forEach((row,i)=>{if(!row.dataset.originalSearchOrder)row.dataset.originalSearchOrder=String(i);row.dataset.searchScore=String(q?searchMatchScore(row.textContent||'',q):0);});rows.sort((a,b)=>q?Number(b.dataset.searchScore)-Number(a.dataset.searchScore):Number(a.dataset.originalSearchOrder)-Number(b.dataset.originalSearchOrder)).forEach(r=>parent.appendChild(r));});
 };
+
+
+/* ===== v51d Today workspace, timer and Convert workflow ===== */
+let focusTimerInterval=null, focusTimerRemaining=0, focusTimerItemId='', focusTimerPaused=false;
+function focusItemById(id){return (data.todayFocus||[]).find(x=>String(x.id)===String(id));}
+function ensureTodayFocusFields(){
+  data.todayFocus=Array.isArray(data.todayFocus)?data.todayFocus:[];
+  data.todayFocus.forEach((x,i)=>{if(typeof x.notes!=='string')x.notes='';if(!Number.isFinite(Number(x.estimatedMinutes)))x.estimatedMinutes=0;if(typeof x.pinned!=='boolean')x.pinned=false;if(!Number.isFinite(Number(x.order)))x.order=i;});
+}
+function openTodayFocusEdit(id){
+  const item=focusItemById(id);if(!item)return;
+  document.getElementById('todayFocusEditId').value=item.id;
+  document.getElementById('todayFocusEditName').value=item.name||'';
+  document.getElementById('todayFocusEditNotes').value=item.notes||'';
+  document.getElementById('todayFocusEditMinutes').value=item.estimatedMinutes||'';
+  document.getElementById('todayFocusEditPinned').checked=Boolean(item.pinned);
+  document.getElementById('todayFocusEditDialog').showModal();
+  setTimeout(()=>document.getElementById('todayFocusEditName').focus(),30);
+}
+function closeTodayFocusEdit(){document.getElementById('todayFocusEditDialog')?.close();}
+function saveTodayFocusEdit(event){
+  event.preventDefault();const item=focusItemById(document.getElementById('todayFocusEditId').value);if(!item)return;
+  item.name=document.getElementById('todayFocusEditName').value.trim();
+  item.notes=document.getElementById('todayFocusEditNotes').value.trim();
+  item.estimatedMinutes=Math.max(0,Number(document.getElementById('todayFocusEditMinutes').value||0));
+  item.pinned=document.getElementById('todayFocusEditPinned').checked;
+  saveData();closeTodayFocusEdit();renderTodayFocus();showSaved('Focus item saved');
+}
+function moveTodayFocusItem(id,direction){
+  ensureTodayFocusFields();const active=(data.todayFocus||[]).filter(x=>!x.completed).sort((a,b)=>Number(b.pinned)-Number(a.pinned)||Number(a.order)-Number(b.order));
+  const index=active.findIndex(x=>String(x.id)===String(id));const target=index+direction;if(index<0||target<0||target>=active.length)return;
+  const a=active[index],b=active[target],temp=Number(a.order);a.order=Number(b.order);b.order=temp;saveData();renderTodayFocus();
+}
+function toggleTodayFocusPin(id){const item=focusItemById(id);if(!item)return;item.pinned=!item.pinned;saveData();renderTodayFocus();}
+function openFocusTimer(id){
+  const item=focusItemById(id);if(!item)return;focusTimerItemId=String(id);focusTimerRemaining=(Number(item.estimatedMinutes)||15)*60;focusTimerPaused=false;
+  document.getElementById('focusTimerTitle').textContent=item.name;
+  document.getElementById('focusTimerChoices').classList.remove('hidden');document.getElementById('focusTimerRunningActions').classList.add('hidden');
+  document.getElementById('focusTimerMessage').textContent=item.estimatedMinutes?`Suggested time: ${item.estimatedMinutes} minutes.`:'Choose a focus time.';
+  updateFocusTimerDisplay();document.getElementById('focusTimerDialog').showModal();
+}
+function updateFocusTimerDisplay(){const m=Math.floor(focusTimerRemaining/60),s=focusTimerRemaining%60;const el=document.getElementById('focusTimerDisplay');if(el)el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function startFocusTimer(minutes){clearInterval(focusTimerInterval);focusTimerRemaining=minutes*60;focusTimerPaused=false;document.getElementById('focusTimerChoices').classList.add('hidden');document.getElementById('focusTimerRunningActions').classList.remove('hidden');document.getElementById('focusTimerPauseButton').textContent='Pause';document.getElementById('focusTimerMessage').textContent='Stay with this one task until the timer ends.';updateFocusTimerDisplay();focusTimerInterval=setInterval(()=>{if(focusTimerPaused)return;focusTimerRemaining=Math.max(0,focusTimerRemaining-1);updateFocusTimerDisplay();if(focusTimerRemaining===0){clearInterval(focusTimerInterval);document.getElementById('focusTimerMessage').textContent='Time is up. Mark it complete or choose another period.';document.getElementById('focusTimerChoices').classList.remove('hidden');}},1000);}
+function pauseResumeFocusTimer(){focusTimerPaused=!focusTimerPaused;document.getElementById('focusTimerPauseButton').textContent=focusTimerPaused?'Continue':'Pause';}
+function closeFocusTimer(){clearInterval(focusTimerInterval);focusTimerInterval=null;document.getElementById('focusTimerDialog')?.close();}
+function completeFocusFromTimer(){const item=focusItemById(focusTimerItemId);if(item&&!item.completed)toggleTodayFocusItem(item.id);closeFocusTimer();}
+function convertTodayFocus(id,type){
+  const item=focusItemById(id);if(!item)return;
+  const name=item.name||'',details=item.notes||'';
+  if(type==='todo'||type==='project'||type==='cleaning'){
+    openAddDialog(type);document.getElementById('itemName').value=name;document.getElementById('itemDetails').value=details;
+    if(type==='cleaning'){document.getElementById('cleaningFrequency').value='monthly';document.getElementById('cleaningStartDate').value=localDateKey();}
+  }else if(type==='recurring'){
+    openRecurringTaskDialog();document.getElementById('recurringTaskName').value=name;document.getElementById('recurringTaskNotes').value=details;document.getElementById('recurringTaskUnit').value='month';document.getElementById('recurringTaskInterval').value=1;updateRecurringRuleControls();
+  }else if(type==='appointment')openAppointmentDialog('',name,details);
+  else if(type==='waiting'){
+    data.waiting.unshift({id:uid(),name,details,status:'waiting',createdAt:new Date().toISOString()});saveData();renderAll();deleteTodayFocusItem(id);showSaved('Moved to Waiting For');return;
+  }
+  item.conversionPending=type;saveData();
+  alert('The new item is pre-filled. Save it, then remove the original Focus item when you are happy it is in the right place.');
+}
+function todayFocusConvertMenu(id){return `<div class="convert-menu-label">Convert to…</div><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','todo')">To-do</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','cleaning')">Cleaning task</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','recurring')">Recurring task</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','appointment')">Appointment</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','project')">Project</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','waiting')">Waiting For</button>`;}
+renderTodayFocus=function(){
+  ensureTodayFocusFields();const area=document.getElementById('todayFocusArea');if(!area)return;area.innerHTML='';
+  const items=[...(data.todayFocus||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)||Number(b.pinned)-Number(a.pinned)||Number(a.order)-Number(b.order)||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
+  if(!items.length){area.innerHTML='<div class="empty-state">Nothing added yet. Type the small jobs you want to do today.</div>';return;}
+  items.forEach(item=>{
+    const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''} ${item.pinned?'pinned-focus-row':''}`;
+    const meta=[item.completed?'Completed':'Today',item.estimatedMinutes?`${item.estimatedMinutes} min`:'',item.notes?item.notes:''].filter(Boolean).join(' · ');
+    const actions=`<button onclick="closeAnchoredMenu();openTodayFocusEdit('${item.id}')">Edit details</button><button onclick="closeAnchoredMenu();openFocusTimer('${item.id}')">Start timer</button><button onclick="closeAnchoredMenu();toggleTodayFocusPin('${item.id}')">${item.pinned?'Unpin':'Pin to top'}</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',-1)">Move up</button><button onclick="closeAnchoredMenu();moveTodayFocusItem('${item.id}',1)">Move down</button>${todayFocusConvertMenu(item.id)}<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`;
+    row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleTodayFocusItem('${item.id}')" aria-label="${item.completed?'Reinstate':'Complete'} ${escapeHtml(item.name)}">${item.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="openTodayFocusEdit('${item.id}')"><span class="v10-row-title">${item.pinned?'★ ':''}${escapeHtml(item.name)}</span><span class="v10-row-meta">${escapeHtml(meta)}</span></button>${!item.completed?`<button type="button" class="focus-start-button" onclick="openFocusTimer('${item.id}')" aria-label="Start timer for ${escapeHtml(item.name)}">▶</button>`:''}${compactMenu(actions,item.name)}`;
+    area.appendChild(row);
+  });
+  if(items.some(x=>x.completed))area.insertAdjacentHTML('beforeend','<button type="button" class="small-button secondary-button clear-focus-completed" onclick="clearCompletedTodayFocus()">Remove completed items</button>');
+};
+ensureTodayFocusFields();saveData();renderTodayFocus();
