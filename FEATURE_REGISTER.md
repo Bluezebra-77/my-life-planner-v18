@@ -40,3 +40,9 @@
 - Morning-priority Home ordering.
 - Compact Home heading controls.
 - Cross-panel duplicate suppression between Today and Needs Attention.
+
+## Delivered in v52b
+
+- Planner Health 2.0 grouped and contextual suggestions.
+- Repeated Today’s Focus pattern memory with opt-in recurring conversion.
+- Help & Guides in Settings.

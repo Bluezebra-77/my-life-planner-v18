@@ -27,3 +27,7 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 
 ## v52a Corrected
 - Reordered Home, aligned section controls with titles and removed duplicate presentation between Today and Needs Attention.
+
+## v52b — Internal Intelligent Planner build
+
+- Added Planner Health 2.0, considerate repeated-task suggestions and an in-app Help & Guides centre.

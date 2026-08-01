@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="52a";
+const APP_VERSION="52b";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2953,3 +2953,39 @@ function applyV52aCorrectedHome(){
 }
 window.addEventListener('pageshow',applyV52aCorrectedHome);
 setTimeout(applyV52aCorrectedHome,0);
+
+
+/* ===== v52b Planner Health 2.0 and considerate pattern memory ===== */
+const V52B_PATTERN_KEY='myLifePlannerTaskPatterns';
+function v52bNormaliseName(value){return String(value||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();}
+function v52bPatterns(){try{return JSON.parse(localStorage.getItem(V52B_PATTERN_KEY)||'{}')||{};}catch(e){return {};}}
+function v52bSavePatterns(value){try{localStorage.setItem(V52B_PATTERN_KEY,JSON.stringify(value));}catch(e){}}
+function v52bRecordPattern(name,source='focus'){
+ const key=v52bNormaliseName(name);if(!key||key.length<3)return;
+ const all=v52bPatterns(), item=all[key]||{name:String(name).trim(),count:0,sources:{},lastSeen:0};
+ item.name=String(name).trim()||item.name;item.count=Number(item.count||0)+1;item.sources=item.sources||{};item.sources[source]=Number(item.sources[source]||0)+1;item.lastSeen=Date.now();all[key]=item;v52bSavePatterns(all);
+}
+const v52bAddTodayFocusBase=addTodayFocusItem;
+addTodayFocusItem=function(event){const name=document.getElementById('todayFocusInput')?.value?.trim();if(name)v52bRecordPattern(name,'focus');return v52bAddTodayFocusBase(event);};
+function v52bPatternAlreadyStructured(name){const n=v52bNormaliseName(name);return [...(data.recurringTasks||[]),...(data.cleaningTasks||[])].some(x=>v52bNormaliseName(x.name)===n);}
+function v52bSuggestRecurring(name){openRecurringTaskDialog();const field=document.getElementById('recurringTaskName');if(field)field.value=name;const unit=document.getElementById('recurringTaskUnit');if(unit)unit.value='month';const interval=document.getElementById('recurringTaskInterval');if(interval)interval.value=1;updateRecurringRuleControls();}
+function plannerHealthSuggestions(){
+ const suggestions=[];
+ (data.projects||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=7)suggestions.push({key:`project:${x.id}`,severity:Math.min(3,1+Math.floor(age/14)),title:'A project may need a little momentum',copy:`${x.name||'This project'} has not recorded progress for ${age} days. Would opening the next step help?`,actionLabel:'Open project',open:()=>{showAppView('home');setTimeout(()=>{document.getElementById('homeProjectsPanel')?.scrollIntoView({behavior:'smooth',block:'start'});editProject(x.id);},120);}});});
+ const oldInbox=(data.inbox||[]).filter(x=>x.status!=='processed'&&ageInDays(x.updatedAt||x.createdAt)>=7);
+ if(oldInbox.length)suggestions.push({key:`inbox-group:${oldInbox.map(x=>x.id).sort().join(',')}`,severity:oldInbox.length>=5?2:1,title:'Some captured thoughts are ready for a decision',copy:`${oldInbox.length} Brain Inbox item${oldInbox.length===1?' has':'s have'} been waiting for more than a week. A short review may clear useful ideas.`,actionLabel:'Review Brain Inbox',open:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('inboxListSection')?.scrollIntoView({behavior:'smooth',block:'start'}),100);}});
+ (data.waiting||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=10)suggestions.push({key:`waiting:${x.id}`,severity:age>=21?3:2,title:'A follow-up may be useful',copy:`${x.name||'This Waiting For item'} has been pending for ${age} days.`,actionLabel:'Open item',open:()=>{showAppView('tasks');setTimeout(()=>editCapture('waiting',x.id),100);}});});
+ (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).forEach(x=>{const days=Math.abs(daysBetween(new Date(),dateOnly(x.nextDue)));suggestions.push({key:`clean:${x.id}`,severity:days>=7?3:2,title:'A cleaning task is still waiting',copy:`${x.name||'This cleaning task'} is overdue${days?` by ${days} day${days===1?'':'s'}`:''}.`,actionLabel:'Open task',open:()=>editCleaning(x.id)});});
+ Object.values(v52bPatterns()).filter(x=>Number(x.count||0)>=3&&!v52bPatternAlreadyStructured(x.name)).sort((a,b)=>Number(b.count)-Number(a.count)).slice(0,3).forEach(x=>suggestions.push({key:`pattern:${v52bNormaliseName(x.name)}`,severity:1,title:'Would you like the planner to remember this?',copy:`You have added “${x.name}” ${x.count} times. It may work better as a recurring task.`,actionLabel:'Make recurring',open:()=>v52bSuggestRecurring(x.name)}));
+ return suggestions.filter(x=>!healthHidden(x.key)).sort((a,b)=>b.severity-a.severity);
+}
+function renderPlannerHealth(){
+ const area=document.getElementById('plannerHealthArea');if(!area)return;
+ const all=plannerHealthSuggestions();
+ const overdueCount=(data.todos||[]).filter(x=>!x.completed&&x.dueDate&&x.dueDate<localDateKey()).length+(data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.nextDue&&x.nextDue<localDateKey()).length+(data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).length;
+ const status=overdueCount>=4||all.some(x=>x.severity>=3)?['attention','🟠 Needs attention']:overdueCount||all.length?['good','🟡 Good']:['excellent','🟢 Excellent'];
+ if(!all.length){area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span></div><div class="planner-health-empty">Nothing needs a special nudge right now.</div></div>`;return;}
+ const item=all[0];area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span><span class="badge">One helpful thought</span></div><div class="planner-suggestion-title">${escapeHtml(item.title)}</div><div class="planner-suggestion-copy">${escapeHtml(item.copy)}</div><div class="planner-suggestion-actions"><button type="button" id="healthOpenButton">${escapeHtml(item.actionLabel||'Open')}</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','snooze')">Snooze 7 days</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','dismiss')">Dismiss</button></div></div>`;
+ document.getElementById('healthOpenButton').onclick=item.open;
+}
+setTimeout(()=>{renderPlannerHealth();},0);
