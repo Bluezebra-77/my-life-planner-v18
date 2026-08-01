@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="52b";
+const APP_VERSION="52c";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2955,25 +2955,28 @@ window.addEventListener('pageshow',applyV52aCorrectedHome);
 setTimeout(applyV52aCorrectedHome,0);
 
 
-/* ===== v52b Planner Health 2.0 and repeated-task learning ===== */
-const V52B_HABIT_HISTORY_KEY='myLifePlannerHabitHistory';
-function v52bNormaliseHabitName(value){return String(value||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();}
-function v52bHabitHistory(){try{return JSON.parse(localStorage.getItem(V52B_HABIT_HISTORY_KEY)||'{}')||{};}catch(e){return {};}}
-function v52bSaveHabitHistory(history){try{localStorage.setItem(V52B_HABIT_HISTORY_KEY,JSON.stringify(history));}catch(e){}}
-function v52bRecordFocusHabit(name){const key=v52bNormaliseHabitName(name);if(key.length<3)return;const history=v52bHabitHistory();const entry=history[key]||{name:String(name).trim(),count:0,lastSeen:0};entry.name=String(name).trim();entry.count=Number(entry.count||0)+1;entry.lastSeen=Date.now();history[key]=entry;v52bSaveHabitHistory(history);}
-const addTodayFocusItemV52b=addTodayFocusItem;
-addTodayFocusItem=function(event){const name=document.getElementById('todayFocusInput')?.value.trim();addTodayFocusItemV52b(event);if(name){v52bRecordFocusHabit(name);renderPlannerHealth();}};
-function v52bHasStructuredMatch(normalised){const groups=[data.recurringTasks||[],data.cleaningTasks||[]];return groups.some(group=>group.some(item=>v52bNormaliseHabitName(item.name)===normalised));}
-function v52bRepeatedTaskSuggestions(){return Object.entries(v52bHabitHistory()).filter(([key,entry])=>Number(entry.count||0)>=3&&!v52bHasStructuredMatch(key)).map(([key,entry])=>({key:`habit:${key}`,severity:2,title:'This looks like a repeating job',copy:`You have added “${entry.name}” ${entry.count} times. Would you like to remember it as a recurring task?`,actionLabel:'Make recurring',action:()=>v52bMakeHabitRecurring(key,entry.name)}));}
-function v52bMakeHabitRecurring(key,name){openRecurringTaskDialog();const n=document.getElementById('recurringTaskName');if(n)n.value=name;const unit=document.getElementById('recurringTaskUnit');if(unit)unit.value='month';const interval=document.getElementById('recurringTaskInterval');if(interval)interval.value=1;const due=document.getElementById('recurringTaskDueDate');if(due&&!due.value)due.value=localDateKey();updateRecurringRuleControls();rememberHealth(`habit:${key}`,'dismiss');}
+/* ===== v52b Planner Health 2.0 and considerate pattern memory ===== */
+const V52B_PATTERN_KEY='myLifePlannerTaskPatterns';
+function v52bNormaliseName(value){return String(value||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();}
+function v52bPatterns(){try{return JSON.parse(localStorage.getItem(V52B_PATTERN_KEY)||'{}')||{};}catch(e){return {};}}
+function v52bSavePatterns(value){try{localStorage.setItem(V52B_PATTERN_KEY,JSON.stringify(value));}catch(e){}}
+function v52bRecordPattern(name,source='focus'){
+ const key=v52bNormaliseName(name);if(!key||key.length<3)return;
+ const all=v52bPatterns(), item=all[key]||{name:String(name).trim(),count:0,sources:{},lastSeen:0};
+ item.name=String(name).trim()||item.name;item.count=Number(item.count||0)+1;item.sources=item.sources||{};item.sources[source]=Number(item.sources[source]||0)+1;item.lastSeen=Date.now();all[key]=item;v52bSavePatterns(all);
+}
+const v52bAddTodayFocusBase=addTodayFocusItem;
+addTodayFocusItem=function(event){const name=document.getElementById('todayFocusInput')?.value?.trim();if(name)v52bRecordPattern(name,'focus');return v52bAddTodayFocusBase(event);};
+function v52bPatternAlreadyStructured(name){const n=v52bNormaliseName(name);return [...(data.recurringTasks||[]),...(data.cleaningTasks||[])].some(x=>v52bNormaliseName(x.name)===n);}
+function v52bSuggestRecurring(name){openRecurringTaskDialog();const field=document.getElementById('recurringTaskName');if(field)field.value=name;const unit=document.getElementById('recurringTaskUnit');if(unit)unit.value='month';const interval=document.getElementById('recurringTaskInterval');if(interval)interval.value=1;updateRecurringRuleControls();}
 function plannerHealthSuggestions(){
  const suggestions=[];
- (data.projects||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=7)suggestions.push({key:`project:${x.id}`,severity:Math.min(3,1+Math.floor(age/14)),title:'A project may need a little momentum',copy:`“${x.name||'This project'}” has not been updated for ${age} days. Would a quick look help you choose the next step?`,actionLabel:'Open project',action:()=>{showAppView('home');setTimeout(()=>{document.getElementById('homeProjectsPanel')?.scrollIntoView({behavior:'smooth',block:'start'});editProject(x.id);},120);}});});
- const olderInbox=(data.inbox||[]).filter(x=>x.status!=='processed'&&ageInDays(x.updatedAt||x.createdAt)>=7);
- if(olderInbox.length)suggestions.push({key:'inbox:aged-group',severity:olderInbox.length>=5?2:1,title:'A few captured thoughts are waiting',copy:`${olderInbox.length} Brain Inbox item${olderInbox.length===1?' has':'s have'} been waiting for more than a week. A short review may clear some space.`,actionLabel:'Review Brain Inbox',action:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('inboxListSection')?.scrollIntoView({behavior:'smooth',block:'start'}),100);}});
- (data.waiting||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=10)suggestions.push({key:`waiting:${x.id}`,severity:2,title:'It may be time to follow up',copy:`“${x.name||'This Waiting For item'}” has been pending for ${age} days.`,actionLabel:'Open item',action:()=>{showAppView('tasks');setTimeout(()=>editCapture('waiting',x.id),100);}});});
- (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).forEach(x=>{const days=Math.abs(daysBetween(new Date(),dateOnly(x.nextDue)));suggestions.push({key:`clean:${x.id}`,severity:2,title:'A cleaning task is ready when you are',copy:`“${x.name||'This cleaning task'}” is overdue${days?` by ${days} day${days===1?'':'s'}`:''}.`,actionLabel:'Open task',action:()=>editCleaning(x.id)});});
- suggestions.push(...v52bRepeatedTaskSuggestions());
+ (data.projects||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=7)suggestions.push({key:`project:${x.id}`,severity:Math.min(3,1+Math.floor(age/14)),title:'A project may need a little momentum',copy:`${x.name||'This project'} has not recorded progress for ${age} days. Would opening the next step help?`,actionLabel:'Open project',open:()=>{showAppView('home');setTimeout(()=>{document.getElementById('homeProjectsPanel')?.scrollIntoView({behavior:'smooth',block:'start'});editProject(x.id);},120);}});});
+ const oldInbox=(data.inbox||[]).filter(x=>x.status!=='processed'&&ageInDays(x.updatedAt||x.createdAt)>=7);
+ if(oldInbox.length)suggestions.push({key:`inbox-group:${oldInbox.map(x=>x.id).sort().join(',')}`,severity:oldInbox.length>=5?2:1,title:'Some captured thoughts are ready for a decision',copy:`${oldInbox.length} Brain Inbox item${oldInbox.length===1?' has':'s have'} been waiting for more than a week. A short review may clear useful ideas.`,actionLabel:'Review Brain Inbox',open:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('inboxListSection')?.scrollIntoView({behavior:'smooth',block:'start'}),100);}});
+ (data.waiting||[]).filter(x=>!x.completed).forEach(x=>{const age=ageInDays(x.updatedAt||x.createdAt);if(age!==null&&age>=10)suggestions.push({key:`waiting:${x.id}`,severity:age>=21?3:2,title:'A follow-up may be useful',copy:`${x.name||'This Waiting For item'} has been pending for ${age} days.`,actionLabel:'Open item',open:()=>{showAppView('tasks');setTimeout(()=>editCapture('waiting',x.id),100);}});});
+ (data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).forEach(x=>{const days=Math.abs(daysBetween(new Date(),dateOnly(x.nextDue)));suggestions.push({key:`clean:${x.id}`,severity:days>=7?3:2,title:'A cleaning task is still waiting',copy:`${x.name||'This cleaning task'} is overdue${days?` by ${days} day${days===1?'':'s'}`:''}.`,actionLabel:'Open task',open:()=>editCleaning(x.id)});});
+ Object.values(v52bPatterns()).filter(x=>Number(x.count||0)>=3&&!v52bPatternAlreadyStructured(x.name)).sort((a,b)=>Number(b.count)-Number(a.count)).slice(0,3).forEach(x=>suggestions.push({key:`pattern:${v52bNormaliseName(x.name)}`,severity:1,title:'Would you like the planner to remember this?',copy:`You have added “${x.name}” ${x.count} times. It may work better as a recurring task.`,actionLabel:'Make recurring',open:()=>v52bSuggestRecurring(x.name)}));
  return suggestions.filter(x=>!healthHidden(x.key)).sort((a,b)=>b.severity-a.severity);
 }
 function renderPlannerHealth(){
@@ -2982,8 +2985,103 @@ function renderPlannerHealth(){
  const overdueCount=(data.todos||[]).filter(x=>!x.completed&&x.dueDate&&x.dueDate<localDateKey()).length+(data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.nextDue&&x.nextDue<localDateKey()).length+(data.cleaningTasks||[]).filter(x=>!x.completed&&x.nextDue&&x.nextDue<localDateKey()).length;
  const status=overdueCount>=4||all.some(x=>x.severity>=3)?['attention','🟠 Needs attention']:overdueCount||all.length?['good','🟡 Good']:['excellent','🟢 Excellent'];
  if(!all.length){area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span></div><div class="planner-health-empty">Nothing needs a special nudge right now.</div></div>`;return;}
- const item=all[0];area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span><span class="badge">One helpful thought</span></div><div class="planner-suggestion-title">${escapeHtml(item.title)}</div><div class="planner-suggestion-copy">${escapeHtml(item.copy)}</div><div class="planner-suggestion-actions"><button type="button" id="healthPrimaryButton">${escapeHtml(item.actionLabel||'Open')}</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','snooze')">Snooze 7 days</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','dismiss')">Dismiss</button></div></div>`;
- document.getElementById('healthPrimaryButton').onclick=item.action||item.open;
+ const item=all[0];area.innerHTML=`<div class="planner-health-card"><div class="planner-health-top"><span class="health-status ${status[0]}">${status[1]}</span><span class="badge">One helpful thought</span></div><div class="planner-suggestion-title">${escapeHtml(item.title)}</div><div class="planner-suggestion-copy">${escapeHtml(item.copy)}</div><div class="planner-suggestion-actions"><button type="button" id="healthOpenButton">${escapeHtml(item.actionLabel||'Open')}</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','snooze')">Snooze 7 days</button><button type="button" class="secondary-button" onclick="rememberHealth('${item.key}','dismiss')">Dismiss</button></div></div>`;
+ document.getElementById('healthOpenButton').onclick=item.open;
 }
-window.addEventListener('pageshow',renderPlannerHealth);
-setTimeout(renderPlannerHealth,0);
+setTimeout(()=>{renderPlannerHealth();},0);
+
+
+/* ===== v52c Daily Companion — Morning Brief, glance cards and time awareness ===== */
+function v52cDaypart(now=new Date()){
+  const hour=now.getHours();
+  if(hour<12)return {key:'morning',eyebrow:'Your morning',greeting:'Good morning',message:'Here is the shape of your day. Start with what is fixed, then choose what feels manageable.'};
+  if(hour<17)return {key:'afternoon',eyebrow:'Your afternoon',greeting:'Good afternoon',message:'A quick check-in for the rest of today. Keep what matters visible and let the rest wait.'};
+  return {key:'evening',eyebrow:'Your evening',greeting:'Good evening',message:'Here is what still matters today. Anything else can be considered tomorrow.'};
+}
+function v52cTodayAppointments(){
+  const today=localDateKey();
+  return appointmentDashboardItems().filter(item=>item.dueDate===today);
+}
+function v52cActiveFocus(){return (data.todayFocus||[]).filter(item=>!item.completed);}
+function v52cUrgentItems(){
+  try{return getTodayReminderItems().filter(item=>item.itemType!=='appointment');}catch(e){return [];}
+}
+function v52cDueRecurring(){
+  const today=localDateKey();
+  return (data.recurringTasks||[]).filter(item=>item.status!=='paused'&&item.nextDue&&item.nextDue<=today);
+}
+function v52cWaitingFollowups(){
+  const today=new Date();today.setHours(12,0,0,0);
+  return (data.waiting||[]).filter(item=>!item.completed&&item.reviewDate&&dateOnly(item.reviewDate)<=today);
+}
+function v52cOpenInbox(){return (data.inbox||[]).filter(item=>item.status!=='processed');}
+function v52cLatestBackup(){
+  const copies=getDailyBackups();
+  if(!copies.length)return {label:'Not yet',tone:'attention'};
+  const saved=new Date(copies[0].savedAt||`${copies[0].date}T12:00:00`);
+  const age=Math.max(0,Math.floor((Date.now()-saved.getTime())/86400000));
+  return {label:age===0?'Today':age===1?'Yesterday':`${age} days ago`,tone:age>=7?'attention':age>=3?'good':'excellent'};
+}
+function v52cHealthSummary(){
+  const suggestions=plannerHealthSuggestions();
+  const severe=suggestions.some(item=>item.severity>=3);
+  const overdue=v52cUrgentItems().filter(item=>item.dueDate&&item.dueDate<localDateKey()).length;
+  if(severe||overdue>=4)return {label:'Needs attention',tone:'attention',detail:suggestions.length?'A helpful suggestion is waiting.':'Several dated items need a look.'};
+  if(suggestions.length||overdue)return {label:'Good',tone:'good',detail:suggestions.length?'One helpful thought is available.':'A small number of items need attention.'};
+  return {label:'Excellent',tone:'excellent',detail:'Nothing needs a special nudge.'};
+}
+function v52cEstimatedMinutes(){
+  const focus=v52cActiveFocus().reduce((sum,item)=>sum+Math.max(0,Number(item.estimatedMinutes)||0),0);
+  const appointments=v52cTodayAppointments().reduce((sum,item)=>{
+    const original=(data.appointments||[]).find(a=>String(a.id)===String(item.id));
+    if(!original?.time||!original?.endTime)return sum;
+    const [sh,sm]=original.time.split(':').map(Number),[eh,em]=original.endTime.split(':').map(Number);
+    return sum+Math.max(0,(eh*60+em)-(sh*60+sm));
+  },0);
+  return focus+appointments;
+}
+function v52cSummaryTile(icon,value,label){return `<div class="companion-summary-tile"><span aria-hidden="true">${icon}</span><strong>${value}</strong><small>${escapeHtml(label)}</small></div>`;}
+function v52cDashboardCard(title,value,detail,tone='neutral',target=''){
+  const attr=target?` data-companion-target="${target}" role="button" tabindex="0"`:'';
+  return `<article class="companion-dashboard-card ${tone}"${attr}><span>${escapeHtml(title)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(detail)}</small></article>`;
+}
+function v52cOpenTarget(target){
+  const actions={health:()=>document.getElementById('plannerHealthPanel')?.scrollIntoView({behavior:'smooth',block:'start'}),backup:()=>openSettingsDialog(),inbox:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('inboxListSection')?.scrollIntoView({behavior:'smooth'}),100);},waiting:()=>openWaitingForList(),recurring:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('recurringTasksListSection')?.scrollIntoView({behavior:'smooth'}),100);}};
+  actions[target]?.();
+}
+function renderDailyCompanion(){
+  const panel=document.getElementById('morningBriefPanel');if(!panel)return;
+  const now=new Date(),part=v52cDaypart(now),settings=getSettings?.()||{},name=String(settings.ownerName||'').trim();
+  document.getElementById('daypartEyebrow').textContent=part.eyebrow;
+  document.getElementById('dailyCompanionGreeting').textContent=`${part.greeting}${name?`, ${name}`:''}`;
+  document.getElementById('dailyCompanionMessage').textContent=part.message;
+  document.getElementById('dailyCompanionDate').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  const appointments=v52cTodayAppointments().length,focus=v52cActiveFocus().length,urgent=v52cUrgentItems().length,suggestions=plannerHealthSuggestions().length;
+  const minutes=v52cEstimatedMinutes();
+  document.getElementById('dailyCompanionSummary').innerHTML=[
+    v52cSummaryTile('📅',appointments,appointments===1?'appointment':'appointments'),
+    v52cSummaryTile('☀️',focus,focus===1?'focus item':'focus items'),
+    v52cSummaryTile('⚠️',urgent,urgent===1?'dated item':'dated items'),
+    v52cSummaryTile('💡',suggestions,suggestions===1?'suggestion':'suggestions')
+  ].join('')+(minutes?`<p class="companion-workload">Planned or timed work: about ${minutes<60?`${minutes} minutes`:`${Math.round(minutes/30)/2} hours`}.</p>`:'');
+  const health=v52cHealthSummary(),backup=v52cLatestBackup(),inbox=v52cOpenInbox().length,waiting=v52cWaitingFollowups().length,recurring=v52cDueRecurring().length;
+  document.getElementById('companionDashboardCards').innerHTML=[
+    v52cDashboardCard('Planner Health',health.label,health.detail,health.tone,'health'),
+    v52cDashboardCard('Last backup',backup.label,'Open Backup and restore',backup.tone,'backup'),
+    v52cDashboardCard('Brain Inbox',String(inbox),inbox===1?'item waiting':'items waiting',inbox?'good':'excellent','inbox'),
+    v52cDashboardCard('Waiting For',String(waiting),waiting===1?'follow-up due':'follow-ups due',waiting?'good':'excellent','waiting'),
+    v52cDashboardCard('Recurring',String(recurring),recurring===1?'due now':'due now',recurring?'good':'excellent','recurring')
+  ].join('');
+  panel.dataset.daypart=part.key;
+  panel.querySelectorAll('[data-companion-target]').forEach(card=>{const go=()=>v52cOpenTarget(card.dataset.companionTarget);card.onclick=go;card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+}
+function v52cOptimiseHomeOrder(){
+  optimiseHomeOrder();
+  const quick=document.querySelector('.home-quick-actions'),brief=document.getElementById('morningBriefPanel');
+  if(quick&&brief)quick.parentNode.insertBefore(brief,quick.nextSibling);
+}
+const renderAllV52cBase=renderAll;
+renderAll=function(){renderAllV52cBase();v52cOptimiseHomeOrder();renderDailyCompanion();};
+window.addEventListener('pageshow',()=>{v52cOptimiseHomeOrder();renderDailyCompanion();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDailyCompanion();});
+setTimeout(()=>{v52cOptimiseHomeOrder();renderDailyCompanion();},0);

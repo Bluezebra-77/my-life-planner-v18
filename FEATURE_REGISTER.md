@@ -42,6 +42,12 @@
 - Cross-panel duplicate suppression between Today and Needs Attention.
 
 ## Delivered in v52b
-- Planner Health 2.0 with grouped ageing-item suggestions.
-- Optional recurring-task suggestion after repeated Today’s Focus wording.
-- In-app Help & Guides links.
+
+- Planner Health 2.0 grouped and contextual suggestions.
+- Repeated Today’s Focus pattern memory with opt-in recurring conversion.
+- Help & Guides in Settings.
+
+## Delivered in v52c
+- Time-aware Daily Companion brief.
+- Morning summary counts and estimated workload.
+- Actionable Home dashboard cards for health, backup, inbox, waiting and recurring work.

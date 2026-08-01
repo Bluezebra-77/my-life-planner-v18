@@ -29,4 +29,8 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 - Reordered Home, aligned section controls with titles and removed duplicate presentation between Today and Needs Attention.
 
 ## v52b — Internal Intelligent Planner build
-- Added Planner Health 2.0, repeated Today’s Focus recognition and in-app Help & Guides.
+
+- Added Planner Health 2.0, considerate repeated-task suggestions and an in-app Help & Guides centre.
+
+## v52c — Daily Companion, Part 1
+- Added a time-aware Home brief and actionable glance cards.

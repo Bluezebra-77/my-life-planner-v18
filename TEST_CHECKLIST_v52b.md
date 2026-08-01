@@ -6,23 +6,29 @@
 
 ## Planner Health 2.0
 - [ ] Only one suggestion appears at a time.
-- [ ] Open, Snooze 7 days and Dismiss work.
-- [ ] An inactive project opens correctly when applicable.
-- [ ] Older Brain Inbox items appear as one grouped suggestion.
-- [ ] Waiting For and overdue cleaning suggestions open the correct item.
+- [ ] Open takes you to the relevant project, item or list.
+- [ ] Snooze hides the suggestion.
+- [ ] Dismiss prevents it returning.
+- [ ] Old Brain Inbox items are grouped into one review prompt.
 
-## Repeated-task learning
-- [ ] Enter the same wording into Today’s Focus three times (items may be removed between entries).
-- [ ] Confirm Planner Health offers to make it recurring.
+## Pattern suggestion
+- [ ] Add the same distinct Today’s Focus wording three times (remove it between tests if needed).
+- [ ] Confirm Planner Health can suggest making it recurring.
 - [ ] Choose Make recurring and confirm the recurring form is pre-filled.
-- [ ] Confirm no recurring task is saved until Save is pressed.
+- [ ] Confirm no recurring task is saved until you explicitly save it.
 
 ## Help & Guides
-- [ ] Settings contains collapsible Help & Guides.
-- [ ] Quick Start, User Guide and Update & Backup links open.
+- [ ] Open Settings → Help & Guides.
+- [ ] Help Centre opens.
+- [ ] Quick Start Guide opens.
+- [ ] Update & Backup Guide opens.
 - [ ] Developer Handbook opens from Developer Dashboard.
 
 ## Regression
 - [ ] Home order and duplicate suppression remain correct.
-- [ ] Quick Add, timer, Convert, recurrence, Timeline, Lists and Settings work.
-- [ ] Refresh and reopen; data and panel states remain present.
+- [ ] Quick Add, timer, Convert, recurrence, Timeline, Lists and backup still work.
+- [ ] Refresh and reopen; data, suggestions and panel states persist.
+
+## Result
+- [ ] ACCEPT v52b.
+- [ ] REJECT — record the failed item.
