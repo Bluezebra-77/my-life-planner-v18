@@ -1,14 +1,12 @@
-# My Life Planner v53 — Connected Planner
+# My Life Planner v53 — Workflow Edition
 
-## Notifications and reminders
-- Optional permission-based local notifications.
-- Appointment reminders while the planner is open or recently active.
-- Daily summary reminders for due recurring tasks and Waiting For follow-ups.
-- Optional morning reminder and backup reminder.
-- Test notification and manual Check reminders now control.
+## Convert now moves safely
+- Converting a Today’s Focus item to To-do, Project, Cleaning, Recurring Task, Appointment or Waiting For removes the original Focus item only after the destination has saved successfully.
+- Cancelling the destination form leaves the original Focus item untouched.
+- Notes are pre-filled in the destination where supported.
 
-## Important limitation
-Browser and iPhone PWA background suspension can delay or prevent exact delivery. v53 does not claim guaranteed background alarms.
+## Scope correction
+- The earlier notification experiment was discarded. Notifications remain a future roadmap item and are not claimed in this build.
 
 ## Preserved
-All v52f planner data, Daily Companion, Planner Health, cleaning by area, reflections, statistics, search, recurrence, timer and Quick Add.
+- All accepted v52f features, data keys, Daily Companion, Planner Health, reflections, statistics, Cleaning by Area, search and smart defaults.

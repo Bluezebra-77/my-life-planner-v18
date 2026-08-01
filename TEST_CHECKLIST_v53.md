@@ -4,23 +4,24 @@
 - [ ] Header, About and Developer Dashboard show v53.
 - [ ] Existing data remains present.
 
-## Notifications
-- [ ] Open Settings > Notifications and reminders.
-- [ ] Allow notifications and confirm Permission says Allowed.
-- [ ] Send test produces a notification on Mac/iPhone where supported.
-- [ ] Enable one or more reminder types and reopen Settings; choices persist.
-- [ ] Check reminders now gives a clear result.
-- [ ] An appointment inside the chosen lead time produces one reminder only.
-- [ ] Due recurring and Waiting For summaries do not repeat more than once per day.
-- [ ] Tapping a notification opens or focuses the planner.
+## Today’s Focus Convert / Move
+For each destination below, create a temporary Focus item, choose Convert, save the destination, and confirm the original disappears from Today’s Focus:
+- [ ] To-do
+- [ ] Project
+- [ ] Cleaning task
+- [ ] Recurring task
+- [ ] Appointment
+- [ ] Waiting For
 
-## Limitations
-- [ ] Confirm the explanatory note does not promise exact iPhone background delivery.
+## Cancellation safety
+- [ ] Start converting a Focus item, then Cancel/close the destination form.
+- [ ] Confirm the Focus item remains.
+- [ ] Confirm no destination item was created.
 
 ## Regression
-- [ ] Home, Lists, Planner Health, Quick Add, timer, recurrence, reflections, statistics and Cleaning by Area still work.
-- [ ] Refresh/reopen; data and reminder preferences remain present.
+- [ ] Quick Add, timer, Planner Health, repeated-task suggestions, Cleaning by Area, Timeline, search and Settings still work.
+- [ ] Refresh and reopen; data remains present.
 
 ## Result
-- [ ] ACCEPT v53.
+- [ ] ACCEPT v53 Workflow Edition.
 - [ ] REJECT — record the failed item.

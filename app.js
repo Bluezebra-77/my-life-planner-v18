@@ -1011,7 +1011,7 @@ function openAddDialog(type="todo",projectId="") {
 }
 
 function openAnnualDialog() { openAddDialog("annual"); }
-function closeAddDialog() { dialog.close(); }
+function closeAddDialog() { if(pendingFocusConversion.id)clearFocusConversion(); dialog.close(); }
 
 function populateProjectPicker(selectedId="") {
   const picker = document.getElementById("projectPicker");
@@ -1113,7 +1113,7 @@ addForm.addEventListener("submit",event=>{
     const payload = { id: id || uid(), title: name, time: details };
     if (id) list[list.findIndex(x => x.id === id)] = payload;
     else list.push(payload);
-    saveData(); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
+    saveData(); finishFocusConversion(type); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
   }
 
   if(type==="cleaning") {
@@ -1136,7 +1136,7 @@ addForm.addEventListener("submit",event=>{
     } else {
       data.cleaningTasks.push(payload);
     }
-    saveData(); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
+    saveData(); finishFocusConversion(type); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
   }
 
   if(type==="annual") {
@@ -1147,7 +1147,7 @@ addForm.addEventListener("submit",event=>{
     const payload={id:id||uid(),name,details,tags:normaliseTags(document.getElementById("itemTags")?.value),monthDay,reminderDays:Number(document.getElementById("annualReminderDays").value||7),kind:"Birthday / annual date",steps:mergeEnteredSteps(oldAnnual?.steps||[],parseDatedSteps(document.getElementById("itemSteps")?.value||""),{})};
     if(id) data.annualDates[data.annualDates.findIndex(x=>x.id===id)]=payload;
     else data.annualDates.push(payload);
-    saveData(); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
+    saveData(); finishFocusConversion(type); closeAddDialog(); renderAll(); refreshListsImmediately(); return;
   }
 
   let dueDate=null;
@@ -1201,7 +1201,7 @@ addForm.addEventListener("submit",event=>{
     data.categoryTasks[category].push(name);
   }
 
-  saveData(); closeAddDialog(); renderAll(); refreshListsImmediately();
+  saveData(); finishFocusConversion(type); closeAddDialog(); renderAll(); refreshListsImmediately();
 });
 
 function parseDatedSteps(text) {
@@ -2176,205 +2176,19 @@ function convertInbox(id,type){
 }
 const saveAppointmentCore=saveAppointment;
 saveAppointment=function(){
+  focusConversionSaving=true;
   const saved=saveAppointmentCore();
+  focusConversionSaving=false;
   if(saved&&pendingInboxAppointmentId){data.inbox=data.inbox.filter(x=>x.id!==pendingInboxAppointmentId);pendingInboxAppointmentId='';pendingInboxDraft=null;saveData();renderAll();}
   else if(saved&&pendingInboxDraft){pendingInboxDraft=null;}
+  if(saved)finishFocusConversion('appointment');
   return saved;
 };
 const closeAppointmentDialogCore=closeAppointmentDialog;
-closeAppointmentDialog=function(){pendingInboxAppointmentId='';pendingInboxDraft=null;closeAppointmentDialogCore();};
-
-
-/* ===== Authoritative Lists renderers =====
-   Lists and Home read from the same live data objects. */
-function renderTodos() {
-  const area = document.getElementById('todoArea');
-  if (!area) return;
-  area.innerHTML = '';
-  const items = Array.isArray(data.todos) ? data.todos : [];
-  if (!items.length) {
-    area.innerHTML = '<div class="empty-state">Your to-do list is clear.</div>';
-    return;
-  }
-  [...items].sort(sortByDueDate).forEach(todo => {
-    const row = document.createElement('div');
-    row.className = `compact-manage-row ${todo.completed ? 'completed-row' : ''}`;
-    const timing = escapeHtml(getTimingText(todo) || 'No date');
-    const details = todo.details ? ` · ${escapeHtml(todo.details)}` : '';
-    const actions = `<button onclick="closeAnchoredMenu();toggleTodo('${todo.id}');refreshListsImmediately()">${todo.completed ? 'Mark active' : 'Complete'}</button><button onclick="closeAnchoredMenu();editTodo('${todo.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodo('${todo.id}');refreshListsImmediately()">Delete</button>`;
-    row.innerHTML = `<button type="button" class="compact-row-main" onclick="editTodo('${todo.id}')"><span class="compact-row-title">${escapeHtml(todo.name || 'Untitled to-do')}</span><span class="compact-row-meta">${timing}${details}</span></button>${compactMenu(actions,todo.name || 'to-do')}`;
-    area.appendChild(row);
-
-    const steps = Array.isArray(todo.steps) ? todo.steps : [];
-    steps.forEach((step,index) => {
-      const stepRow=document.createElement('div');
-      stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
-      const stepActions=`<button onclick="closeAnchoredMenu();toggleTodoStep('${todo.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete'}</button><button onclick="closeAnchoredMenu();editTodo('${todo.id}')">Edit to-do</button>`;
-      stepRow.innerHTML=`<button type="button" class="compact-row-main" onclick="toggleTodoStep('${todo.id}','${step.id}');refreshListsImmediately()"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'}</span></button>${compactMenu(stepActions,step.name||'step')}`;
-      area.appendChild(stepRow);
-    });
-  });
-}
-
-function getProjectStepStates(){try{return JSON.parse(localStorage.getItem('myLifePlannerProjectSteps')||'{}')}catch{return {}}}
-function toggleProjectSteps(projectId){const state=getProjectStepStates();state[projectId]=!state[projectId];localStorage.setItem('myLifePlannerProjectSteps',JSON.stringify(state));renderProjects();}
-function renderProjects() {
-  const area = document.getElementById('projectsArea');
-  if (!area) return;
-  area.innerHTML = '';
-  const projects = Array.isArray(data.projects) ? data.projects : [];
-  if (!projects.length) { area.innerHTML = '<div class="empty-state">No projects are saved yet.</div>'; return; }
-  const openStates=getProjectStepStates();
-  [...projects].sort(sortByDueDate).forEach(project => {
-    const steps = Array.isArray(project.steps) ? project.steps : [];
-    const genuinelyComplete = steps.length > 0 && steps.every(step => step.completed);
-    project.completed = genuinelyComplete;
-    const completedCount=steps.filter(step=>step.completed).length;
-    const row=document.createElement('div');row.className=`compact-manage-row project-compact-row ${genuinelyComplete?'completed-row':''}`;
-    const projectActions=`<button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}');refreshListsImmediately()">Delete project</button>`;
-    row.innerHTML=`<button type="button" class="project-expand-button" onclick="toggleProjectSteps('${project.id}')" aria-expanded="${Boolean(openStates[project.id])}" aria-label="${openStates[project.id]?'Hide':'Show'} steps">${openStates[project.id]?'▾':'▸'}</button><button type="button" class="compact-row-main" onclick="toggleProjectSteps('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${completedCount} of ${steps.length} steps`:'No steps'}${project.details?' · '+escapeHtml(project.details):''}</span></button>${compactMenu(projectActions,project.name||'project')}`;
-    area.appendChild(row);
-    const group=document.createElement('div');group.className='project-steps-group';group.dataset.projectId=project.id;group.hidden=!openStates[project.id];
-    steps.forEach((step,index)=>{
-      const stepRow=document.createElement('div');stepRow.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;
-      const stepActions=`<button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete step'}</button><button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit step</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}');refreshListsImmediately()">Delete step</button>`;
-      stepRow.innerHTML=`<button type="button" class="compact-row-main" onclick="toggleStep('${project.id}','${step.id}');refreshListsImmediately()"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'}</span></button>${compactMenu(stepActions,step.name||'project step')}`;
-      group.appendChild(stepRow);
-    });
-    area.appendChild(group);
-  });
-}
-function toggleStep(projectId, stepId) {
-  const project = (data.projects || []).find(item => item.id === projectId);
-  const step = project && (project.steps || []).find(item => item.id === stepId);
-  if (!project || !step) return;
-  step.completed = !step.completed;
-  project.completed = (project.steps || []).length > 0 && project.steps.every(item => item.completed);
-  saveData();
-  renderAll();
-}
-
-function completeCleaning(id) {
-  const task = (data.cleaningTasks || []).find(item => item.id === id);
-  if (!task) return;
-  const completedOn = localDateKey ? localDateKey() : new Date().toISOString().slice(0,10);
-  task.lastCompleted = completedOn;
-  task.nextDue = nextCleaningDate(task.nextDue || completedOn, task.frequency || 'weekly');
-  saveData();
-  renderAll();
-}
-
-const CLEANING_AREA_VIEW_KEY='myLifePlannerCleaningAreaView';
-function cleaningAreaView(){try{return {...{filter:'all',group:false},...JSON.parse(localStorage.getItem(CLEANING_AREA_VIEW_KEY)||'{}')}}catch{return {filter:'all',group:false}}}
-function saveCleaningAreaView(view){try{localStorage.setItem(CLEANING_AREA_VIEW_KEY,JSON.stringify(view));}catch(e){}}
-function cleaningAreaName(item){return String(item?.room||'').trim()||'Unassigned';}
-function cleaningAreaKey(name){return String(name||'Unassigned').trim().toLocaleLowerCase();}
-function cleaningAreaOptions(items){
-  const map=new Map();
-  items.forEach(item=>{const name=cleaningAreaName(item),key=cleaningAreaKey(name);if(!map.has(key))map.set(key,{key,name,count:0});map.get(key).count++;});
-  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}));
-}
-function setCleaningAreaFilter(value){const view=cleaningAreaView();view.filter=value||'all';saveCleaningAreaView(view);renderCleaning();}
-function setCleaningGroupByArea(checked){const view=cleaningAreaView();view.group=Boolean(checked);saveCleaningAreaView(view);renderCleaning();}
-function cleaningTaskRow(item){
-  const dueNow=isDueTodayOrEarlier(item.nextDue),row=document.createElement('div');
-  row.className=`compact-manage-row ${dueNow?'status-overdue':''}`;
-  const room=cleaningAreaName(item);
-  const meta=`${escapeHtml(room)} · ${escapeHtml(frequencyLabel(item.frequency||'weekly'))} · Next due ${item.nextDue?formatDate(item.nextDue):'not set'}${item.details?' · '+escapeHtml(item.details):''}`;
-  const actions=`<button onclick="closeAnchoredMenu();completeCleaning('${item.id}');refreshListsImmediately()">Complete</button><button onclick="closeAnchoredMenu();editCleaning('${item.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCleaning('${item.id}');refreshListsImmediately()">Delete</button>`;
-  row.innerHTML=`<button type="button" class="compact-row-main" onclick="editCleaning('${item.id}')"><span class="compact-row-title">${escapeHtml(item.name||'Untitled cleaning task')}</span><span class="compact-row-meta">${meta}</span></button>${compactMenu(actions,item.name||'cleaning task')}`;
-  return row;
-}
-function renderCleaning() {
-  const area=document.getElementById('cleaningArea');if(!area)return;area.innerHTML='';
-  const items=Array.isArray(data.cleaningTasks)?data.cleaningTasks:[];
-  const options=cleaningAreaOptions(items),view=cleaningAreaView();
-  const select=document.getElementById('cleaningAreaFilter'),chips=document.getElementById('cleaningAreaChips'),groupToggle=document.getElementById('cleaningGroupByArea'),summary=document.getElementById('cleaningAreaSummary');
-  if(select){select.innerHTML='<option value="all">All areas</option>'+options.map(o=>`<option value="${escapeHtml(o.key)}">${escapeHtml(o.name)} (${o.count})</option>`).join('');if(view.filter!=='all'&&!options.some(o=>o.key===view.filter))view.filter='all';select.value=view.filter;}
-  if(groupToggle)groupToggle.checked=Boolean(view.group);
-  if(chips){chips.innerHTML=`<button type="button" class="cleaning-area-chip ${view.filter==='all'?'active':''}" onclick="setCleaningAreaFilter('all')">All (${items.length})</button>`+options.map(o=>`<button type="button" class="cleaning-area-chip ${view.filter===o.key?'active':''}" onclick="setCleaningAreaFilter('${escapeHtml(o.key)}')">${escapeHtml(o.name)} (${o.count})</button>`).join('');}
-  if(!items.length){if(summary)summary.textContent='';area.innerHTML='<div class="empty-state">No cleaning tasks are saved yet.</div>';return;}
-  const filtered=view.filter==='all'?items:items.filter(i=>cleaningAreaKey(cleaningAreaName(i))===view.filter);
-  if(summary){const label=view.filter==='all'?'all areas':(options.find(o=>o.key===view.filter)?.name||'selected area');summary.textContent=`Showing ${filtered.length} of ${items.length} cleaning task${items.length===1?'':'s'} · ${label}.`;}
-  if(!filtered.length){area.innerHTML='<div class="empty-state">No cleaning tasks are saved for this area.</div>';return;}
-  const sorted=[...filtered].sort((a,b)=>String(a.nextDue||'').localeCompare(String(b.nextDue||''))||cleaningAreaName(a).localeCompare(cleaningAreaName(b)));
-  if(view.group){
-    const groups=new Map();sorted.forEach(i=>{const n=cleaningAreaName(i);if(!groups.has(n))groups.set(n,[]);groups.get(n).push(i);});
-    [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{sensitivity:'base'})).forEach(([name,rows])=>{const section=document.createElement('section');section.className='cleaning-area-group';section.innerHTML=`<h3>${escapeHtml(name)} <span>${rows.length}</span></h3>`;rows.forEach(i=>section.appendChild(cleaningTaskRow(i)));area.appendChild(section);});
-  }else sorted.forEach(i=>area.appendChild(cleaningTaskRow(i)));
-}
-
-
-
-/* ===== Custom lists ===== */
-let activeCustomListId='';
-function openCustomListManager(listId=''){
-  activeCustomListId=String(listId||'');
-  const list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
-  const title=document.getElementById('customListDialogTitle');
-  const name=document.getElementById('customListName');
-  const item=document.getElementById('customListNewItem');
-  if(title)title.textContent=list?'Edit custom list':'Create custom list';
-  if(name)name.value=list?.name||'';
-  if(item)item.value='';
-  renderCustomListDialogItems();
-  document.getElementById('customListDialog')?.showModal();
-  setTimeout(()=>name?.focus(),60);
-}
-function closeCustomListManager(){document.getElementById('customListDialog')?.close();activeCustomListId='';}
-function saveCustomListName(closeAfter=true){
-  const name=document.getElementById('customListName')?.value.trim();
-  if(!name){alert('Please give the list a name.');return;}
-  let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
-  if(!list){list={id:uid(),name,items:[]};data.customLists.unshift(list);activeCustomListId=list.id;}
-  else list.name=name;
-  saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();showSaved('Custom list saved');
-  if(closeAfter)closeCustomListManager();
-}
-
-function addCustomListItem(){
-  let list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
-  if(!list){saveCustomListName(false);list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);}
-  if(!list)return;
-  const input=document.getElementById('customListNewItem');const name=input?.value.trim();if(!name)return;
-  list.items=list.items||[];list.items.push({id:uid(),name,completed:false});if(input)input.value='';saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();
-}
-function toggleCustomListItem(listId,itemId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));const item=list?.items?.find(x=>String(x.id)===String(itemId));if(!item)return;item.completed=!item.completed;saveData();renderCustomLists();renderCustomListDialogItems();}
-function deleteCustomListItem(listId,itemId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));if(!list)return;list.items=(list.items||[]).filter(x=>String(x.id)!==String(itemId));saveData();renderCustomLists();updateListHubCounts();renderCustomListDialogItems();}
-function deleteActiveCustomList(){deleteCustomList(activeCustomListId);}
-function deleteCustomList(listId){const list=(data.customLists||[]).find(x=>String(x.id)===String(listId));if(!list||!confirm(`Delete the list “${list.name}”?`))return;data.customLists=(data.customLists||[]).filter(x=>String(x.id)!==String(listId));saveData();closeCustomListManager();renderCustomLists();updateListHubCounts();}
-function renderCustomListDialogItems(){
-  const area=document.getElementById('customListDialogItems');if(!area)return;area.innerHTML='';
-  const list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
-  const del=document.getElementById('deleteCustomListButton');if(del)del.hidden=!list;
-  if(!list){area.innerHTML='<div class="empty-state">Save the list name, then add items.</div>';return;}
-  if(!(list.items||[]).length){area.innerHTML='<div class="empty-state">This list is empty.</div>';return;}
-  [...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).forEach(item=>{const row=document.createElement('div');row.className=`compact-manage-row ${item.completed?'completed-row':''}`;row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleCustomListItem('${list.id}','${item.id}')" aria-label="${item.completed?'Mark active':'Complete'}">${item.completed?'✓':''}</button><button type="button" class="compact-row-main" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span class="compact-row-title">${escapeHtml(item.name)}</span></button><button type="button" class="small-button danger-text" onclick="deleteCustomListItem('${list.id}','${item.id}')">Delete</button>`;area.appendChild(row);});
-}
-function renderCustomLists(){
-  const area=document.getElementById('customListsArea');if(!area)return;area.innerHTML='';
-  const lists=data.customLists||[];
-  if(!lists.length){area.innerHTML='<div class="empty-state">No custom lists yet. Create one for shopping, packing, ideas or anything else.</div>';return;}
-  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${[...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">This list is empty.</div>'}</div>`;area.appendChild(card);});
-}
-
-/* ===== Lists refresh ===== */
-function refreshListsImmediately() {
-  renderTodos();
-  renderAppointments();
-  renderInbox();
-  renderWaiting();
-  renderAnnualDates();
-  renderProjects();
-  renderCleaning();
-  renderCustomLists();
-  updateListHubCounts();
-}
-
-const originalRenderAllV15 = renderAll;
-renderAll = function() {
-  originalRenderAllV15();
-  refreshListsImmediately();
+closeAppointmentDialog=function(){
+  pendingInboxAppointmentId='';pendingInboxDraft=null;
+  if(!focusConversionSaving)clearFocusConversion();
+  closeAppointmentDialogCore();
 };
 
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initialiseListSearch);}else{initialiseListSearch();}
@@ -2462,7 +2276,7 @@ function openRecurringTaskDialog(id=''){
   document.getElementById('recurringTaskDialogTitle').textContent=task?'Edit recurring task':'New recurring task';
   dialog.showModal();
 }
-function closeRecurringTaskDialog(){ document.getElementById('recurringTaskDialog')?.close(); }
+function closeRecurringTaskDialog(){ if(pendingFocusConversion.id)clearFocusConversion(); document.getElementById('recurringTaskDialog')?.close(); }
 function saveRecurringTask(event){
   event.preventDefault();
   const id=document.getElementById('recurringTaskId').value;
@@ -2471,7 +2285,7 @@ function saveRecurringTask(event){
   const task={id:id||uid(),name:document.getElementById('recurringTaskName').value.trim(),notes:document.getElementById('recurringTaskNotes').value.trim(),tags:normaliseTags(document.getElementById('recurringTaskTags')?.value),nextDue:document.getElementById('recurringTaskDueDate').value,interval:Math.max(1,Number(document.getElementById('recurringTaskInterval').value)||1),unit,monthlyMode,ordinal:monthlyMode==='nthWeekday'?Number(document.getElementById('recurringOrdinal').value):null,weekday:monthlyMode==='nthWeekday'?Number(document.getElementById('recurringWeekday').value):null,status:document.getElementById('recurringTaskStatus').value,createdAt:existing?.createdAt||new Date().toISOString(),lastCompleted:existing?.lastCompleted||''};
   if(!task.name||!task.nextDue) return;
   if(existing) Object.assign(existing,task); else data.recurringTasks.push(task);
-  saveData(); closeRecurringTaskDialog(); renderAll(); filterMyLists(document.getElementById('globalListSearch')?.value||'');
+  saveData(); finishFocusConversion('recurring'); closeRecurringTaskDialog(); renderAll(); filterMyLists(document.getElementById('globalListSearch')?.value||'');
 }
 function completeRecurringTask(id){
   const task=(data.recurringTasks||[]).find(x=>x.id===id); if(!task) return;
@@ -2576,9 +2390,22 @@ function startFocusTimer(minutes){clearInterval(focusTimerInterval);focusTimerRe
 function pauseResumeFocusTimer(){focusTimerPaused=!focusTimerPaused;document.getElementById('focusTimerPauseButton').textContent=focusTimerPaused?'Continue':'Pause';}
 function closeFocusTimer(){clearInterval(focusTimerInterval);focusTimerInterval=null;document.getElementById('focusTimerDialog')?.close();}
 function completeFocusFromTimer(){const item=focusItemById(focusTimerItemId);if(item&&!item.completed)toggleTodayFocusItem(item.id);closeFocusTimer();}
+let pendingFocusConversion={id:'',type:''};
+let focusConversionSaving=false;
+function beginFocusConversion(id,type){pendingFocusConversion={id:String(id||''),type:String(type||'')};}
+function clearFocusConversion(){pendingFocusConversion={id:'',type:''};}
+function finishFocusConversion(type){
+  if(!pendingFocusConversion.id||pendingFocusConversion.type!==type)return false;
+  const existed=(data.todayFocus||[]).some(x=>String(x.id)===pendingFocusConversion.id);
+  if(existed)data.todayFocus=(data.todayFocus||[]).filter(x=>String(x.id)!==pendingFocusConversion.id);
+  clearFocusConversion();
+  saveData();renderAll();showSaved('Moved from Today\'s Focus');
+  return existed;
+}
 function convertTodayFocus(id,type){
   const item=focusItemById(id);if(!item)return;
   const name=item.name||'',details=item.notes||'';
+  beginFocusConversion(id,type);
   if(type==='todo'||type==='project'||type==='cleaning'){
     openAddDialog(type);document.getElementById('itemName').value=name;document.getElementById('itemDetails').value=details;
     if(type==='cleaning'){document.getElementById('cleaningFrequency').value='monthly';document.getElementById('cleaningStartDate').value=localDateKey();document.getElementById('cleaningFrequency').dispatchEvent(new Event('change',{bubbles:true}));}
@@ -2586,10 +2413,9 @@ function convertTodayFocus(id,type){
     openRecurringTaskDialog();document.getElementById('recurringTaskName').value=name;document.getElementById('recurringTaskNotes').value=details;document.getElementById('recurringTaskUnit').value='month';document.getElementById('recurringTaskInterval').value=1;updateRecurringRuleControls();
   }else if(type==='appointment')openAppointmentDialog('',name,details);
   else if(type==='waiting'){
-    data.waiting.unshift({id:uid(),name,details,status:'waiting',createdAt:new Date().toISOString()});saveData();renderAll();deleteTodayFocusItem(id);showSaved('Moved to Waiting For');return;
+    data.waiting.unshift({id:uid(),name,note:details,reviewDate:'',completed:false,createdAt:new Date().toISOString()});
+    finishFocusConversion('waiting');return;
   }
-  item.conversionPending=type;saveData();
-  alert('The new item is pre-filled. Save it, then remove the original Focus item when you are happy it is in the right place.');
 }
 function todayFocusConvertMenu(id){return `<div class="convert-menu-label">Convert to…</div><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','todo')">To-do</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','cleaning')">Cleaning task</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','recurring')">Recurring task</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','appointment')">Appointment</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','project')">Project</button><button onclick="closeAnchoredMenu();convertTodayFocus('${id}','waiting')">Waiting For</button>`;}
 renderTodayFocus=function(){
@@ -3186,72 +3012,48 @@ const renderAllV52dBase=renderAll;renderAll=function(){renderAllV52dBase();v52dR
 window.addEventListener('pageshow',v52dRenderCompanionPart2);document.addEventListener('visibilitychange',()=>{if(!document.hidden)v52dRenderCompanionPart2();});setTimeout(v52dRenderCompanionPart2,0);
 
 
-/* ===== v53 Polish Release ===== */
+/* ===== v52f Polish Release ===== */
 const V52F_ROOM_KEY='myLifePlannerLastCleaningRoom';
 const V52F_RECUR_KEY='myLifePlannerLastRecurringUnit';
-function v53RoomNames(){
+function v52fRoomNames(){
   return [...new Set((data.cleaningTasks||[]).map(x=>String(x.room||'').trim()).filter(Boolean))]
     .sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:'base'}));
 }
 function refreshCleaningRoomSuggestions(){
   const list=document.getElementById('cleaningRoomSuggestions');if(!list)return;
-  list.innerHTML=v53RoomNames().map(room=>`<option value="${escapeHtml(room)}"></option>`).join('');
+  list.innerHTML=v52fRoomNames().map(room=>`<option value="${escapeHtml(room)}"></option>`).join('');
 }
 function applyCleaningRoomDefault(){
   const input=document.getElementById('cleaningRoom');if(!input||input.value.trim())return;
   const last=localStorage.getItem(V52F_ROOM_KEY)||'';
   if(last)input.value=last;
 }
-const v53OpenCleaningBase=typeof openCleaningDialog==='function'?openCleaningDialog:null;
-if(v53OpenCleaningBase){openCleaningDialog=function(id=''){v53OpenCleaningBase(id);refreshCleaningRoomSuggestions();if(!id)applyCleaningRoomDefault();};}
-const v53SaveDataBase=saveData;
+const v52fOpenCleaningBase=typeof openCleaningDialog==='function'?openCleaningDialog:null;
+if(v52fOpenCleaningBase){openCleaningDialog=function(id=''){v52fOpenCleaningBase(id);refreshCleaningRoomSuggestions();if(!id)applyCleaningRoomDefault();};}
+const v52fSaveDataBase=saveData;
 saveData=function(){
   const room=document.getElementById('cleaningRoom')?.value?.trim();
   if(room&&!document.getElementById('cleaningAreaLabel')?.classList.contains('hidden'))localStorage.setItem(V52F_ROOM_KEY,room);
   const unit=document.getElementById('recurringTaskUnit')?.value;
   if(unit&&document.getElementById('recurringTaskDialog')?.open)localStorage.setItem(V52F_RECUR_KEY,unit);
-  return v53SaveDataBase();
+  return v52fSaveDataBase();
 };
-const v53OpenRecurringBase=typeof openRecurringTaskDialog==='function'?openRecurringTaskDialog:null;
-if(v53OpenRecurringBase){openRecurringTaskDialog=function(id=''){v53OpenRecurringBase(id);if(!id){const unit=localStorage.getItem(V52F_RECUR_KEY);if(unit){const el=document.getElementById('recurringTaskUnit');if(el){el.value=unit;updateRecurringRuleControls();}}}};}
-function v53FocusGlobalSearch(){
+const v52fOpenRecurringBase=typeof openRecurringTaskDialog==='function'?openRecurringTaskDialog:null;
+if(v52fOpenRecurringBase){openRecurringTaskDialog=function(id=''){v52fOpenRecurringBase(id);if(!id){const unit=localStorage.getItem(V52F_RECUR_KEY);if(unit){const el=document.getElementById('recurringTaskUnit');if(el){el.value=unit;updateRecurringRuleControls();}}}};}
+function v52fFocusGlobalSearch(){
   const search=document.getElementById('globalListSearch');if(!search)return;
   const listsButton=document.querySelector('.nav-button[data-tab="tasks"]');showAppView('tasks',listsButton);setTimeout(()=>{search.focus();search.select();},60);
 }
 document.addEventListener('keydown',event=>{
   const tag=(event.target?.tagName||'').toLowerCase();const typing=['input','textarea','select'].includes(tag)||event.target?.isContentEditable;
-  if(event.key==='/'&&!typing){event.preventDefault();v53FocusGlobalSearch();}
-  if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();v53FocusGlobalSearch();}
+  if(event.key==='/'&&!typing){event.preventDefault();v52fFocusGlobalSearch();}
+  if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();v52fFocusGlobalSearch();}
 });
-function v53PolishRefresh(){refreshCleaningRoomSuggestions();document.documentElement.classList.add('v53-ready');}
-const v53RenderAllBase=renderAll;renderAll=function(){v53RenderAllBase();v53PolishRefresh();};
-window.addEventListener('pageshow',v53PolishRefresh);setTimeout(v53PolishRefresh,0);
+function v52fPolishRefresh(){refreshCleaningRoomSuggestions();document.documentElement.classList.add('v52f-ready');}
+const v52fRenderAllBase=renderAll;renderAll=function(){v52fRenderAllBase();v52fPolishRefresh();};
+window.addEventListener('pageshow',v52fPolishRefresh);setTimeout(v52fPolishRefresh,0);
 
 
-/* ===== v53 Connected Planner: notification framework ===== */
-const V53_NOTIFICATION_PREFS='myLifePlannerNotificationPreferences';
-const V53_NOTIFICATION_SENT='myLifePlannerNotificationSent';
-const V53_NOTIFICATION_LAST_CHECK='myLifePlannerNotificationLastCheck';
-function v53DefaultNotificationPreferences(){return {appointments:false,appointmentMinutes:30,recurring:false,waiting:false,backup:false,backupDays:7,morning:false,morningTime:'09:00'};}
-function getNotificationPreferences(){try{return {...v53DefaultNotificationPreferences(),...JSON.parse(localStorage.getItem(V53_NOTIFICATION_PREFS)||'{}')}}catch{return v53DefaultNotificationPreferences();}}
-function setNotificationPreferences(prefs){localStorage.setItem(V53_NOTIFICATION_PREFS,JSON.stringify({...v53DefaultNotificationPreferences(),...prefs}));}
-function notificationPermissionText(){if(!('Notification' in window))return 'Not supported by this browser';if(Notification.permission==='granted')return 'Allowed';if(Notification.permission==='denied')return 'Blocked in browser settings';return 'Not yet allowed';}
-function refreshNotificationSettings(){const p=getNotificationPreferences();const map={notifyAppointments:p.appointments,notifyRecurring:p.recurring,notifyWaiting:p.waiting,notifyBackup:p.backup,notifyMorning:p.morning};Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.checked=Boolean(val)});[['notifyAppointmentMinutes',p.appointmentMinutes],['notifyBackupDays',p.backupDays],['notifyMorningTime',p.morningTime]].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val});const status=document.getElementById('notificationPermissionStatus');if(status)status.textContent=notificationPermissionText();const last=document.getElementById('notificationLastCheck');if(last){const value=localStorage.getItem(V53_NOTIFICATION_LAST_CHECK);last.textContent=value?`Last reminder check: ${new Date(value).toLocaleString()}`:'No reminder check recorded yet.';}}
-function saveNotificationPreferences(){setNotificationPreferences({appointments:document.getElementById('notifyAppointments')?.checked||false,appointmentMinutes:Math.max(0,Number(document.getElementById('notifyAppointmentMinutes')?.value||30)),recurring:document.getElementById('notifyRecurring')?.checked||false,waiting:document.getElementById('notifyWaiting')?.checked||false,backup:document.getElementById('notifyBackup')?.checked||false,backupDays:Math.max(1,Number(document.getElementById('notifyBackupDays')?.value||7)),morning:document.getElementById('notifyMorning')?.checked||false,morningTime:document.getElementById('notifyMorningTime')?.value||'09:00'});refreshNotificationSettings();showSaved('Reminder settings saved');}
-async function requestPlannerNotificationPermission(){if(!('Notification' in window)){alert('This browser does not support notifications.');return false;}const result=await Notification.requestPermission();refreshNotificationSettings();if(result==='granted')await sendPlannerNotification('My Life Planner','Notifications are ready.');return result==='granted';}
-async function sendPlannerNotification(title,body,tag='planner-reminder'){if(!('Notification' in window)||Notification.permission!=='granted')return false;try{const reg=plannerServiceWorkerRegistration||await navigator.serviceWorker?.getRegistration();if(reg?.showNotification)await reg.showNotification(title,{body,tag,icon:'icon-192.png',badge:'icon-192.png',data:{url:'./index.html'}});else new Notification(title,{body,tag,icon:'icon-192.png'});return true}catch(e){console.warn('Notification could not be shown',e);return false;}}
-async function sendPlannerTestNotification(){if(Notification?.permission!=='granted'){const ok=await requestPlannerNotificationPermission();if(!ok)return;}await sendPlannerNotification('My Life Planner','This is a test reminder from your planner.','planner-test');}
-function v53SentMap(){try{return JSON.parse(localStorage.getItem(V53_NOTIFICATION_SENT)||'{}')}catch{return {}}}
-function v53MarkSent(key){const map=v53SentMap();map[key]=new Date().toISOString();const cutoff=Date.now()-45*86400000;Object.keys(map).forEach(k=>{if(new Date(map[k]).getTime()<cutoff)delete map[k]});localStorage.setItem(V53_NOTIFICATION_SENT,JSON.stringify(map));}
-function v53HasSent(key){return Boolean(v53SentMap()[key]);}
-function v53DateTime(date,time){if(!date)return null;const d=new Date(`${date}T${time||'09:00'}:00`);return isNaN(d)?null:d;}
-function v53NotificationCandidates(){const p=getNotificationPreferences(),now=new Date(),today=localDateKey(),items=[];
- if(p.appointments){(data.appointments||[]).forEach(a=>{appointmentOccurrences(a,new Date(now.getTime()-86400000),3).forEach(o=>{const when=v53DateTime(o.date,a.time||'09:00');if(!when)return;const mins=(when-now)/60000;if(mins>=0&&mins<=p.appointmentMinutes){items.push({key:`appt:${a.id}:${o.date}:${a.time||''}`,title:'Appointment reminder',body:`${a.name}${a.time?` at ${a.time}`:''}`});}});});}
- if(p.recurring){const due=(data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.dueDate&&x.dueDate<=today);if(due.length)items.push({key:`recurring:${today}`,title:'Recurring tasks',body:`${due.length} recurring ${due.length===1?'task is':'tasks are'} due or overdue.`});}
- if(p.waiting){const due=(data.waiting||[]).filter(x=>!x.completed&&x.reviewDate&&x.reviewDate<=today);if(due.length)items.push({key:`waiting:${today}`,title:'Waiting For follow-up',body:`${due.length} ${due.length===1?'item may':'items may'} need a follow-up.`});}
- if(p.morning){const [h,m]=(p.morningTime||'09:00').split(':').map(Number);const target=new Date();target.setHours(h||0,m||0,0,0);const diff=(now-target)/60000;if(diff>=0&&diff<90)items.push({key:`morning:${today}`,title:'Good morning',body:'Open My Life Planner for today’s time-sensitive items and focus list.'});}
- if(p.backup){let last='';try{const backups=JSON.parse(localStorage.getItem('lifePlannerDailyBackups')||'[]');last=backups?.[0]?.createdAt||backups?.[0]?.date||''}catch{}const age=last?Math.floor((Date.now()-new Date(last).getTime())/86400000):999;if(age>=p.backupDays)items.push({key:`backup:${today}`,title:'Backup reminder',body:'Consider saving or sharing a planner backup file.'});}
- return items;}
-async function checkPlannerNotificationsNow(manual=false){localStorage.setItem(V53_NOTIFICATION_LAST_CHECK,new Date().toISOString());refreshNotificationSettings();if(!('Notification' in window)||Notification.permission!=='granted'){if(manual)alert('Allow notifications first, then try again.');return;}const candidates=v53NotificationCandidates();let sent=0;for(const item of candidates){if(v53HasSent(item.key))continue;if(await sendPlannerNotification(item.title,item.body,item.key)){v53MarkSent(item.key);sent++;}}if(manual)alert(sent?`${sent} reminder${sent===1?'':'s'} sent.`:'No new reminders are due right now.');}
-function v53StartNotificationChecks(){refreshNotificationSettings();checkPlannerNotificationsNow(false);setInterval(()=>checkPlannerNotificationsNow(false),15*60*1000);}
-window.addEventListener('pageshow',()=>checkPlannerNotificationsNow(false));document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkPlannerNotificationsNow(false)});setTimeout(v53StartNotificationChecks,1200);
+/* ===== v53 Workflow Edition =====
+   Today’s Focus Convert now behaves as Move: the source is removed only after a successful destination save.
+*/
