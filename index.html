@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Life Planner</title>
-  <link rel="stylesheet" href="style.css?v=52c">
-  <link rel="manifest" href="manifest.json?v=52c">
+  <link rel="stylesheet" href="style.css?v=52c-c1">
+  <link rel="manifest" href="manifest.json?v=52c-c1">
   <meta name="theme-color" content="#1769c2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -44,7 +44,7 @@
     <section id="morningBriefPanel" class="panel daily-companion-panel app-view-section" data-view="home" aria-live="polite">
       <div class="daily-companion-heading">
         <div><p id="daypartEyebrow" class="eyebrow">Your morning</p><h2 id="dailyCompanionGreeting">Good morning</h2></div>
-        <span id="dailyCompanionDate" class="daily-companion-date"></span>
+        <div class="daily-companion-heading-actions"><span id="dailyCompanionDate" class="daily-companion-date"></span><button id="dailyCompanionToggle" type="button" class="small-button secondary-button daily-companion-toggle" onclick="toggleDailyCompanion()" aria-expanded="false" hidden>More</button></div>
       </div>
       <p id="dailyCompanionMessage" class="daily-companion-message"></p>
       <div id="dailyCompanionSummary" class="daily-companion-summary"></div>
@@ -658,6 +658,6 @@
     <div class="dialog-actions"><button type="button" class="secondary-button" onclick="downloadCurrentAttachment()">Download copy</button><button type="button" onclick="closeAttachmentViewer()">Close</button></div>
   </dialog>
 
-  <script src="app.js?v=52c"></script>
+  <script src="app.js?v=52c-c1"></script>
 </body>
 </html>

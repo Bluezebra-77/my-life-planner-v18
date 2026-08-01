@@ -1,4 +1,4 @@
-# My Life Planner v52c — Build Report
+# My Life Planner v52c Corrected — Build Report
 
 **Baseline:** accepted v52b
 
@@ -17,3 +17,8 @@
 - CSS brace balance: PASS
 - Version/cache consistency: PASS
 - ZIP integrity: PASS
+
+## Correction pass
+- Added legacy repeated-task history migration and immediate Planner Health refresh.
+- Added responsive Daily Companion presentation: full on desktop, compact and expandable on phones.
+- Logged the design rule that small screens compress information before removing functionality.

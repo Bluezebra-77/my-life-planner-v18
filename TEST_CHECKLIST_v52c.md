@@ -1,4 +1,4 @@
-# My Life Planner v52c — Test Checklist
+# My Life Planner v52c Corrected — Test Checklist
 
 ## Installation and data
 - [ ] Header, About and Developer Dashboard show v52c.
@@ -28,3 +28,14 @@
 ## Result
 - [ ] ACCEPT v52c.
 - [ ] REJECT — record the failed item.
+
+## Correction checks
+- [ ] Existing repeated-task history from v52b still produces a recurring-task suggestion.
+- [ ] Adding the third matching Today’s Focus item updates Planner Health immediately.
+- [ ] On iPhone portrait, Daily Companion starts compact and does not dominate Home.
+- [ ] More expands the full brief; Less returns to the compact view.
+- [ ] Desktop continues to show the full Daily Companion layout.
+
+## Corrected package identity
+- [ ] Extracted folder is named `My-Life-Planner-v52c-Corrected-GitHub-Update`.
+- [ ] After upload and Check for updates, iPhone opens the Daily Companion in compact mode with a More button.

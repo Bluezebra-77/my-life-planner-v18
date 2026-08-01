@@ -51,3 +51,7 @@
 - Time-aware Daily Companion brief.
 - Morning summary counts and estimated workload.
 - Actionable Home dashboard cards for health, backup, inbox, waiting and recurring work.
+
+## v52c correction
+- Compact, expandable Daily Companion presentation on phones while retaining the full desktop brief.
+- Safe migration of repeated-task learning from the v52b history key.

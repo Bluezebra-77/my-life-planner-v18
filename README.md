@@ -1,4 +1,4 @@
-# My Life Planner v52c
+# My Life Planner v52c Corrected
 
 Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
 

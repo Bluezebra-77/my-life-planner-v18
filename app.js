@@ -2957,8 +2957,23 @@ setTimeout(applyV52aCorrectedHome,0);
 
 /* ===== v52b Planner Health 2.0 and considerate pattern memory ===== */
 const V52B_PATTERN_KEY='myLifePlannerTaskPatterns';
+const V52B_LEGACY_PATTERN_KEY='myLifePlannerHabitHistory';
 function v52bNormaliseName(value){return String(value||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();}
-function v52bPatterns(){try{return JSON.parse(localStorage.getItem(V52B_PATTERN_KEY)||'{}')||{};}catch(e){return {};}}
+function v52bRawStore(key){try{return JSON.parse(localStorage.getItem(key)||'{}')||{};}catch(e){return {};}}
+function v52bMergePatternStores(){
+ const current=v52bRawStore(V52B_PATTERN_KEY),legacy=v52bRawStore(V52B_LEGACY_PATTERN_KEY),merged={...current};
+ Object.entries(legacy).forEach(([rawKey,entry])=>{
+  const key=v52bNormaliseName(rawKey||entry?.name);if(!key)return;
+  const existing=merged[key]||{name:entry?.name||rawKey,count:0,sources:{},lastSeen:0};
+  existing.name=entry?.name||existing.name||rawKey;
+  existing.count=Math.max(Number(existing.count||0),Number(entry?.count||0));
+  existing.sources=existing.sources||{};existing.sources.focus=Math.max(Number(existing.sources.focus||0),Number(entry?.count||0));
+  existing.lastSeen=Math.max(Number(existing.lastSeen||0),Number(entry?.lastSeen||0));merged[key]=existing;
+ });
+ try{localStorage.setItem(V52B_PATTERN_KEY,JSON.stringify(merged));}catch(e){}
+ return merged;
+}
+function v52bPatterns(){return v52bMergePatternStores();}
 function v52bSavePatterns(value){try{localStorage.setItem(V52B_PATTERN_KEY,JSON.stringify(value));}catch(e){}}
 function v52bRecordPattern(name,source='focus'){
  const key=v52bNormaliseName(name);if(!key||key.length<3)return;
@@ -2966,7 +2981,14 @@ function v52bRecordPattern(name,source='focus'){
  item.name=String(name).trim()||item.name;item.count=Number(item.count||0)+1;item.sources=item.sources||{};item.sources[source]=Number(item.sources[source]||0)+1;item.lastSeen=Date.now();all[key]=item;v52bSavePatterns(all);
 }
 const v52bAddTodayFocusBase=addTodayFocusItem;
-addTodayFocusItem=function(event){const name=document.getElementById('todayFocusInput')?.value?.trim();if(name)v52bRecordPattern(name,'focus');return v52bAddTodayFocusBase(event);};
+addTodayFocusItem=function(event){
+ const name=document.getElementById('todayFocusInput')?.value?.trim();
+ if(name)v52bRecordPattern(name,'focus');
+ const result=v52bAddTodayFocusBase(event);
+ renderPlannerHealth();
+ if(typeof renderDailyCompanion==='function')renderDailyCompanion();
+ return result;
+};
 function v52bPatternAlreadyStructured(name){const n=v52bNormaliseName(name);return [...(data.recurringTasks||[]),...(data.cleaningTasks||[])].some(x=>v52bNormaliseName(x.name)===n);}
 function v52bSuggestRecurring(name){openRecurringTaskDialog();const field=document.getElementById('recurringTaskName');if(field)field.value=name;const unit=document.getElementById('recurringTaskUnit');if(unit)unit.value='month';const interval=document.getElementById('recurringTaskInterval');if(interval)interval.value=1;updateRecurringRuleControls();}
 function plannerHealthSuggestions(){
@@ -3049,6 +3071,15 @@ function v52cOpenTarget(target){
   const actions={health:()=>document.getElementById('plannerHealthPanel')?.scrollIntoView({behavior:'smooth',block:'start'}),backup:()=>openSettingsDialog(),inbox:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('inboxListSection')?.scrollIntoView({behavior:'smooth'}),100);},waiting:()=>openWaitingForList(),recurring:()=>{showAppView('tasks');setTimeout(()=>document.getElementById('recurringTasksListSection')?.scrollIntoView({behavior:'smooth'}),100);}};
   actions[target]?.();
 }
+const V52C_COMPANION_EXPANDED_KEY='myLifePlannerCompanionExpandedV52c1';
+function v52cIsPhone(){return window.matchMedia('(max-width: 600px)').matches;}
+function v52cCompanionExpanded(){return localStorage.getItem(V52C_COMPANION_EXPANDED_KEY)==='true';}
+function v52cApplyCompanionLayout(){
+ const panel=document.getElementById('morningBriefPanel'),button=document.getElementById('dailyCompanionToggle');if(!panel)return;
+ const compact=v52cIsPhone()&&!v52cCompanionExpanded();panel.classList.toggle('companion-compact',compact);
+ if(button){button.hidden=!v52cIsPhone();button.textContent=compact?'More':'Less';button.setAttribute('aria-expanded',String(!compact));}
+}
+function toggleDailyCompanion(){localStorage.setItem(V52C_COMPANION_EXPANDED_KEY,String(!v52cCompanionExpanded()));v52cApplyCompanionLayout();}
 function renderDailyCompanion(){
   const panel=document.getElementById('morningBriefPanel');if(!panel)return;
   const now=new Date(),part=v52cDaypart(now),settings=getSettings?.()||{},name=String(settings.ownerName||'').trim();
@@ -3074,6 +3105,7 @@ function renderDailyCompanion(){
   ].join('');
   panel.dataset.daypart=part.key;
   panel.querySelectorAll('[data-companion-target]').forEach(card=>{const go=()=>v52cOpenTarget(card.dataset.companionTarget);card.onclick=go;card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+  v52cApplyCompanionLayout();
 }
 function v52cOptimiseHomeOrder(){
   optimiseHomeOrder();
@@ -3084,4 +3116,5 @@ const renderAllV52cBase=renderAll;
 renderAll=function(){renderAllV52cBase();v52cOptimiseHomeOrder();renderDailyCompanion();};
 window.addEventListener('pageshow',()=>{v52cOptimiseHomeOrder();renderDailyCompanion();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDailyCompanion();});
+window.addEventListener('resize',v52cApplyCompanionLayout);
 setTimeout(()=>{v52cOptimiseHomeOrder();renderDailyCompanion();},0);

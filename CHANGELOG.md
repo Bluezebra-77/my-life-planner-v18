@@ -34,3 +34,7 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 
 ## v52c — Daily Companion, Part 1
 - Added a time-aware Home brief and actionable glance cards.
+
+## v52c Corrected
+- Restored repeated-task suggestion history and immediate suggestion refresh.
+- Added a compact expandable iPhone Daily Companion layout.

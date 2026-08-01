@@ -37,3 +37,7 @@
 ## v52c observation list
 - Test whether the Daily Companion summary remains useful without adding clutter.
 - Evening and weekly reflections remain planned for the second Daily Companion milestone.
+
+## Corrected in v52c
+- Repeated Today’s Focus suggestions could disappear because v52c did not read the v52b habit-history key and did not refresh Planner Health immediately.
+- Daily Companion occupied excessive vertical space on iPhone.
