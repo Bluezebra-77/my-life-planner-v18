@@ -10,3 +10,7 @@
 - **v51f:** Planner Health phase 1, calmer Home ordering, information-on-demand and collapsible Settings
 
 All milestones were tested in sequence and the accepted v51f Settings-corrected source is the baseline for the official v51 package.
+
+## v52 development milestones
+
+- **v52a:** Calm Interface and app-wide progressive disclosure.

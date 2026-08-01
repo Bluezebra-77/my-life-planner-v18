@@ -1,40 +1,19 @@
-# Roadmap - v52 and Beyond
+# My Life Planner — v52 Roadmap
 
-The v52 roadmap should be driven by sustained real-life use of v51 rather than adding features automatically.
+## Current internal milestone
 
-## Priority candidates
+- **v52a:** Calm Interface — information on demand across Lists and Planner.
 
-1. **Planner Health expansion**
-   - Project inactivity thresholds and follow-up actions
-   - Repeated Today’s Focus pattern suggestions
-   - Old Brain Inbox and Waiting For review flows
-   - Gentle pattern recognition without nagging
+## Planned next
 
-2. **Notifications and reminders**
-   - Optional reminders for selected appointments and responsibilities
-   - Due-a-few-days-before preparation reminders
-   - Respectful, opt-in notification controls
+- Planner Health 2.0 and gentle pattern suggestions.
+- Search quality and relevance improvements.
+- Morning dashboard refinement.
+- Performance and offline review.
+- Revisit progress-bar usefulness after extended real-life use.
 
-3. **Custom-list types**
-   - Plain lists
-   - Reusable checklists with reset
-   - Action lists with dates and reminders
-   - Faster Return-to-add creation
+## Future distribution research
 
-4. **Project refinements**
-   - Better activity history
-   - Easier step reordering
-   - Optional project review dates
-
-5. **Home and Timeline review**
-   - Confirm each screen has a distinct purpose
-   - Remove any remaining duplication
-   - Reassess the progress bar
-
-## Later possibilities
-
-- Workspaces based on tags
-- Calendar synchronisation
-- Printable reports
-- Optional cloud synchronisation and multi-device support
-- Reusable Brain Input module for a future photography-project application
+- Practical code protection and obfuscation.
+- App Store and TestFlight requirements, costs and alternatives.
+- Privacy, licensing, branding and intellectual-property preparation.

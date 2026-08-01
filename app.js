@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="51";
+const APP_VERSION="52a";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2859,3 +2859,46 @@ function initialiseSettingsSections(){
   });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialiseSettingsSections);else initialiseSettingsSections();
+
+
+/* ===== v52a Calm Interface: information on demand across Lists and Planner ===== */
+const V52A_SECTION_HELP = {
+  'My Lists':'Search across every list or use the side navigation to jump to one collection.',
+  'To-do list':'Every saved to-do appears here. You can edit, complete or delete it.',
+  'Appointments and events':'Every appointment appears here. Select an item to edit it.',
+  'Recurring tasks':'Repeating responsibilities remain due or overdue until completed. Paused tasks stay saved but do not appear on Home.',
+  'Brain Inbox':'Capture anything without deciding where it belongs. Convert it later when its proper home becomes clear.',
+  'Waiting For':'Things that are not yours to do but still need watching and following up.',
+  'Birthdays and memorable dates list':'Annual reminders for birthdays and other dates you want to remember.',
+  'Projects list':'Projects and their steps appear here for full editing and management.',
+  'Cleaning task list':'Cleaning jobs can repeat daily, weekly, fortnightly or monthly. Completing one schedules its next due date.',
+  'Custom lists':'Create collections for shopping, packing, ideas, places to visit or anything else.',
+  'Timeline':'Appointments and dated work are shown in date order. Use the filters to change the period.',
+  'Main list overview':'A quick count of the main information stored in your planner.',
+  'Gentle close-down':'Your editable end-of-day routine.'
+};
+function setupCalmSectionInfoButtons(){
+  document.querySelectorAll('.app-view-section[data-view="tasks"],.app-view-section[data-view="planner"]').forEach(section=>{
+    if(section.dataset.calmInfoReady==='1'||section.classList.contains('lists-floating-wrap'))return;
+    const heading=section.querySelector(':scope > .section-heading, :scope > .focus-heading');
+    if(!heading)return;
+    const headingCopy=heading.querySelector(':scope > div')||heading;
+    const h2=headingCopy.querySelector('h2');if(!h2)return;
+    const help=V52A_SECTION_HELP[h2.textContent.trim()];if(!help)return;
+    section.dataset.calmInfoReady='1';
+    const existingLine=h2.closest('.section-title-line');
+    const line=existingLine||document.createElement('div');
+    if(!existingLine){line.className='section-title-line';h2.parentNode.insertBefore(line,h2);line.appendChild(h2);}
+    const button=document.createElement('button');button.type='button';button.className='section-info-button';button.textContent='i';button.setAttribute('aria-label',`About ${h2.textContent.trim()}`);line.appendChild(button);
+    const descriptions=[...section.children].filter(el=>el.tagName==='P'&&el.classList.contains('card-meta'));
+    descriptions.forEach(el=>el.remove());
+    const text=document.createElement('p');text.className='section-help-text hidden';text.textContent=help;
+    heading.insertAdjacentElement('afterend',text);
+    button.onclick=e=>{e.stopPropagation();text.classList.toggle('hidden');button.setAttribute('aria-expanded',String(!text.classList.contains('hidden')));};
+    button.setAttribute('aria-expanded','false');
+  });
+}
+const renderAllV52a=renderAll;
+renderAll=function(){renderAllV52a();setupCalmSectionInfoButtons();};
+window.addEventListener('pageshow',setupCalmSectionInfoButtons);
+setTimeout(setupCalmSectionInfoButtons,0);

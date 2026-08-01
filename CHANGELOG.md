@@ -20,3 +20,7 @@
 ## Earlier releases
 
 Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, responsive Lists navigation, attachments, app maintenance, settings customisation, compact menus, projects, routines and mobile refinements. The in-app About history retains the major public milestones.
+
+## v52a — Internal Calm Interface build
+
+- Moved section explanations behind information buttons across Lists and Planner.

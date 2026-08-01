@@ -20,3 +20,7 @@
 - Decide whether the progress bar motivates or communicates enough value; retain for now.
 - Review Home/Timeline distinction after extended real-life use.
 - Generated-task timer remains a future enhancement.
+
+## v52a design refinement
+
+- Permanent explanatory text across Lists and Planner reduced working space; moved behind information buttons.

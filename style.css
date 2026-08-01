@@ -1351,3 +1351,9 @@ body.timer-minimised .quick-add-fab{
 .settings-section-body>.card-actions:last-child{margin-bottom:0}
 .settings-section-details .settings-section-details{background:rgba(255,255,255,.7)}
 @media(max-width:560px){.settings-section-details>summary{padding:13px 14px}.settings-section-body{padding:0 14px 14px}}
+
+
+/* v52a Calm Interface */
+.managed-list-section>.section-help-text,.lists-hub>.section-help-text,.timeline-panel>.section-help-text{margin:.2rem 0 .9rem}
+.section-info-button[aria-expanded="true"]{background:var(--accent,#537462)!important;color:#fff!important}
+@media(max-width:560px){.section-title-line{gap:.35rem}.section-info-button{width:30px!important;height:30px!important;min-width:30px!important}}

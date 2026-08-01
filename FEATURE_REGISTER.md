@@ -30,3 +30,8 @@
 - Collapsible Home sections
 - Collapsible Settings sections with remembered state
 - Responsive iPhone and desktop layouts
+
+## v52a internal milestone
+
+- Progressive disclosure across Lists and Planner sections.
+- Standardised calm section headings with information on demand.
