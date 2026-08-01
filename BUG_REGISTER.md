@@ -41,3 +41,7 @@
 ## Corrected in v52c
 - Repeated Today’s Focus suggestions could disappear because v52c did not read the v52b habit-history key and did not refresh Planner Health immediately.
 - Daily Companion occupied excessive vertical space on iPhone.
+
+## v52d design safeguards
+- Reflections are optional, dismissible and non-judgemental.
+- Completion statistics begin from v52d activity logging; historic totals are not invented.

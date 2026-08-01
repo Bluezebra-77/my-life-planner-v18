@@ -55,3 +55,9 @@
 ## v52c correction
 - Compact, expandable Daily Companion presentation on phones while retaining the full desktop brief.
 - Safe migration of repeated-task learning from the v52b history key.
+
+## Delivered in v52d
+- Evening Reflection and configurable Weekly Reflection.
+- Gentle encouragement based on recorded progress.
+- Planner Memory 2.0 completion-pattern suggestions.
+- Hidden Statistics in Settings.
