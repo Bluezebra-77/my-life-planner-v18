@@ -48,8 +48,7 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 ## v52f — Internal Polish Release
 - Consistency, smart form defaults, search shortcuts, accessibility, mobile spacing and friendly empty-state improvements.
 
-
-## v53 — Workflow Edition
-- Today’s Focus Convert now removes the source only after the destination saves successfully.
-- Cancelled conversions preserve the original Focus item.
-- Notifications remain on the future roadmap.
+## v53 — Corrected Workflow Edition
+- Rebuilt from accepted v52f after rejecting the earlier v53 package.
+- Preserved Home ordering, collapsible sections, menus and all shared forms.
+- Changed Today’s Focus Convert to remove the source only after a successful destination save.

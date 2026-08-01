@@ -53,10 +53,6 @@
 - Standardised small control tap targets and compact iPhone spacing.
 - Corrected stale asset version references during release packaging.
 
-
 ## Corrected in v53
-- Converted Today’s Focus items remained in the Focus list and required manual deletion.
-- Failed/cancelled destination saves now leave the source intact.
-
-## Future
-- Optional notifications remain planned for a later dedicated build.
+- Rejected v53 regression package reverted Home ordering, removed Home collapse controls, broke Waiting For Edit and Birthday saving.
+- Corrected v53 was rebuilt from v52f and applies only the guarded Convert-as-Move workflow.

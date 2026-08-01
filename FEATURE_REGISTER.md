@@ -69,7 +69,3 @@
 - Remembered room suggestions and recurrence defaults.
 - Keyboard-first global Lists search.
 - Accessibility, mobile spacing and empty-state polish.
-
-
-## Delivered in v53
-- Safe Convert-as-Move workflow across To-do, Project, Cleaning, Recurring Task, Appointment and Waiting For.

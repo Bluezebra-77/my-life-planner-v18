@@ -1,19 +1,17 @@
-# My Life Planner v53 — Build Report
+# My Life Planner v53 Corrected — Build Report
 
-**Baseline:** accepted v52f ZIP
+**Baseline:** accepted v52f source package
 
-## Implemented
-- Reworked Today’s Focus conversion as a transaction-like Move workflow.
-- Source removal occurs only after successful destination save.
-- Cancellation preserves the source item.
-- Updated version references, manifest and service-worker cache to v53.
-- Removed notification claims from this release scope.
+## Correction approach
+- Rebuilt from v52f rather than patching the rejected v53 package.
+- Added only the version update and guarded Convert-as-Move workflow.
+- Did not replace shared form, menu, Home or list functions.
 
-## Validation
-- JavaScript syntax
-- Service-worker syntax
-- Manifest JSON
-- Duplicate HTML IDs
-- CSS brace balance
-- Version/cache consistency
-- ZIP integrity
+## Static validation
+- JavaScript syntax: PASS
+- Service-worker syntax: PASS
+- Manifest JSON: PASS
+- Duplicate HTML IDs: PASS
+- CSS brace balance: PASS
+- Version/cache consistency: PASS
+- ZIP integrity: PASS
