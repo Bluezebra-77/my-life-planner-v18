@@ -29,7 +29,5 @@
 - Today and Needs Attention could show the same underlying work in two forms, including a dated child step and its parent item.
 - Home collapse controls could fall onto a separate row on iPhone, creating excessive empty space.
 
-## v52b observation items
-
-- Pattern learning begins with v52b and cannot infer repetitions that occurred before installation.
-- Continue monitoring whether Planner Health suggestions are useful without becoming repetitive.
+## v52b observation
+- Repeated-task learning begins with entries made from v52b onward; earlier historical entries were not recorded.
