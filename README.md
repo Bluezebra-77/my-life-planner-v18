@@ -1,12 +1,8 @@
-# My Life Planner v52d Corrected
+# My Life Planner v53
 
-Upload every file in this folder to the root of the GitHub Pages repository, replacing the previous app files.
+Upload the application files in this folder to the root of the GitHub Pages repository. Then open **Settings > App maintenance > Check for updates**.
 
-Then open **Settings → App maintenance → Check for updates** and confirm v52b in the Header, About and Developer Dashboard.
+## v53 highlight
+Optional local notifications and reminder checks for appointments, recurring tasks, Waiting For follow-ups, morning planning and backups. Browser/iPhone background suspension means exact delivery is not guaranteed.
 
-v52b adds Planner Health 2.0, opt-in repeated-task suggestions and Help & Guides. Existing data and the accepted v52a Corrected workflows are preserved.
-
-Complete `TEST_CHECKLIST_v52b.md` before accepting the build.
-
-## v52d Daily Companion
-Home now opens with a time-aware brief and compact status cards. See `TEST_CHECKLIST_v52d.md`.
+Complete `TEST_CHECKLIST_v53.md` before accepting the release.

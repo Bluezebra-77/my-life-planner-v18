@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="52f";
+const APP_VERSION="53";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -3186,43 +3186,72 @@ const renderAllV52dBase=renderAll;renderAll=function(){renderAllV52dBase();v52dR
 window.addEventListener('pageshow',v52dRenderCompanionPart2);document.addEventListener('visibilitychange',()=>{if(!document.hidden)v52dRenderCompanionPart2();});setTimeout(v52dRenderCompanionPart2,0);
 
 
-/* ===== v52f Polish Release ===== */
+/* ===== v53 Polish Release ===== */
 const V52F_ROOM_KEY='myLifePlannerLastCleaningRoom';
 const V52F_RECUR_KEY='myLifePlannerLastRecurringUnit';
-function v52fRoomNames(){
+function v53RoomNames(){
   return [...new Set((data.cleaningTasks||[]).map(x=>String(x.room||'').trim()).filter(Boolean))]
     .sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:'base'}));
 }
 function refreshCleaningRoomSuggestions(){
   const list=document.getElementById('cleaningRoomSuggestions');if(!list)return;
-  list.innerHTML=v52fRoomNames().map(room=>`<option value="${escapeHtml(room)}"></option>`).join('');
+  list.innerHTML=v53RoomNames().map(room=>`<option value="${escapeHtml(room)}"></option>`).join('');
 }
 function applyCleaningRoomDefault(){
   const input=document.getElementById('cleaningRoom');if(!input||input.value.trim())return;
   const last=localStorage.getItem(V52F_ROOM_KEY)||'';
   if(last)input.value=last;
 }
-const v52fOpenCleaningBase=typeof openCleaningDialog==='function'?openCleaningDialog:null;
-if(v52fOpenCleaningBase){openCleaningDialog=function(id=''){v52fOpenCleaningBase(id);refreshCleaningRoomSuggestions();if(!id)applyCleaningRoomDefault();};}
-const v52fSaveDataBase=saveData;
+const v53OpenCleaningBase=typeof openCleaningDialog==='function'?openCleaningDialog:null;
+if(v53OpenCleaningBase){openCleaningDialog=function(id=''){v53OpenCleaningBase(id);refreshCleaningRoomSuggestions();if(!id)applyCleaningRoomDefault();};}
+const v53SaveDataBase=saveData;
 saveData=function(){
   const room=document.getElementById('cleaningRoom')?.value?.trim();
   if(room&&!document.getElementById('cleaningAreaLabel')?.classList.contains('hidden'))localStorage.setItem(V52F_ROOM_KEY,room);
   const unit=document.getElementById('recurringTaskUnit')?.value;
   if(unit&&document.getElementById('recurringTaskDialog')?.open)localStorage.setItem(V52F_RECUR_KEY,unit);
-  return v52fSaveDataBase();
+  return v53SaveDataBase();
 };
-const v52fOpenRecurringBase=typeof openRecurringTaskDialog==='function'?openRecurringTaskDialog:null;
-if(v52fOpenRecurringBase){openRecurringTaskDialog=function(id=''){v52fOpenRecurringBase(id);if(!id){const unit=localStorage.getItem(V52F_RECUR_KEY);if(unit){const el=document.getElementById('recurringTaskUnit');if(el){el.value=unit;updateRecurringRuleControls();}}}};}
-function v52fFocusGlobalSearch(){
+const v53OpenRecurringBase=typeof openRecurringTaskDialog==='function'?openRecurringTaskDialog:null;
+if(v53OpenRecurringBase){openRecurringTaskDialog=function(id=''){v53OpenRecurringBase(id);if(!id){const unit=localStorage.getItem(V52F_RECUR_KEY);if(unit){const el=document.getElementById('recurringTaskUnit');if(el){el.value=unit;updateRecurringRuleControls();}}}};}
+function v53FocusGlobalSearch(){
   const search=document.getElementById('globalListSearch');if(!search)return;
   const listsButton=document.querySelector('.nav-button[data-tab="tasks"]');showAppView('tasks',listsButton);setTimeout(()=>{search.focus();search.select();},60);
 }
 document.addEventListener('keydown',event=>{
   const tag=(event.target?.tagName||'').toLowerCase();const typing=['input','textarea','select'].includes(tag)||event.target?.isContentEditable;
-  if(event.key==='/'&&!typing){event.preventDefault();v52fFocusGlobalSearch();}
-  if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();v52fFocusGlobalSearch();}
+  if(event.key==='/'&&!typing){event.preventDefault();v53FocusGlobalSearch();}
+  if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();v53FocusGlobalSearch();}
 });
-function v52fPolishRefresh(){refreshCleaningRoomSuggestions();document.documentElement.classList.add('v52f-ready');}
-const v52fRenderAllBase=renderAll;renderAll=function(){v52fRenderAllBase();v52fPolishRefresh();};
-window.addEventListener('pageshow',v52fPolishRefresh);setTimeout(v52fPolishRefresh,0);
+function v53PolishRefresh(){refreshCleaningRoomSuggestions();document.documentElement.classList.add('v53-ready');}
+const v53RenderAllBase=renderAll;renderAll=function(){v53RenderAllBase();v53PolishRefresh();};
+window.addEventListener('pageshow',v53PolishRefresh);setTimeout(v53PolishRefresh,0);
+
+
+/* ===== v53 Connected Planner: notification framework ===== */
+const V53_NOTIFICATION_PREFS='myLifePlannerNotificationPreferences';
+const V53_NOTIFICATION_SENT='myLifePlannerNotificationSent';
+const V53_NOTIFICATION_LAST_CHECK='myLifePlannerNotificationLastCheck';
+function v53DefaultNotificationPreferences(){return {appointments:false,appointmentMinutes:30,recurring:false,waiting:false,backup:false,backupDays:7,morning:false,morningTime:'09:00'};}
+function getNotificationPreferences(){try{return {...v53DefaultNotificationPreferences(),...JSON.parse(localStorage.getItem(V53_NOTIFICATION_PREFS)||'{}')}}catch{return v53DefaultNotificationPreferences();}}
+function setNotificationPreferences(prefs){localStorage.setItem(V53_NOTIFICATION_PREFS,JSON.stringify({...v53DefaultNotificationPreferences(),...prefs}));}
+function notificationPermissionText(){if(!('Notification' in window))return 'Not supported by this browser';if(Notification.permission==='granted')return 'Allowed';if(Notification.permission==='denied')return 'Blocked in browser settings';return 'Not yet allowed';}
+function refreshNotificationSettings(){const p=getNotificationPreferences();const map={notifyAppointments:p.appointments,notifyRecurring:p.recurring,notifyWaiting:p.waiting,notifyBackup:p.backup,notifyMorning:p.morning};Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.checked=Boolean(val)});[['notifyAppointmentMinutes',p.appointmentMinutes],['notifyBackupDays',p.backupDays],['notifyMorningTime',p.morningTime]].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val});const status=document.getElementById('notificationPermissionStatus');if(status)status.textContent=notificationPermissionText();const last=document.getElementById('notificationLastCheck');if(last){const value=localStorage.getItem(V53_NOTIFICATION_LAST_CHECK);last.textContent=value?`Last reminder check: ${new Date(value).toLocaleString()}`:'No reminder check recorded yet.';}}
+function saveNotificationPreferences(){setNotificationPreferences({appointments:document.getElementById('notifyAppointments')?.checked||false,appointmentMinutes:Math.max(0,Number(document.getElementById('notifyAppointmentMinutes')?.value||30)),recurring:document.getElementById('notifyRecurring')?.checked||false,waiting:document.getElementById('notifyWaiting')?.checked||false,backup:document.getElementById('notifyBackup')?.checked||false,backupDays:Math.max(1,Number(document.getElementById('notifyBackupDays')?.value||7)),morning:document.getElementById('notifyMorning')?.checked||false,morningTime:document.getElementById('notifyMorningTime')?.value||'09:00'});refreshNotificationSettings();showSaved('Reminder settings saved');}
+async function requestPlannerNotificationPermission(){if(!('Notification' in window)){alert('This browser does not support notifications.');return false;}const result=await Notification.requestPermission();refreshNotificationSettings();if(result==='granted')await sendPlannerNotification('My Life Planner','Notifications are ready.');return result==='granted';}
+async function sendPlannerNotification(title,body,tag='planner-reminder'){if(!('Notification' in window)||Notification.permission!=='granted')return false;try{const reg=plannerServiceWorkerRegistration||await navigator.serviceWorker?.getRegistration();if(reg?.showNotification)await reg.showNotification(title,{body,tag,icon:'icon-192.png',badge:'icon-192.png',data:{url:'./index.html'}});else new Notification(title,{body,tag,icon:'icon-192.png'});return true}catch(e){console.warn('Notification could not be shown',e);return false;}}
+async function sendPlannerTestNotification(){if(Notification?.permission!=='granted'){const ok=await requestPlannerNotificationPermission();if(!ok)return;}await sendPlannerNotification('My Life Planner','This is a test reminder from your planner.','planner-test');}
+function v53SentMap(){try{return JSON.parse(localStorage.getItem(V53_NOTIFICATION_SENT)||'{}')}catch{return {}}}
+function v53MarkSent(key){const map=v53SentMap();map[key]=new Date().toISOString();const cutoff=Date.now()-45*86400000;Object.keys(map).forEach(k=>{if(new Date(map[k]).getTime()<cutoff)delete map[k]});localStorage.setItem(V53_NOTIFICATION_SENT,JSON.stringify(map));}
+function v53HasSent(key){return Boolean(v53SentMap()[key]);}
+function v53DateTime(date,time){if(!date)return null;const d=new Date(`${date}T${time||'09:00'}:00`);return isNaN(d)?null:d;}
+function v53NotificationCandidates(){const p=getNotificationPreferences(),now=new Date(),today=localDateKey(),items=[];
+ if(p.appointments){(data.appointments||[]).forEach(a=>{appointmentOccurrences(a,new Date(now.getTime()-86400000),3).forEach(o=>{const when=v53DateTime(o.date,a.time||'09:00');if(!when)return;const mins=(when-now)/60000;if(mins>=0&&mins<=p.appointmentMinutes){items.push({key:`appt:${a.id}:${o.date}:${a.time||''}`,title:'Appointment reminder',body:`${a.name}${a.time?` at ${a.time}`:''}`});}});});}
+ if(p.recurring){const due=(data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.dueDate&&x.dueDate<=today);if(due.length)items.push({key:`recurring:${today}`,title:'Recurring tasks',body:`${due.length} recurring ${due.length===1?'task is':'tasks are'} due or overdue.`});}
+ if(p.waiting){const due=(data.waiting||[]).filter(x=>!x.completed&&x.reviewDate&&x.reviewDate<=today);if(due.length)items.push({key:`waiting:${today}`,title:'Waiting For follow-up',body:`${due.length} ${due.length===1?'item may':'items may'} need a follow-up.`});}
+ if(p.morning){const [h,m]=(p.morningTime||'09:00').split(':').map(Number);const target=new Date();target.setHours(h||0,m||0,0,0);const diff=(now-target)/60000;if(diff>=0&&diff<90)items.push({key:`morning:${today}`,title:'Good morning',body:'Open My Life Planner for today’s time-sensitive items and focus list.'});}
+ if(p.backup){let last='';try{const backups=JSON.parse(localStorage.getItem('lifePlannerDailyBackups')||'[]');last=backups?.[0]?.createdAt||backups?.[0]?.date||''}catch{}const age=last?Math.floor((Date.now()-new Date(last).getTime())/86400000):999;if(age>=p.backupDays)items.push({key:`backup:${today}`,title:'Backup reminder',body:'Consider saving or sharing a planner backup file.'});}
+ return items;}
+async function checkPlannerNotificationsNow(manual=false){localStorage.setItem(V53_NOTIFICATION_LAST_CHECK,new Date().toISOString());refreshNotificationSettings();if(!('Notification' in window)||Notification.permission!=='granted'){if(manual)alert('Allow notifications first, then try again.');return;}const candidates=v53NotificationCandidates();let sent=0;for(const item of candidates){if(v53HasSent(item.key))continue;if(await sendPlannerNotification(item.title,item.body,item.key)){v53MarkSent(item.key);sent++;}}if(manual)alert(sent?`${sent} reminder${sent===1?'':'s'} sent.`:'No new reminders are due right now.');}
+function v53StartNotificationChecks(){refreshNotificationSettings();checkPlannerNotificationsNow(false);setInterval(()=>checkPlannerNotificationsNow(false),15*60*1000);}
+window.addEventListener('pageshow',()=>checkPlannerNotificationsNow(false));document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkPlannerNotificationsNow(false)});setTimeout(v53StartNotificationChecks,1200);
