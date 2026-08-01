@@ -61,3 +61,6 @@
 - Gentle encouragement based on recorded progress.
 - Planner Memory 2.0 completion-pattern suggestions.
 - Hidden Statistics in Settings.
+
+## v52e
+- Cleaning by Area filters, room counts, remembered view and grouped room sections.

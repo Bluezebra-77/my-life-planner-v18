@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="52d";
+const APP_VERSION="52e";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -2262,24 +2262,44 @@ function completeCleaning(id) {
   renderAll();
 }
 
+const CLEANING_AREA_VIEW_KEY='myLifePlannerCleaningAreaView';
+function cleaningAreaView(){try{return {...{filter:'all',group:false},...JSON.parse(localStorage.getItem(CLEANING_AREA_VIEW_KEY)||'{}')}}catch{return {filter:'all',group:false}}}
+function saveCleaningAreaView(view){try{localStorage.setItem(CLEANING_AREA_VIEW_KEY,JSON.stringify(view));}catch(e){}}
+function cleaningAreaName(item){return String(item?.room||'').trim()||'Unassigned';}
+function cleaningAreaKey(name){return String(name||'Unassigned').trim().toLocaleLowerCase();}
+function cleaningAreaOptions(items){
+  const map=new Map();
+  items.forEach(item=>{const name=cleaningAreaName(item),key=cleaningAreaKey(name);if(!map.has(key))map.set(key,{key,name,count:0});map.get(key).count++;});
+  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}));
+}
+function setCleaningAreaFilter(value){const view=cleaningAreaView();view.filter=value||'all';saveCleaningAreaView(view);renderCleaning();}
+function setCleaningGroupByArea(checked){const view=cleaningAreaView();view.group=Boolean(checked);saveCleaningAreaView(view);renderCleaning();}
+function cleaningTaskRow(item){
+  const dueNow=isDueTodayOrEarlier(item.nextDue),row=document.createElement('div');
+  row.className=`compact-manage-row ${dueNow?'status-overdue':''}`;
+  const room=cleaningAreaName(item);
+  const meta=`${escapeHtml(room)} · ${escapeHtml(frequencyLabel(item.frequency||'weekly'))} · Next due ${item.nextDue?formatDate(item.nextDue):'not set'}${item.details?' · '+escapeHtml(item.details):''}`;
+  const actions=`<button onclick="closeAnchoredMenu();completeCleaning('${item.id}');refreshListsImmediately()">Complete</button><button onclick="closeAnchoredMenu();editCleaning('${item.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCleaning('${item.id}');refreshListsImmediately()">Delete</button>`;
+  row.innerHTML=`<button type="button" class="compact-row-main" onclick="editCleaning('${item.id}')"><span class="compact-row-title">${escapeHtml(item.name||'Untitled cleaning task')}</span><span class="compact-row-meta">${meta}</span></button>${compactMenu(actions,item.name||'cleaning task')}`;
+  return row;
+}
 function renderCleaning() {
-  const area = document.getElementById('cleaningArea');
-  if (!area) return;
-  area.innerHTML = '';
-  const items = Array.isArray(data.cleaningTasks) ? data.cleaningTasks : [];
-  if (!items.length) {
-    area.innerHTML = '<div class="empty-state">No cleaning tasks yet.</div>';
-    return;
-  }
-  [...items].sort((a,b) => String(a.nextDue || '').localeCompare(String(b.nextDue || ''))).forEach(item => {
-    const dueNow = isDueTodayOrEarlier(item.nextDue);
-    const row=document.createElement('div');
-    row.className=`compact-manage-row ${dueNow?'status-overdue':''}`;
-    const meta=`${escapeHtml(item.room||'General')} · ${escapeHtml(frequencyLabel(item.frequency||'weekly'))} · Next due ${item.nextDue?formatDate(item.nextDue):'not set'}${item.details?' · '+escapeHtml(item.details):''}`;
-    const actions=`<button onclick="closeAnchoredMenu();completeCleaning('${item.id}');refreshListsImmediately()">Complete</button><button onclick="closeAnchoredMenu();editCleaning('${item.id}')">Edit</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCleaning('${item.id}');refreshListsImmediately()">Delete</button>`;
-    row.innerHTML=`<button type="button" class="compact-row-main" onclick="editCleaning('${item.id}')"><span class="compact-row-title">${escapeHtml(item.name||'Untitled cleaning task')}</span><span class="compact-row-meta">${meta}</span></button>${compactMenu(actions,item.name||'cleaning task')}`;
-    area.appendChild(row);
-  });
+  const area=document.getElementById('cleaningArea');if(!area)return;area.innerHTML='';
+  const items=Array.isArray(data.cleaningTasks)?data.cleaningTasks:[];
+  const options=cleaningAreaOptions(items),view=cleaningAreaView();
+  const select=document.getElementById('cleaningAreaFilter'),chips=document.getElementById('cleaningAreaChips'),groupToggle=document.getElementById('cleaningGroupByArea'),summary=document.getElementById('cleaningAreaSummary');
+  if(select){select.innerHTML='<option value="all">All areas</option>'+options.map(o=>`<option value="${escapeHtml(o.key)}">${escapeHtml(o.name)} (${o.count})</option>`).join('');if(view.filter!=='all'&&!options.some(o=>o.key===view.filter))view.filter='all';select.value=view.filter;}
+  if(groupToggle)groupToggle.checked=Boolean(view.group);
+  if(chips){chips.innerHTML=`<button type="button" class="cleaning-area-chip ${view.filter==='all'?'active':''}" onclick="setCleaningAreaFilter('all')">All (${items.length})</button>`+options.map(o=>`<button type="button" class="cleaning-area-chip ${view.filter===o.key?'active':''}" onclick="setCleaningAreaFilter('${escapeHtml(o.key)}')">${escapeHtml(o.name)} (${o.count})</button>`).join('');}
+  if(!items.length){if(summary)summary.textContent='';area.innerHTML='<div class="empty-state">No cleaning tasks yet.</div>';return;}
+  const filtered=view.filter==='all'?items:items.filter(i=>cleaningAreaKey(cleaningAreaName(i))===view.filter);
+  if(summary){const label=view.filter==='all'?'all areas':(options.find(o=>o.key===view.filter)?.name||'selected area');summary.textContent=`Showing ${filtered.length} of ${items.length} cleaning task${items.length===1?'':'s'} · ${label}.`;}
+  if(!filtered.length){area.innerHTML='<div class="empty-state">No cleaning tasks are saved for this area.</div>';return;}
+  const sorted=[...filtered].sort((a,b)=>String(a.nextDue||'').localeCompare(String(b.nextDue||''))||cleaningAreaName(a).localeCompare(cleaningAreaName(b)));
+  if(view.group){
+    const groups=new Map();sorted.forEach(i=>{const n=cleaningAreaName(i);if(!groups.has(n))groups.set(n,[]);groups.get(n).push(i);});
+    [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{sensitivity:'base'})).forEach(([name,rows])=>{const section=document.createElement('section');section.className='cleaning-area-group';section.innerHTML=`<h3>${escapeHtml(name)} <span>${rows.length}</span></h3>`;rows.forEach(i=>section.appendChild(cleaningTaskRow(i)));area.appendChild(section);});
+  }else sorted.forEach(i=>area.appendChild(cleaningTaskRow(i)));
 }
 
 

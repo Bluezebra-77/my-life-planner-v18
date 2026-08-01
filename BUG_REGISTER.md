@@ -45,3 +45,6 @@
 ## v52d design safeguards
 - Reflections are optional, dismissible and non-judgemental.
 - Completion statistics begin from v52d activity logging; historic totals are not invented.
+
+## Future wants
+- Optional notifications and reminders from the installed app.
