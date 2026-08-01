@@ -24,3 +24,6 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 ## v52a — Internal Calm Interface build
 
 - Moved section explanations behind information buttons across Lists and Planner.
+
+## v52a Corrected
+- Reordered Home, aligned section controls with titles and removed duplicate presentation between Today and Needs Attention.

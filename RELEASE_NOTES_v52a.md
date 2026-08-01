@@ -1,12 +1,17 @@
-# My Life Planner v52a — Calm Interface
+# My Life Planner v52a — Corrected
 
-## Included
+## Calm Interface
+- Descriptive text across Lists and Planner remains available behind information buttons.
+- Home headings now keep the information and Show/Hide controls beside the title, reducing unused vertical space.
 
-- Moved permanent descriptive text behind small information buttons across Lists and Planner sections.
-- Standardised section headings around title, information and add/manage actions.
-- Kept explanations one tap away without taking permanent working space.
-- Preserved all accepted v51 data, workflows and storage keys.
+## Home workflow
+- Home is ordered around the morning workflow: Today, Needs Attention, Today's Focus, Planner Health, Projects, Waiting For, Brain Inbox, Recurring Tasks, This Week, Daily Rhythm and Gentle close-down.
+- This Week has moved lower because it is useful context rather than the first priority of the day.
 
-## Scope
+## Duplicate correction
+- An item already represented in time-sensitive Today is no longer repeated in Needs Attention.
+- When a parent to-do or project has a dated actionable step in Today, the parent is suppressed from Needs Attention.
+- Existing records and dates are not changed; only the Home presentation is de-duplicated.
 
-This is an internal lettered test build. The next public release remains a whole number.
+## Preserved
+- All v51 data, migration safety, Quick Add, focus timer, Convert, Planner Health, recurrence and Settings behaviour.

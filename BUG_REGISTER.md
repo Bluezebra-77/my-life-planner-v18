@@ -24,3 +24,7 @@
 ## v52a design refinement
 
 - Permanent explanatory text across Lists and Planner reduced working space; moved behind information buttons.
+
+## Corrected in v52a
+- Today and Needs Attention could show the same underlying work in two forms, including a dated child step and its parent item.
+- Home collapse controls could fall onto a separate row on iPhone, creating excessive empty space.

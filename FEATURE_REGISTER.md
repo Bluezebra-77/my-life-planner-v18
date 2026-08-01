@@ -35,3 +35,8 @@
 
 - Progressive disclosure across Lists and Planner sections.
 - Standardised calm section headings with information on demand.
+
+## Delivered in v52a Corrected
+- Morning-priority Home ordering.
+- Compact Home heading controls.
+- Cross-panel duplicate suppression between Today and Needs Attention.

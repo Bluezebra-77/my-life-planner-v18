@@ -2902,3 +2902,54 @@ const renderAllV52a=renderAll;
 renderAll=function(){renderAllV52a();setupCalmSectionInfoButtons();};
 window.addEventListener('pageshow',setupCalmSectionInfoButtons);
 setTimeout(setupCalmSectionInfoButtons,0);
+
+/* ===== v52a corrected: Home order, compact heading controls and duplicate suppression ===== */
+function v52aTodayIdentitySet(){
+  const identities=new Set();
+  (getTodayReminderItems()||[]).forEach(item=>{
+    if(item.itemType==='todo') identities.add(`todo:${item.id}`);
+    if(item.itemType==='todoStep') identities.add(`todoParent:${item.parentId}`);
+    if(item.itemType==='step') identities.add(`project:${item.parentId}`);
+    if(item.itemType==='cleaning') identities.add(`cleaning:${item.id}`);
+    if(item.itemType==='appointment') identities.add(`appointment:${item.id}`);
+  });
+  return identities;
+}
+function focusCandidateRows(){
+  const rows=[];
+  const today=new Date(); today.setHours(12,0,0,0);
+  const alreadyShown=v52aTodayIdentitySet();
+  data.todos.filter(x=>!x.completed&&!alreadyShown.has(`todo:${x.id}`)&&!alreadyShown.has(`todoParent:${x.id}`)).forEach(x=>rows.push({name:x.name,meta:getTimingText(x),dueDate:x.dueDate,kind:'To-do',action:()=>toggleTodo(x.id),open:()=>editTodo(x.id),score:x.dueDate?daysBetween(today,dateOnly(x.dueDate)):40}));
+  data.cleaningTasks.filter(x=>isDueTodayOrEarlier(x.nextDue)&&!alreadyShown.has(`cleaning:${x.id}`)).forEach(x=>rows.push({name:x.name,meta:`Cleaning · ${x.room||'Home'}`,dueDate:x.nextDue,kind:'Cleaning',action:()=>completeCleaning(x.id),open:()=>editCleaning(x.id),score:-2}));
+  data.projects.filter(x=>!x.completed&&!alreadyShown.has(`project:${x.id}`)).forEach(p=>{const s=(p.steps||[]).find(x=>!x.completed);if(s)rows.push({name:s.name,meta:`Next action · ${p.name}`,dueDate:s.dueDate,kind:'Project',action:()=>toggleStep(p.id,s.id),open:()=>editStep(p.id,s.id),score:s.dueDate?daysBetween(today,dateOnly(s.dueDate)):12});});
+  data.waiting.filter(x=>!x.completed&&x.reviewDate&&dateOnly(x.reviewDate)<=today).forEach(x=>rows.push({name:x.name,meta:'Waiting for · review due',dueDate:x.reviewDate,kind:'Waiting',open:()=>editCapture('waiting',x.id),score:0}));
+  return rows.sort((a,b)=>a.score-b.score).slice(0,7);
+}
+function optimiseHomeOrder(){
+  const quick=document.querySelector('.home-quick-actions');if(!quick)return;
+  const parent=quick.parentNode;
+  const today=document.getElementById('homeTodayPanel');
+  const week=document.getElementById('homeWeekPanel');
+  const oldGrid=today?.closest('.dashboard-grid')||week?.closest('.dashboard-grid');
+  [today,week].forEach(panel=>{
+    if(!panel)return;
+    panel.classList.remove('dashboard-card');
+    panel.classList.add('app-view-section');
+    panel.dataset.view='home';
+  });
+  if(oldGrid){
+    if(today) parent.insertBefore(today,oldGrid);
+    if(week) parent.insertBefore(week,oldGrid);
+    oldGrid.remove();
+  }
+  const ids=['homeTodayPanel','needsAttentionPanel','todayFocusPanel','plannerHealthPanel','homeProjectsPanel','homeWaitingPanel','homeBrainInboxPanel','homeRecurringPanel','homeWeekPanel','homeDailyRhythmPanel','homeEveningPanel'];
+  let anchor=quick;
+  ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;parent.insertBefore(el,anchor.nextSibling);anchor=el;});
+}
+function applyV52aCorrectedHome(){
+  optimiseHomeOrder();
+  initialiseHomeCollapsibles();
+  renderFocusToday();
+}
+window.addEventListener('pageshow',applyV52aCorrectedHome);
+setTimeout(applyV52aCorrectedHome,0);

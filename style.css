@@ -1357,3 +1357,52 @@ body.timer-minimised .quick-add-fab{
 .managed-list-section>.section-help-text,.lists-hub>.section-help-text,.timeline-panel>.section-help-text{margin:.2rem 0 .9rem}
 .section-info-button[aria-expanded="true"]{background:var(--accent,#537462)!important;color:#fff!important}
 @media(max-width:560px){.section-title-line{gap:.35rem}.section-info-button{width:30px!important;height:30px!important;min-width:30px!important}}
+
+/* ===== v52a corrected: compact Home headings ===== */
+.home-collapsible>.section-heading,
+.home-collapsible>.focus-heading{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin-bottom:12px!important;
+}
+.home-collapsible>.section-heading>div:first-child,
+.home-collapsible>.focus-heading>div:first-child{
+  min-width:0;
+  flex:1 1 auto;
+}
+.home-collapsible .section-title-line{
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:7px;
+}
+.home-collapsible .section-title-line h2{
+  margin:0;
+  min-width:0;
+}
+.home-collapsible .home-heading-controls{
+  width:auto!important;
+  margin-left:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:7px!important;
+  flex:0 0 auto!important;
+}
+.home-collapsible .home-heading-controls .home-collapse-toggle{
+  margin:0!important;
+  width:auto!important;
+  min-width:62px!important;
+  padding:9px 12px!important;
+}
+@media(max-width:560px){
+  .home-collapsible>.section-heading,
+  .home-collapsible>.focus-heading{align-items:center!important;}
+  .home-collapsible .home-heading-controls{width:auto!important;max-width:none!important;}
+  .home-collapsible .home-heading-controls .home-collapse-toggle{margin-right:0!important;}
+  .home-collapsible .section-title-line h2{font-size:clamp(1.45rem,8vw,2rem);}
+}

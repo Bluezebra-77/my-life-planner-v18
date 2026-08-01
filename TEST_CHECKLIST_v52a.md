@@ -1,24 +1,32 @@
-# My Life Planner v52a — Test Checklist
+# My Life Planner v52a Corrected — Test Checklist
 
 ## Installation and data
 - [ ] Header, About and Developer Dashboard show v52a.
-- [ ] Existing planner data remains present.
+- [ ] All existing planner data remains present.
 
-## Calm Interface
-- [ ] Lists introduction shows an information button instead of permanent descriptive text.
-- [ ] To-do, Appointments, Recurring, Brain Inbox, Waiting For, Birthdays, Projects, Cleaning and Custom Lists each have an information button.
-- [ ] Timeline, Main list overview and Planner Gentle close-down have information buttons where applicable.
-- [ ] Tapping each information button shows the correct explanation.
-- [ ] Tapping again hides it.
-- [ ] Add, manage and three-dot controls remain visible and usable on iPhone portrait and landscape.
+## Home order
+- [ ] Today appears first among the working sections.
+- [ ] Needs Attention follows Today.
+- [ ] Today's Focus follows Needs Attention.
+- [ ] This Week appears lower, after Recurring Tasks.
 
-## Regression
-- [ ] Lists search works and clears correctly.
-- [ ] Timeline filters work.
-- [ ] Quick Add and minimised timer remain separate.
-- [ ] Today’s Focus, Convert, recurrence, tags, Planner Health and Settings work.
-- [ ] Refresh and reopen; data persists.
+## Home headings
+- [ ] On iPhone portrait, the title, information button and Show/Hide control share the heading row.
+- [ ] No large empty gap appears between a heading and its list.
+- [ ] Existing add, microphone, refresh, manage and View all controls still work.
+
+## Duplicate suppression
+- [ ] A dated to-do shown in Today is not repeated in Needs Attention.
+- [ ] A dated project step shown in Today does not cause the parent project to repeat in Needs Attention.
+- [ ] A cleaning task shown in Today is not repeated in Needs Attention.
+- [ ] Future or undated useful choices can still appear in Needs Attention.
+- [ ] No underlying due dates are changed.
+
+## Calm Interface regression
+- [ ] Lists and Planner information buttons reveal and hide their help text.
+- [ ] Quick Add, timer, Convert, recurrence, Timeline and Settings still work.
+- [ ] Refresh and reopen; data and panel states remain present.
 
 ## Result
-- [ ] ACCEPT v52a.
+- [ ] ACCEPT v52a Corrected.
 - [ ] REJECT — record the failed item.
