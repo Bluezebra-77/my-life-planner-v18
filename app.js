@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="52e";
+const APP_VERSION="52f";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -581,7 +581,7 @@ function renderRoutineManager() {
   const list = routineList(managedRoutineGroup);
   area.innerHTML = "";
   if (!list.length) {
-    area.innerHTML = '<div class="empty-state">No items yet. Add one below.</div>';
+    area.innerHTML = '<div class="empty-state">Nothing here yet. Add the first item when you are ready.</div>';
     return;
   }
   list.forEach(item => {
@@ -1616,7 +1616,7 @@ function getWeeklyItems() {
 function toggleTodoStep(todoId,stepId){const todo=data.todos.find(x=>x.id===todoId),step=todo?.steps?.find(x=>x.id===stepId);if(!todo||!step)return;step.completed=!step.completed;todo.completed=(todo.steps||[]).length>0&&todo.steps.every(s=>s.completed);saveData();renderAll();}
 function openReminderItem(item){if(item.itemType==="todo")editTodo(item.id);else if(item.itemType==="todoStep")editTodo(item.parentId);else if(item.itemType==="step")editStep(item.parentId,item.id);else if(item.itemType==="cleaning")editCleaning(item.id);else if(item.itemType==="annual"||item.annual)editAnnual(item.id);else if(item.itemType==="appointment")openAppointmentDialog(item.id);else if(item.itemType==="project")editProject(item.id);}
 function completionFor(item){if(item.itemType==="cleaning")return()=>completeCleaning(item.id);if(item.itemType==="todo")return()=>toggleTodo(item.id);if(item.itemType==="todoStep")return()=>toggleTodoStep(item.parentId,item.id);if(item.itemType==="step")return()=>toggleStep(item.parentId,item.id);return null;}
-function renderTodayReminders(){const area=document.getElementById("todayRemindersArea"),items=getTodayReminderItems();area.innerHTML="";if(!items.length){area.innerHTML='<div class="empty-state">No dated reminders need attention today.</div>';return;}items.forEach(item=>{const overdue=item.itemType!=="annual"&&dateOnly(item.dueDate)<new Date(new Date().setHours(0,0,0,0));area.appendChild(compactReminderRow(item,{meta:`${item.source} · ${formatDate(item.dueDate,item.itemType!=="annual")}${overdue?" · OVERDUE":""}`,actionable:item.itemType!=="annual",onComplete:completionFor(item),clickable:true}));});}
+function renderTodayReminders(){const area=document.getElementById("todayRemindersArea"),items=getTodayReminderItems();area.innerHTML="";if(!items.length){area.innerHTML='<div class="empty-state">Nothing time-sensitive needs attention today.</div>';return;}items.forEach(item=>{const overdue=item.itemType!=="annual"&&dateOnly(item.dueDate)<new Date(new Date().setHours(0,0,0,0));area.appendChild(compactReminderRow(item,{meta:`${item.source} · ${formatDate(item.dueDate,item.itemType!=="annual")}${overdue?" · OVERDUE":""}`,actionable:item.itemType!=="annual",onComplete:completionFor(item),clickable:true}));});}
 function renderWeekly(){const area=document.getElementById("weeklyArea"),items=getWeeklyItems();area.innerHTML="";if(!items.length){area.innerHTML='<div class="empty-state">Nothing needs attention this week.</div>';return;}items.forEach(item=>area.appendChild(compactReminderRow(item,{meta:`${item.source} · ${formatDate(item.dueDate,item.itemType!=="annual")}`,actionable:item.itemType!=="annual",onComplete:completionFor(item),clickable:true})));}
 let activeAnchoredMenu=null;
 function closeAnchoredMenu(){if(activeAnchoredMenu){activeAnchoredMenu.remove();activeAnchoredMenu=null;}}
@@ -1692,7 +1692,7 @@ function clearCompletedTodayFocus(){
 function renderTodayFocus(){
   const area=document.getElementById('todayFocusArea');if(!area)return;area.innerHTML='';
   const items=[...(data.todayFocus||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
-  if(!items.length){area.innerHTML='<div class="empty-state">Nothing added yet. Type the small jobs you want to do today.</div>';return;}
+  if(!items.length){area.innerHTML='<div class="empty-state">Your Focus is clear. Add a practical job when you are ready.</div>';return;}
   items.forEach(item=>{
     const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''}`;
     row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleTodayFocusItem('${item.id}')" aria-label="${item.completed?'Reinstate':'Complete'} ${escapeHtml(item.name)}">${item.completed?'✓':''}</button><button type="button" class="v10-row-main" onclick="toggleTodayFocusItem('${item.id}')"><span class="v10-row-title">${escapeHtml(item.name)}</span><span class="v10-row-meta">${item.completed?'Completed — tap to reinstate':'Today'}</span></button>${compactMenu(`<button onclick="closeAnchoredMenu();toggleTodayFocusItem('${item.id}')">${item.completed?'Reinstate':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteTodayFocusItem('${item.id}')">Delete</button>`,item.name)}`;
@@ -1753,7 +1753,7 @@ function toggleHomeProject(projectId){
 function renderProjectNextActions(){
   const area=document.getElementById('projectNextActionsArea');if(!area)return;area.innerHTML='';
   const projects=(data.projects||[]).filter(p=>!p.completed);
-  if(!projects.length){area.innerHTML='<div class="empty-state">No active projects.</div>';return;}
+  if(!projects.length){area.innerHTML='<div class="empty-state">No active projects need your attention.</div>';return;}
   const openStates=getHomeProjectStates();
   [...projects].sort(sortByDueDate).forEach(project=>{
     const steps=Array.isArray(project.steps)?project.steps:[];
@@ -1811,8 +1811,8 @@ function saveCaptureAs(type){saveCapture(type);}
 function inboxStatusLabel(status){return status==='processed'?'Processed':status==='progress'?'In progress':'New';}
 function inboxMeta(x){const parts=[];parts.push(inboxStatusLabel(x.status));if(x.category)parts.push(x.category);if(x.url)parts.push('🔗 Website');if(x.attachment)parts.push(`${x.attachment.type?.startsWith('image/')?'🖼️':'📄'} ${x.attachment.name||'Attachment'}`);if(x.createdAt)parts.push(`Captured ${new Date(x.createdAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}`);if(x.note)parts.push(x.note);return parts.join(' · ');}
 function toggleInboxProcessed(id){const x=data.inbox.find(item=>item.id===id);if(!x)return;x.status=x.status==='processed'?'new':'processed';x.updatedAt=new Date().toISOString();saveData();renderAll();showSaved(x.status==='processed'?'Marked processed':'Returned to inbox');}
-function renderInbox(){const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');[full,preview].forEach(area=>{if(!area)return;area.innerHTML='';const sorted=[...data.inbox].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));const items=area===preview?sorted.filter(x=>x.status!=='processed').slice(0,3):sorted;if(!items.length){area.innerHTML='<div class="empty-state">Nothing waiting in your inbox.</div>';return;}items.forEach(x=>{const processed=x.status==='processed';const row=makeV10Row({name:x.name,meta:inboxMeta(x),open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleInboxProcessed('${x.id}')">${processed?'Mark as new':'Mark processed'}</button>${x.url?`<button onclick="closeAnchoredMenu();openBrainLink('${x.id}')">Open website</button>`:''}${x.attachment?`<button onclick="closeAnchoredMenu();openBrainAttachment('${x.id}')">Open attachment</button>`:''}<button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)});if(processed)row.classList.add('processed-inbox-row');area.appendChild(row);});});}
-function renderWaiting(){const area=document.getElementById('waitingArea');if(!area)return;area.innerHTML='';if(!data.waiting.length){area.innerHTML='<div class="empty-state">Nothing being waited for.</div>';return;}data.waiting.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.reviewDate?`Review ${formatDate(x.reviewDate)}`:(x.note||'No review date'),dueDate:x.reviewDate,action:()=>completeWaiting(x.id),open:()=>editCapture('waiting',x.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('waiting','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();completeWaiting('${x.id}')">${x.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('waiting','${x.id}')">Delete</button>`,x.name)})));}
+function renderInbox(){const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');[full,preview].forEach(area=>{if(!area)return;area.innerHTML='';const sorted=[...data.inbox].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));const items=area===preview?sorted.filter(x=>x.status!=='processed').slice(0,3):sorted;if(!items.length){area.innerHTML='<div class="empty-state">Your Brain Inbox is clear.</div>';return;}items.forEach(x=>{const processed=x.status==='processed';const row=makeV10Row({name:x.name,meta:inboxMeta(x),open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleInboxProcessed('${x.id}')">${processed?'Mark as new':'Mark processed'}</button>${x.url?`<button onclick="closeAnchoredMenu();openBrainLink('${x.id}')">Open website</button>`:''}${x.attachment?`<button onclick="closeAnchoredMenu();openBrainAttachment('${x.id}')">Open attachment</button>`:''}<button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)});if(processed)row.classList.add('processed-inbox-row');area.appendChild(row);});});}
+function renderWaiting(){const area=document.getElementById('waitingArea');if(!area)return;area.innerHTML='';if(!data.waiting.length){area.innerHTML='<div class="empty-state">Nothing is currently waiting for a reply or follow-up.</div>';return;}data.waiting.forEach(x=>area.appendChild(makeV10Row({name:x.name,meta:x.reviewDate?`Review ${formatDate(x.reviewDate)}`:(x.note||'No review date'),dueDate:x.reviewDate,action:()=>completeWaiting(x.id),open:()=>editCapture('waiting',x.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('waiting','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();completeWaiting('${x.id}')">${x.completed?'Mark active':'Complete'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('waiting','${x.id}')">Delete</button>`,x.name)})));}
 window.pendingBrainAttachment=null;
 function normaliseBrainUrl(value){const text=String(value||'').trim();if(!text)return '';try{return new URL(/^https?:\/\//i.test(text)?text:`https://${text}`).href;}catch(error){return text;}}
 function focusWebsiteCapture(){document.getElementById('captureUrl')?.focus();}
@@ -1998,8 +1998,10 @@ function initialiseListSearch(){
  const search=document.getElementById('globalListSearch');
  if(!search||search.dataset.searchReady==='true')return;
  search.dataset.searchReady='true';
- search.addEventListener('input',event=>filterMyLists(event.target.value));
+ let searchTimer=0;
+ search.addEventListener('input',event=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>filterMyLists(event.target.value),90);});
  search.addEventListener('search',event=>filterMyLists(event.target.value));
+ search.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();search.value='';filterMyLists('');search.blur();}});
 }
 
 
@@ -2093,7 +2095,7 @@ function deleteAppointment(id){if(!confirm('Delete this appointment?'))return;da
 function renderAppointments(){
   const area=document.getElementById('appointmentsArea');if(!area)return;area.innerHTML='';
   const items=[...(data.appointments||[])].sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')));
-  if(!items.length){area.innerHTML='<div class="empty-state">No appointments yet.</div>';return;}
+  if(!items.length){area.innerHTML='<div class="empty-state">No appointments are saved yet.</div>';return;}
   items.forEach(a=>{
     const link=normaliseAppointmentLink(a.link||a.url||a.meetingLink||'');
     const row=document.createElement('article');row.className='appointment-card';
@@ -2191,7 +2193,7 @@ function renderTodos() {
   area.innerHTML = '';
   const items = Array.isArray(data.todos) ? data.todos : [];
   if (!items.length) {
-    area.innerHTML = '<div class="empty-state">No to-do items yet.</div>';
+    area.innerHTML = '<div class="empty-state">Your to-do list is clear.</div>';
     return;
   }
   [...items].sort(sortByDueDate).forEach(todo => {
@@ -2221,7 +2223,7 @@ function renderProjects() {
   if (!area) return;
   area.innerHTML = '';
   const projects = Array.isArray(data.projects) ? data.projects : [];
-  if (!projects.length) { area.innerHTML = '<div class="empty-state">No projects yet.</div>'; return; }
+  if (!projects.length) { area.innerHTML = '<div class="empty-state">No projects are saved yet.</div>'; return; }
   const openStates=getProjectStepStates();
   [...projects].sort(sortByDueDate).forEach(project => {
     const steps = Array.isArray(project.steps) ? project.steps : [];
@@ -2291,7 +2293,7 @@ function renderCleaning() {
   if(select){select.innerHTML='<option value="all">All areas</option>'+options.map(o=>`<option value="${escapeHtml(o.key)}">${escapeHtml(o.name)} (${o.count})</option>`).join('');if(view.filter!=='all'&&!options.some(o=>o.key===view.filter))view.filter='all';select.value=view.filter;}
   if(groupToggle)groupToggle.checked=Boolean(view.group);
   if(chips){chips.innerHTML=`<button type="button" class="cleaning-area-chip ${view.filter==='all'?'active':''}" onclick="setCleaningAreaFilter('all')">All (${items.length})</button>`+options.map(o=>`<button type="button" class="cleaning-area-chip ${view.filter===o.key?'active':''}" onclick="setCleaningAreaFilter('${escapeHtml(o.key)}')">${escapeHtml(o.name)} (${o.count})</button>`).join('');}
-  if(!items.length){if(summary)summary.textContent='';area.innerHTML='<div class="empty-state">No cleaning tasks yet.</div>';return;}
+  if(!items.length){if(summary)summary.textContent='';area.innerHTML='<div class="empty-state">No cleaning tasks are saved yet.</div>';return;}
   const filtered=view.filter==='all'?items:items.filter(i=>cleaningAreaKey(cleaningAreaName(i))===view.filter);
   if(summary){const label=view.filter==='all'?'all areas':(options.find(o=>o.key===view.filter)?.name||'selected area');summary.textContent=`Showing ${filtered.length} of ${items.length} cleaning task${items.length===1?'':'s'} · ${label}.`;}
   if(!filtered.length){area.innerHTML='<div class="empty-state">No cleaning tasks are saved for this area.</div>';return;}
@@ -2346,14 +2348,14 @@ function renderCustomListDialogItems(){
   const list=(data.customLists||[]).find(x=>String(x.id)===activeCustomListId);
   const del=document.getElementById('deleteCustomListButton');if(del)del.hidden=!list;
   if(!list){area.innerHTML='<div class="empty-state">Save the list name, then add items.</div>';return;}
-  if(!(list.items||[]).length){area.innerHTML='<div class="empty-state">No items yet.</div>';return;}
+  if(!(list.items||[]).length){area.innerHTML='<div class="empty-state">This list is empty.</div>';return;}
   [...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).forEach(item=>{const row=document.createElement('div');row.className=`compact-manage-row ${item.completed?'completed-row':''}`;row.innerHTML=`<button type="button" class="complete-dot" onclick="toggleCustomListItem('${list.id}','${item.id}')" aria-label="${item.completed?'Mark active':'Complete'}">${item.completed?'✓':''}</button><button type="button" class="compact-row-main" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span class="compact-row-title">${escapeHtml(item.name)}</span></button><button type="button" class="small-button danger-text" onclick="deleteCustomListItem('${list.id}','${item.id}')">Delete</button>`;area.appendChild(row);});
 }
 function renderCustomLists(){
   const area=document.getElementById('customListsArea');if(!area)return;area.innerHTML='';
   const lists=data.customLists||[];
   if(!lists.length){area.innerHTML='<div class="empty-state">No custom lists yet. Create one for shopping, packing, ideas or anything else.</div>';return;}
-  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${[...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">No items yet.</div>'}</div>`;area.appendChild(card);});
+  lists.forEach(list=>{const card=document.createElement('article');card.className='custom-list-card';card.innerHTML=`<div class="custom-list-heading"><div><h3>${escapeHtml(list.name||'Untitled list')}</h3></div><button type="button" class="small-button" onclick="openCustomListManager('${list.id}')">Manage</button></div><div class="stack-list">${[...(list.items||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)).slice(0,5).map(item=>`<button type="button" class="custom-preview-item ${item.completed?'completed-row':''}" onclick="toggleCustomListItem('${list.id}','${item.id}')"><span>${item.completed?'✓':'○'}</span><span>${escapeHtml(item.name)}</span></button>`).join('')||'<div class="empty-state">This list is empty.</div>'}</div>`;area.appendChild(card);});
 }
 
 /* ===== Lists refresh ===== */
@@ -2494,7 +2496,7 @@ function renderRecurringTasks(){
 function renderRecurringHome(){
   const area=document.getElementById('homeRecurringArea'); if(!area)return; area.innerHTML='';
   const today=recurringDate(localDateKey()); const tasks=(data.recurringTasks||[]).filter(t=>t.status!=='paused'&&recurringDate(t.nextDue)<=today).sort((a,b)=>String(a.nextDue).localeCompare(String(b.nextDue)));
-  if(!tasks.length){area.innerHTML='<div class="empty-state">No recurring tasks are due.</div>';return;}
+  if(!tasks.length){area.innerHTML='<div class="empty-state">No recurring responsibilities are due.</div>';return;}
   tasks.forEach(task=>{const st=recurringStatus(task);area.appendChild(compactReminderRow({id:task.id,name:task.name,dueDate:task.nextDue,itemType:'recurring'},{meta:`${recurringPatternLabel(task)} · ${st.label}`,badge:st.label,actionable:true,onComplete:()=>completeRecurringTask(task.id),clickable:false}));});
 }
 const renderAllV49=renderAll;
@@ -2593,7 +2595,7 @@ function todayFocusConvertMenu(id){return `<div class="convert-menu-label">Conve
 renderTodayFocus=function(){
   ensureTodayFocusFields();const area=document.getElementById('todayFocusArea');if(!area)return;area.innerHTML='';
   const items=[...(data.todayFocus||[])].sort((a,b)=>Number(a.completed)-Number(b.completed)||Number(b.pinned)-Number(a.pinned)||Number(a.order)-Number(b.order)||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
-  if(!items.length){area.innerHTML='<div class="empty-state">Nothing added yet. Type the small jobs you want to do today.</div>';return;}
+  if(!items.length){area.innerHTML='<div class="empty-state">Your Focus is clear. Add a practical job when you are ready.</div>';return;}
   items.forEach(item=>{
     const row=document.createElement('div');row.className=`v10-row today-focus-row ${item.completed?'completed-row':''} ${item.pinned?'pinned-focus-row':''}`;
     const meta=[item.completed?'Completed':'Today',item.estimatedMinutes?`${item.estimatedMinutes} min`:'',item.notes?item.notes:''].filter(Boolean).join(' · ');
@@ -3182,3 +3184,45 @@ const toggleTodayFocusItemV52dBase=toggleTodayFocusItem;toggleTodayFocusItem=fun
 function v52dRenderCompanionPart2(){v52dLoadPreferences();renderEveningReflection();renderWeeklyReflection();renderHiddenStatistics();}
 const renderAllV52dBase=renderAll;renderAll=function(){renderAllV52dBase();v52dRenderCompanionPart2();};
 window.addEventListener('pageshow',v52dRenderCompanionPart2);document.addEventListener('visibilitychange',()=>{if(!document.hidden)v52dRenderCompanionPart2();});setTimeout(v52dRenderCompanionPart2,0);
+
+
+/* ===== v52f Polish Release ===== */
+const V52F_ROOM_KEY='myLifePlannerLastCleaningRoom';
+const V52F_RECUR_KEY='myLifePlannerLastRecurringUnit';
+function v52fRoomNames(){
+  return [...new Set((data.cleaningTasks||[]).map(x=>String(x.room||'').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:'base'}));
+}
+function refreshCleaningRoomSuggestions(){
+  const list=document.getElementById('cleaningRoomSuggestions');if(!list)return;
+  list.innerHTML=v52fRoomNames().map(room=>`<option value="${escapeHtml(room)}"></option>`).join('');
+}
+function applyCleaningRoomDefault(){
+  const input=document.getElementById('cleaningRoom');if(!input||input.value.trim())return;
+  const last=localStorage.getItem(V52F_ROOM_KEY)||'';
+  if(last)input.value=last;
+}
+const v52fOpenCleaningBase=typeof openCleaningDialog==='function'?openCleaningDialog:null;
+if(v52fOpenCleaningBase){openCleaningDialog=function(id=''){v52fOpenCleaningBase(id);refreshCleaningRoomSuggestions();if(!id)applyCleaningRoomDefault();};}
+const v52fSaveDataBase=saveData;
+saveData=function(){
+  const room=document.getElementById('cleaningRoom')?.value?.trim();
+  if(room&&!document.getElementById('cleaningAreaLabel')?.classList.contains('hidden'))localStorage.setItem(V52F_ROOM_KEY,room);
+  const unit=document.getElementById('recurringTaskUnit')?.value;
+  if(unit&&document.getElementById('recurringTaskDialog')?.open)localStorage.setItem(V52F_RECUR_KEY,unit);
+  return v52fSaveDataBase();
+};
+const v52fOpenRecurringBase=typeof openRecurringTaskDialog==='function'?openRecurringTaskDialog:null;
+if(v52fOpenRecurringBase){openRecurringTaskDialog=function(id=''){v52fOpenRecurringBase(id);if(!id){const unit=localStorage.getItem(V52F_RECUR_KEY);if(unit){const el=document.getElementById('recurringTaskUnit');if(el){el.value=unit;updateRecurringRuleControls();}}}};}
+function v52fFocusGlobalSearch(){
+  const search=document.getElementById('globalListSearch');if(!search)return;
+  const listsButton=document.querySelector('.nav-button[data-tab="tasks"]');showAppView('tasks',listsButton);setTimeout(()=>{search.focus();search.select();},60);
+}
+document.addEventListener('keydown',event=>{
+  const tag=(event.target?.tagName||'').toLowerCase();const typing=['input','textarea','select'].includes(tag)||event.target?.isContentEditable;
+  if(event.key==='/'&&!typing){event.preventDefault();v52fFocusGlobalSearch();}
+  if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();v52fFocusGlobalSearch();}
+});
+function v52fPolishRefresh(){refreshCleaningRoomSuggestions();document.documentElement.classList.add('v52f-ready');}
+const v52fRenderAllBase=renderAll;renderAll=function(){v52fRenderAllBase();v52fPolishRefresh();};
+window.addEventListener('pageshow',v52fPolishRefresh);setTimeout(v52fPolishRefresh,0);

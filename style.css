@@ -1441,3 +1441,19 @@ body.timer-minimised .quick-add-fab{
 .cleaning-area-chip.active{background:var(--accent,#537462);color:white}
 .cleaning-area-group{display:grid;gap:6px;margin:4px 0 14px}.cleaning-area-group h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:8px 4px 5px;border-bottom:1px solid var(--line,#d8ddd8);font-size:1rem}.cleaning-area-group h3 span{font-size:.75rem;padding:3px 7px;border-radius:999px;background:var(--accent-soft,#e9f1ec)}
 @media(max-width:600px){.cleaning-area-tools{align-items:stretch;flex-direction:column}.cleaning-group-toggle{width:auto}.cleaning-area-chips{margin-right:-4px}.cleaning-area-chip{width:auto!important}}
+
+
+/* ===== v52f Polish Release ===== */
+.skip-link{position:fixed;left:12px;top:-80px;z-index:100000;padding:10px 14px;border-radius:10px;background:var(--accent,#537462);color:#fff;font-weight:800;text-decoration:none}.skip-link:focus{top:12px}
+.section-heading h2,.focus-heading h2{line-height:1.15}.section-plus,.icon-button,.home-collapse-toggle,.info-button,.item-menu-trigger,.complete-dot{min-width:42px;min-height:42px}.dialog-close{min-width:42px!important;min-height:42px!important}
+.empty-state{border:1px dashed rgba(83,116,98,.22);background:rgba(245,248,246,.78);line-height:1.45}.empty-state strong{display:block;margin-bottom:3px}
+.list-search-label input{padding-right:42px}.list-search-status{min-height:1.2em}
+.cleaning-area-label .field-help,#cleaningAreaLabel .field-help{font-weight:400}
+@media(max-width:600px){
+ .app-shell{padding-left:10px;padding-right:10px}.panel{padding:14px;margin-top:11px;margin-bottom:10px;border-radius:17px}
+ .view-heading{padding-top:14px;padding-bottom:4px}.home-quick-actions{gap:7px}.home-quick-button{padding:10px}
+ .section-heading,.focus-heading{gap:8px}.home-collapsible>.section-heading,.home-collapsible>.focus-heading{margin-bottom:7px!important}
+ .daily-companion-panel.companion-compact{padding:11px 13px}.reflection-panel{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(hover:hover){button:not(:disabled),a[href],summary{transition:transform .12s ease,box-shadow .12s ease,background .12s ease}button:not(:disabled):active{transform:translateY(1px)}}

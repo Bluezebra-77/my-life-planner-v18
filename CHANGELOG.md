@@ -44,3 +44,6 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 
 ## v52e — Cleaning by Area
 - Added room filtering, counts and optional grouping to the Cleaning list.
+
+## v52f — Internal Polish Release
+- Consistency, smart form defaults, search shortcuts, accessibility, mobile spacing and friendly empty-state improvements.

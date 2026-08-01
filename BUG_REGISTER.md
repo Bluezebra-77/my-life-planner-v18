@@ -48,3 +48,7 @@
 
 ## Future wants
 - Optional notifications and reminders from the installed app.
+
+## v52f polish review
+- Standardised small control tap targets and compact iPhone spacing.
+- Corrected stale asset version references during release packaging.

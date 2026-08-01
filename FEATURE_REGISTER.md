@@ -64,3 +64,8 @@
 
 ## v52e
 - Cleaning by Area filters, room counts, remembered view and grouped room sections.
+
+## Delivered in v52f
+- Remembered room suggestions and recurrence defaults.
+- Keyboard-first global Lists search.
+- Accessibility, mobile spacing and empty-state polish.
