@@ -1559,3 +1559,8 @@ body.timer-minimised .quick-add-fab{
     max-width:100%!important;
   }
 }
+
+/* v53a Timeline polish */
+.home-week-date-heading{margin:1rem 0 .45rem;padding-bottom:.35rem;border-bottom:1px solid var(--line,#d8ddd8);font-size:1rem;color:var(--muted,#68766f)}
+.home-week-date-heading:first-child{margin-top:.25rem}
+.timeline-overdue-heading{color:#b42318;border-bottom-color:rgba(180,35,24,.25)}

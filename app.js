@@ -1617,7 +1617,16 @@ function toggleTodoStep(todoId,stepId){const todo=data.todos.find(x=>x.id===todo
 function openReminderItem(item){if(item.itemType==="todo")editTodo(item.id);else if(item.itemType==="todoStep")editTodo(item.parentId);else if(item.itemType==="step")editStep(item.parentId,item.id);else if(item.itemType==="cleaning")editCleaning(item.id);else if(item.itemType==="annual"||item.annual)editAnnual(item.id);else if(item.itemType==="appointment")openAppointmentDialog(item.id);else if(item.itemType==="project")editProject(item.id);}
 function completionFor(item){if(item.itemType==="cleaning")return()=>completeCleaning(item.id);if(item.itemType==="todo")return()=>toggleTodo(item.id);if(item.itemType==="todoStep")return()=>toggleTodoStep(item.parentId,item.id);if(item.itemType==="step")return()=>toggleStep(item.parentId,item.id);return null;}
 function renderTodayReminders(){const area=document.getElementById("todayRemindersArea"),items=getTodayReminderItems();area.innerHTML="";if(!items.length){area.innerHTML='<div class="empty-state">Nothing time-sensitive needs attention today.</div>';return;}items.forEach(item=>{const overdue=item.itemType!=="annual"&&dateOnly(item.dueDate)<new Date(new Date().setHours(0,0,0,0));area.appendChild(compactReminderRow(item,{meta:`${item.source} · ${formatDate(item.dueDate,item.itemType!=="annual")}${overdue?" · OVERDUE":""}`,actionable:item.itemType!=="annual",onComplete:completionFor(item),clickable:true}));});}
-function renderWeekly(){const area=document.getElementById("weeklyArea"),items=getWeeklyItems();area.innerHTML="";if(!items.length){area.innerHTML='<div class="empty-state">Nothing needs attention this week.</div>';return;}items.forEach(item=>area.appendChild(compactReminderRow(item,{meta:`${item.source} · ${formatDate(item.dueDate,item.itemType!=="annual")}`,actionable:item.itemType!=="annual",onComplete:completionFor(item),clickable:true})));}
+function renderWeekly(){
+  const area=document.getElementById('weeklyArea'),items=getWeeklyItems();if(!area)return;area.innerHTML='';
+  if(!items.length){area.innerHTML='<div class="empty-state">Nothing needs attention this week.</div>';return;}
+  let current='';
+  items.forEach(item=>{
+    const key=String(item.dueDate||'').slice(0,10);
+    if(key!==current){current=key;const h=document.createElement('h3');h.className='timeline-date-heading home-week-date-heading';h.textContent=formatDate(key);area.appendChild(h);}
+    area.appendChild(compactReminderRow(item,{meta:`${item.source}`,actionable:item.itemType!=='annual',onComplete:completionFor(item),clickable:true}));
+  });
+}
 let activeAnchoredMenu=null;
 function closeAnchoredMenu(){if(activeAnchoredMenu){activeAnchoredMenu.remove();activeAnchoredMenu=null;}}
 function showAnchoredMenu(button){
@@ -2125,7 +2134,7 @@ function timelineItems(){
   const add=(item)=>{
     if(!item||!item.date)return;
     const parsed=dateOnly(String(item.date).slice(0,10));
-    if(!parsed||parsed<today)return;
+    if(!parsed)return;
     items.push({...item,date:localDateKey(parsed),name:String(item.name||'Untitled item')});
   };
   try{
@@ -2136,6 +2145,7 @@ function timelineItems(){
   (data.todos||[]).filter(x=>!x.completed&&(x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'todo',name:x.name||x.title,date:x.dueDate||x.date,detail:x.details||x.notes||'',open:()=>editTodo(x.id)}));
   (data.projects||[]).filter(x=>!x.completed&&(x.dueDate||x.targetDate||x.date)).forEach(x=>add({id:x.id,type:'project',name:x.name||x.title,date:x.dueDate||x.targetDate||x.date,detail:x.details||x.notes||'',open:()=>editProject(x.id)}));
   (data.cleaningTasks||[]).filter(x=>!x.completed&&(x.nextDue||x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'cleaning',name:x.name||x.title,date:x.nextDue||x.dueDate||x.date,detail:x.room||x.area||'Home',open:()=>editCleaning(x.id)}));
+  (data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.nextDue).forEach(x=>add({id:x.id,type:'recurring',name:x.name||'Recurring task',date:x.nextDue,detail:recurringPatternLabel(x),open:()=>openRecurringTaskDialog(x.id)}));
   (data.annualDates||[]).forEach(x=>{
     try{const d=nextAnnualOccurrence(String(x.monthDay||''));if(d)add({id:x.id,type:'annual',name:x.name||x.title,date:localDateKey(d),detail:x.details||x.notes||'',open:()=>editAnnual(x.id)});}catch(error){console.warn('Timeline annual date skipped',error);}
   });
@@ -2144,18 +2154,26 @@ function timelineItems(){
 }
 function renderTimeline(){
   const area=document.getElementById('timelineArea'),summary=document.getElementById('timelineSummary');if(!area)return;
-  const {start,end}=timelineDateBounds(timelineRange);
-  const items=timelineItems().filter(x=>{const d=dateOnly(x.date);return d>=start&&d<=end;});
+  const {start,end}=timelineDateBounds(timelineRange),today=dateOnly(localDateKey());
+  const allItems=timelineItems();
+  const includeOverdue=['today','week','month','all'].includes(timelineRange);
+  const overdue=includeOverdue?allItems.filter(x=>dateOnly(x.date)<today):[];
+  const dated=allItems.filter(x=>{const d=dateOnly(x.date);return d>=start&&d<=end;});
+  const seen=new Set(),items=[...overdue,...dated].filter(x=>{const k=`${x.type}:${x.id}:${x.date}`;if(seen.has(k))return false;seen.add(k);return true;});
   area.innerHTML='';
-  const labels={today:'today',tomorrow:'tomorrow',week:'in the next 7 days',month:'this month',all:'in the next year'};
+  const labels={today:'today including overdue',tomorrow:'tomorrow',week:'in the next 7 days including overdue',month:'this month including overdue',all:'in the next year including overdue'};
   if(summary)summary.textContent=`${items.length} ${items.length===1?'item':'items'} ${labels[timelineRange]}.`;
   if(!items.length){area.innerHTML='<div class="empty-state">Nothing dated for this period.</div>';return;}
-  let current='';
-  items.forEach(item=>{
-    if(item.date!==current){current=item.date;const h=document.createElement('h3');h.className='timeline-date-heading';h.textContent=formatDate(item.date);area.appendChild(h);}
-    const type=TIMELINE_TYPES[item.type],row=document.createElement('button');row.type='button';row.className=`timeline-item timeline-${item.type}`;row.onclick=item.open;
+  const appendRow=(item)=>{
+    const type=TIMELINE_TYPES[item.type]||{icon:'•',label:'Planner item'},row=document.createElement('button');row.type='button';row.className=`timeline-item timeline-${item.type}`;row.onclick=item.open;
     row.innerHTML=`<span class="timeline-icon" aria-hidden="true">${type.icon}</span><span class="timeline-copy"><strong>${escapeHtml(item.name)}</strong><span class="timeline-meta">${escapeHtml(type.label)}${item.time?' · '+escapeHtml(item.time):''}${item.detail?' · '+escapeHtml(item.detail):''}</span></span><span class="timeline-chevron" aria-hidden="true">›</span>`;
     area.appendChild(row);
+  };
+  if(overdue.length){const h=document.createElement('h3');h.className='timeline-date-heading timeline-overdue-heading';h.textContent='Overdue';area.appendChild(h);overdue.forEach(appendRow);}
+  let current='';
+  dated.forEach(item=>{
+    if(item.date!==current){current=item.date;const h=document.createElement('h3');h.className='timeline-date-heading';h.textContent=formatDate(item.date);area.appendChild(h);}
+    appendRow(item);
   });
 }
 
