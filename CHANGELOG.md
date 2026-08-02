@@ -52,3 +52,6 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 - Rebuilt from accepted v52f after rejecting the earlier v53 package.
 - Preserved Home ordering, collapsible sections, menus and all shared forms.
 - Changed Today’s Focus Convert to remove the source only after a successful destination save.
+
+## v53a — Workflow & Stability
+- Restored accepted Home, recurrence, Cleaning by Area, editing, reflection and routine-reset behaviour.

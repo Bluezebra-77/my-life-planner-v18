@@ -69,3 +69,6 @@
 - Remembered room suggestions and recurrence defaults.
 - Keyboard-first global Lists search.
 - Accessibility, mobile spacing and empty-state polish.
+
+## v53a
+- Home recurring editing, recurring visibility in Today, unified completion history and daily routine reset.

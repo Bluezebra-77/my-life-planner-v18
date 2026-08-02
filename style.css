@@ -1457,3 +1457,22 @@ body.timer-minimised .quick-add-fab{
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 @media(hover:hover){button:not(:disabled),a[href],summary{transition:transform .12s ease,box-shadow .12s ease,background .12s ease}button:not(:disabled):active{transform:translateY(1px)}}
+
+
+/* ===== v53a Workflow & Stability ===== */
+.dashboard-grid:empty{display:none!important}
+.v53a-home-heading,.home-collapsible>.section-heading,.home-collapsible>.focus-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:.65rem;flex-direction:row!important}
+.v53a-home-heading>div:first-child,.home-collapsible>.section-heading>div:first-child,.home-collapsible>.focus-heading>div:first-child{min-width:0;flex:1}
+.home-heading-controls{display:flex;align-items:center;justify-content:flex-end;gap:.4rem;flex:0 0 auto;flex-wrap:wrap}
+.home-heading-controls .small-button,.home-heading-controls .icon-button,.home-heading-controls .section-plus,.home-heading-controls .voice-button{width:auto;min-width:42px;margin:0}
+.home-collapse-toggle{min-width:64px!important}
+#cleaningRoomPicker{margin-bottom:.5rem}
+.routine-reset-button{min-width:64px}
+@media(max-width:600px){
+ .home-collapsible h2{font-size:clamp(1.18rem,6vw,1.48rem)!important;line-height:1.12;margin-bottom:.25rem}
+ .v53a-home-heading,.home-collapsible>.section-heading,.home-collapsible>.focus-heading{align-items:flex-start;flex-wrap:wrap}
+ .home-heading-controls{margin-left:auto;max-width:100%;flex-wrap:nowrap}
+ .home-heading-controls .small-button{padding:.52rem .65rem;font-size:.78rem}
+ .home-heading-controls .info-toggle{position:static!important;transform:none!important}
+ .panel{padding:14px}
+}

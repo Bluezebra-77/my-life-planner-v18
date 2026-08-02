@@ -56,3 +56,6 @@
 ## Corrected in v53
 - Rejected v53 regression package reverted Home ordering, removed Home collapse controls, broke Waiting For Edit and Birthday saving.
 - Corrected v53 was rebuilt from v52f and applies only the guarded Convert-as-Move workflow.
+
+## Corrected in v53a
+- Home order/collapse regressions, mobile heading collisions, missing recurring visibility/editing, missing Cleaning Room/Area selection, search-step editing, reflection count mismatch and routine reset.

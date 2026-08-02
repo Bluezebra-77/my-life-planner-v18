@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="53";
+const APP_VERSION="53a";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -3319,3 +3319,104 @@ convertTodayFocus=function(id,type){
     v53ClearFocusMove();
   }
 };
+
+
+/* ===== v53a Workflow & Stability ===== */
+const V53A_VERSION='53a';
+const V53A_ROUTINE_DATE_KEY='myLifePlannerRoutineDate';
+
+function v53aPlaceHomeSections(){
+  const parent=document.querySelector('.home-quick-actions')?.parentElement;if(!parent)return;
+  const brief=document.getElementById('morningBriefPanel');
+  const evening=document.getElementById('eveningReflectionPanel');
+  const weekly=document.getElementById('weeklyReflectionPanel');
+  const today=document.getElementById('homeTodayPanel');
+  const needs=document.getElementById('needsAttentionPanel');
+  const focus=document.getElementById('todayFocusPanel');
+  const health=document.getElementById('plannerHealthPanel');
+  const projects=document.getElementById('homeProjectsPanel');
+  const waiting=document.getElementById('homeWaitingPanel');
+  const inbox=document.getElementById('homeBrainInboxPanel');
+  const recurring=document.getElementById('homeRecurringPanel');
+  const week=document.getElementById('homeWeekPanel');
+  const rhythm=document.getElementById('homeDailyRhythmPanel');
+  const close=document.getElementById('homeEveningPanel');
+  const anchor=brief||document.querySelector('.home-quick-actions');
+  let after=anchor;
+  [evening,weekly,today,needs,focus,health,projects,waiting,inbox,recurring,week,rhythm,close].filter(Boolean).forEach(node=>{after.insertAdjacentElement('afterend',node);after=node;});
+  document.querySelectorAll('.dashboard-grid').forEach(grid=>{if(!grid.children.length)grid.remove();});
+}
+function v53aInstallHomeControls(){
+  const state=getHomePanelStates();
+  document.querySelectorAll('.home-collapsible').forEach(panel=>{
+    const key=panel.dataset.homeSection;if(!key)return;
+    const heading=panel.querySelector(':scope > .section-heading,:scope > .focus-heading');if(!heading)return;
+    heading.classList.add('v53a-home-heading');
+    let controls=heading.querySelector(':scope > .home-heading-controls');
+    if(!controls){controls=document.createElement('div');controls.className='home-heading-controls';[...heading.children].filter(x=>x!==controls&&(x.matches('button')||x.classList.contains('section-actions'))).forEach(x=>controls.appendChild(x));heading.appendChild(controls);}
+    let button=controls.querySelector('.home-collapse-toggle');
+    if(!button){button=document.createElement('button');button.type='button';button.className='small-button secondary-button home-collapse-toggle';button.onclick=()=>toggleHomePanel(key);controls.appendChild(button);}
+    applyHomePanelState(panel,Boolean(state[key]));
+  });
+}
+
+const v53aGetTodayBase=getTodayReminderItems;
+getTodayReminderItems=function(){
+  const items=v53aGetTodayBase();
+  const today=recurringDate(localDateKey());
+  const recurring=(data.recurringTasks||[]).filter(t=>t.status!=='paused'&&t.nextDue&&recurringDate(t.nextDue)<=today).map(t=>({id:t.id,name:t.name,details:t.notes||'',source:'Recurring task',dueDate:t.nextDue,itemType:'recurring'}));
+  const keys=new Set(items.map(i=>`${i.itemType}:${i.id}`));
+  recurring.forEach(i=>{if(!keys.has(`recurring:${i.id}`))items.push(i);});
+  return items.sort((a,b)=>dateOnly(a.dueDate)-dateOnly(b.dueDate));
+};
+const v53aOpenReminderBase=openReminderItem;
+openReminderItem=function(item){if(item?.itemType==='recurring')return openRecurringTaskDialog(item.id);return v53aOpenReminderBase(item);};
+const v53aCompletionBase=completionFor;
+completionFor=function(item){if(item?.itemType==='recurring')return()=>completeRecurringTask(item.id);return v53aCompletionBase(item);};
+
+renderRecurringHome=function(){
+  const area=document.getElementById('homeRecurringArea');if(!area)return;area.innerHTML='';
+  const today=recurringDate(localDateKey());const tasks=(data.recurringTasks||[]).filter(t=>t.status!=='paused'&&recurringDate(t.nextDue)<=today).sort((a,b)=>String(a.nextDue).localeCompare(String(b.nextDue)));
+  if(!tasks.length){area.innerHTML='<div class="empty-state">No recurring responsibilities are due.</div>';return;}
+  tasks.forEach(task=>{const st=recurringStatus(task);const row=makeV10Row({name:task.name,meta:`${recurringPatternLabel(task)} · ${st.label}`,dueDate:task.nextDue,action:()=>completeRecurringTask(task.id),open:()=>openRecurringTaskDialog(task.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();openRecurringTaskDialog('${task.id}')">Edit</button><button onclick="closeAnchoredMenu();completeRecurringTask('${task.id}')">Complete</button><button onclick="closeAnchoredMenu();toggleRecurringPause('${task.id}')">Pause</button>`,task.name)});area.appendChild(row);});
+};
+
+function v53aAddCleaningRoomPicker(){
+  const label=document.getElementById('cleaningAreaLabel'),input=document.getElementById('cleaningRoom');if(!label||!input)return;
+  let select=document.getElementById('cleaningRoomPicker');
+  if(!select){select=document.createElement('select');select.id='cleaningRoomPicker';select.setAttribute('aria-label','Choose a previously used room or area');select.onchange=()=>{if(select.value){input.value=select.value;localStorage.setItem(V52F_ROOM_KEY,select.value);}};input.before(select);}
+  const rooms=v52fRoomNames();const current=input.value.trim();select.innerHTML='<option value="">Choose a saved room or type below</option>'+rooms.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');if(current&&rooms.includes(current))select.value=current;
+  label.classList.toggle('hidden',document.getElementById('itemType')?.value!=='cleaning');
+}
+const v53aUpdateFormBase=updateFormVisibility;
+updateFormVisibility=function(){v53aUpdateFormBase();v53aAddCleaningRoomPicker();};
+const v53aOpenCleaningBase=openCleaningDialog;
+openCleaningDialog=function(){v53aOpenCleaningBase();setTimeout(()=>{refreshCleaningRoomSuggestions();applyCleaningRoomDefault();v53aAddCleaningRoomPicker();},0);};
+const v53aEditCleaningBase=editCleaning;
+editCleaning=function(id){v53aEditCleaningBase(id);setTimeout(v53aAddCleaningRoomPicker,0);};
+
+// Project steps found through search or Lists open the editor; completion remains in the three-dot menu.
+renderProjects=function(){
+  const area=document.getElementById('projectsArea');if(!area)return;area.innerHTML='';const projects=Array.isArray(data.projects)?data.projects:[];
+  if(!projects.length){area.innerHTML='<div class="empty-state">No projects are saved yet.</div>';return;}
+  const openStates=getProjectStepStates();[...projects].sort(sortByDueDate).forEach(project=>{const steps=Array.isArray(project.steps)?project.steps:[];const complete=steps.length>0&&steps.every(s=>s.completed);project.completed=complete;const count=steps.filter(s=>s.completed).length;const row=document.createElement('div');row.className=`compact-manage-row project-compact-row ${complete?'completed-row':''}`;const actions=`<button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}');refreshListsImmediately()">Delete project</button>`;row.innerHTML=`<button type="button" class="project-expand-button" onclick="toggleProjectSteps('${project.id}')" aria-expanded="${Boolean(openStates[project.id])}">${openStates[project.id]?'▾':'▸'}</button><button type="button" class="compact-row-main" onclick="toggleProjectSteps('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${count} of ${steps.length} steps`:'No steps'}</span></button>${compactMenu(actions,project.name||'project')}`;area.appendChild(row);const group=document.createElement('div');group.className='project-steps-group';group.dataset.projectId=project.id;group.hidden=!openStates[project.id];steps.forEach((step,index)=>{const sr=document.createElement('div');sr.className=`compact-manage-row nested-compact-row ${step.completed?'completed-row':''}`;const sa=`<button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit step</button><button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete step'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}');refreshListsImmediately()">Delete step</button>`;sr.innerHTML=`<button type="button" class="compact-row-main" onclick="editStep('${project.id}','${step.id}')"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'} · Tap to edit</span></button>${compactMenu(sa,step.name||'project step')}`;group.appendChild(sr);});area.appendChild(group);});
+};
+
+function v53aLogOnce(type,name,meta={}){const log=v52dActivity();const key=`${type}:${meta.itemId||meta.projectId||meta.parentId||name}:${localDateKey()}`;if(log.some(e=>e.dedupeKey===key))return;v52dLog(type,name,{...meta,dedupeKey:key});}
+const v53aToggleTodo=toggleTodo;toggleTodo=function(id){const item=data.todos.find(x=>String(x.id)===String(id)),was=Boolean(item?.completed);v53aToggleTodo(id);if(item&&!was&&item.completed){item.completedAt=new Date().toISOString();v53aLogOnce('todo',item.name,{itemId:id});saveData();}renderEveningReflection();};
+const v53aToggleTodoStep=toggleTodoStep;toggleTodoStep=function(todoId,stepId){const todo=data.todos.find(x=>String(x.id)===String(todoId)),step=todo?.steps?.find(x=>String(x.id)===String(stepId)),was=Boolean(step?.completed);v53aToggleTodoStep(todoId,stepId);if(step&&!was&&step.completed){step.completedAt=new Date().toISOString();v53aLogOnce('todoStep',step.name,{itemId:stepId,parentId:todoId});saveData();}renderEveningReflection();};
+const v53aToggleStep=toggleStep;toggleStep=function(projectId,stepId){const project=data.projects.find(x=>String(x.id)===String(projectId)),step=project?.steps?.find(x=>String(x.id)===String(stepId)),was=Boolean(step?.completed);v53aToggleStep(projectId,stepId);if(step&&!was&&step.completed){step.completedAt=new Date().toISOString();v53aLogOnce('projectStep',step.name,{itemId:stepId,projectId});saveData();}renderEveningReflection();};
+const v53aCompleteCleaning=completeCleaning;completeCleaning=function(id){const item=(data.cleaningTasks||[]).find(x=>String(x.id)===String(id));v53aCompleteCleaning(id);if(item)v53aLogOnce('cleaning',item.name,{itemId:id});renderEveningReflection();renderHiddenStatistics();};
+const v53aCompleteRecurring=completeRecurringTask;completeRecurringTask=function(id){const item=(data.recurringTasks||[]).find(x=>String(x.id)===String(id));v53aCompleteRecurring(id);if(item)v53aLogOnce('recurring',item.name,{itemId:id});renderEveningReflection();renderHiddenStatistics();};
+const v53aCompleteWaiting=completeWaiting;completeWaiting=function(id){const item=(data.waiting||[]).find(x=>String(x.id)===String(id)),was=Boolean(item?.completed);v53aCompleteWaiting(id);if(item&&!was&&item.completed)v53aLogOnce('waiting',item.name,{itemId:id});renderEveningReflection();renderHiddenStatistics();};
+
+renderEveningReflection=function(){
+  const panel=document.getElementById('eveningReflectionPanel'),area=document.getElementById('eveningReflectionArea');if(!panel||!area)return;const now=new Date(),dismiss=v52dDismissals();if(now.getHours()<18||dismiss.evening===localDateKey()){panel.classList.add('hidden');return;}
+  const start=new Date();start.setHours(0,0,0,0);const events=v52dEventsSince(start);const completionTypes=['todo','todoStep','focus','projectStep','cleaning','recurring','waiting'];const completed=events.filter(e=>completionTypes.includes(e.type));const unique=[];const seen=new Set();completed.forEach(e=>{const k=e.dedupeKey||`${e.type}:${e.itemId||e.projectId||e.parentId||e.name}:${new Date(e.at).toISOString().slice(0,10)}`;if(!seen.has(k)){seen.add(k);unique.push(e);}});const total=unique.length;const tasks=unique.filter(e=>['todo','todoStep','focus','recurring','waiting'].includes(e.type)).length;const steps=unique.filter(e=>e.type==='projectStep').length;const cleaning=unique.filter(e=>e.type==='cleaning').length;const remaining=v52cActiveFocus().length+v52cUrgentItems().length+v52cDueRecurring().length;area.innerHTML=`<div class="reflection-summary"><p class="reflection-intro">A calm record from the same activity history used by Hidden Statistics.</p><div class="reflection-metrics">${v52dMetric(total,'everything completed')}${v52dMetric(tasks,'tasks and routines')}${v52dMetric(steps,'project steps')}${v52dMetric(cleaning,'cleaning jobs')}</div><div class="reflection-note">${escapeHtml(v52dGentleMessage(total,remaining))}</div>${remaining?`<div class="reflection-note"><strong>${remaining}</strong> item${remaining===1?'':'s'} remain visible for attention. They do not all have to be done tonight.</div>`:''}</div>`;panel.classList.remove('hidden');
+};
+
+function v53aResetRoutinesForNewDay(){const today=localDateKey();const previous=localStorage.getItem(V53A_ROUTINE_DATE_KEY);if(previous&&previous!==today){[...(data.dailyTasks||[]),...(data.eveningTasks||[])].forEach(task=>localStorage.removeItem(storageKey('daily',task.id)));}localStorage.setItem(V53A_ROUTINE_DATE_KEY,today);}
+
+function v53aRefresh(){v53aResetRoutinesForNewDay();v53aPlaceHomeSections();v53aInstallHomeControls();v53aAddCleaningRoomPicker();renderRecurringHome();renderTodayReminders();renderProjects();renderEveningReflection();renderHiddenStatistics();}
+const v53aRenderAllBase=renderAll;renderAll=function(){v53aRenderAllBase();v53aRefresh();};
+window.addEventListener('pageshow',v53aRefresh);document.addEventListener('DOMContentLoaded',v53aRefresh);setTimeout(v53aRefresh,0);
