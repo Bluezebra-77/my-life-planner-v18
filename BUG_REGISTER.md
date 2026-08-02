@@ -64,3 +64,7 @@
 - Advanced recurrence was not obvious/available for Zoom appointments.
 - Daily Rhythm lacked Reset.
 - iPhone information icons could cover section names.
+
+## Corrected in v53a Final Polish Patch
+- Home titles could collapse into narrow vertical fragments beside controls on iPhone.
+- Clearing Lists search could leave the previous filter and match status active.

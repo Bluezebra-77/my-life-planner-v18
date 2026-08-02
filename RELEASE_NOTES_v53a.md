@@ -1,9 +1,15 @@
-# My Life Planner v53a — Patched
+# My Life Planner v53a — Final Polish Patch
 
-- Advanced monthly recurrence is visible for recurring tasks and appointments.
-- A Zoom meeting on the second Thursday can be entered as Monthly → Weekday position → Second → Thursday.
-- Daily Rhythm and Evening Routine each have a Reset button.
-- Both routine checklists reset automatically on the first app open of a new day.
-- Gentle close-down is renamed Evening Routine throughout the application and help.
-- iPhone Home headings are smaller and information controls use a collision-proof layout.
-- Existing v53a workflow and stability corrections are preserved.
+## Mobile Home headings
+- On iPhone, each Home title now has the full card width.
+- Information and action controls use a consistent second row.
+- Long titles no longer compete with or sit beneath controls.
+- Desktop layout remains compact.
+
+## Lists search
+- Clearing the search field immediately restores all Lists sections and rows.
+- The match message clears at the same time.
+- Native search clear, keyboard deletion, Escape, change and blur all use the same reset behaviour.
+
+## Preserved
+- Advanced recurrence, routine Reset controls, Cleaning by Area, Convert-as-Move, Home ordering and all accepted v53a workflows.

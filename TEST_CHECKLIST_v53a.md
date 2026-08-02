@@ -1,23 +1,27 @@
-# My Life Planner v53a Patch — Test Checklist
+# My Life Planner v53a Final Polish Patch — Test Checklist
 
-## Version and data
-- [ ] Header/About show v53a and all data remains present.
+## Install and data
+- [ ] Header, About and Developer Dashboard show v53a.
+- [ ] Existing planner data remains present.
 
-## Flexible recurrence
-- [ ] Add recurring task: Month(s) → Weekday position → Second → Thursday.
-- [ ] Add appointment/Zoom meeting using the same second-Thursday rule.
-- [ ] Edit both and confirm the rule fields restore correctly.
-- [ ] Test every 3 weeks and every 2 months.
+## iPhone Home headings
+- [ ] Daily Rhythm displays as normal words, not one fragment per line.
+- [ ] Evening Routine, Waiting For, Brain Inbox and Today’s Focus titles do not collide with the information button.
+- [ ] Information, Reset, More, Add, microphone, View all and Show/Hide controls appear on a separate, tidy controls row where required.
+- [ ] Desktop headings remain compact and usable.
 
-## Routines
-- [ ] Daily Rhythm has Reset and only its ticks clear.
-- [ ] Evening Routine has Reset and only its ticks clear.
-- [ ] On first open on a new date, both sets of ticks reset.
-- [ ] Evening Routine wording appears consistently.
-
-## iPhone
-- [ ] No information icon covers a Home title.
-- [ ] Home headings are smaller and controls remain usable.
+## Lists search
+- [ ] Enter a search and confirm matching results appear.
+- [ ] Delete all search text and confirm every list returns immediately.
+- [ ] Confirm the match-count message disappears when the field is empty.
+- [ ] Test the native clear × on iPhone.
+- [ ] Test Escape on desktop.
 
 ## Regression
-- [ ] Today order, recurring visibility, Cleaning by Area, Search editing, Convert-as-Move, Waiting For, birthdays, reflections, Timeline and backup still work.
+- [ ] Advanced monthly recurrence remains available.
+- [ ] Daily Rhythm and Evening Routine Reset buttons work.
+- [ ] Cleaning by Area, Search editing and Convert-as-Move still work.
+
+## Result
+- [ ] ACCEPT v53a Final Polish Patch.
+- [ ] REJECT — record the failed item.

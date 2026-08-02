@@ -58,3 +58,7 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 
 ## v53a Patch
 - Restored advanced nth-weekday recurrence for appointments, added routine reset consistency, renamed Evening Routine and completed iPhone header correction.
+
+## v53a Final Polish Patch
+- Rebuilt iPhone Home headings into separate title and controls rows.
+- Clearing Lists search now immediately restores the full Lists view and clears match status.

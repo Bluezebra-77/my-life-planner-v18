@@ -1490,3 +1490,72 @@ body.timer-minimised .quick-add-fab{
   .home-heading-controls>*{position:static!important;transform:none!important}
   .home-collapsible>.section-heading>div:first-child,.home-collapsible>.focus-heading>div:first-child{grid-column:1!important;min-width:0!important}
 }
+
+
+/* ===== v53a Final Polish Patch ===== */
+/* Home headings: title gets the full mobile width; all controls use a predictable second row. */
+@media(max-width:600px){
+  .home-collapsible>.section-heading,
+  .home-collapsible>.focus-heading,
+  .v53a-home-heading{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    align-items:start!important;
+    gap:.55rem!important;
+  }
+  .home-collapsible>.section-heading>div:first-child,
+  .home-collapsible>.focus-heading>div:first-child,
+  .v53a-home-heading>div:first-child{
+    grid-column:1!important;
+    grid-row:1!important;
+    width:100%!important;
+    min-width:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    text-align:left!important;
+  }
+  .home-collapsible .section-title-line{
+    display:block!important;
+    width:100%!important;
+  }
+  .home-collapsible h2,
+  .home-collapsible .section-title-line h2{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    font-size:1.28rem!important;
+    line-height:1.12!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    hyphens:none!important;
+    text-align:left!important;
+    margin:0!important;
+  }
+  .home-collapsible .eyebrow{text-align:left!important;margin-bottom:.32rem!important;}
+  .home-heading-controls{
+    grid-column:1!important;
+    grid-row:2!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    flex-wrap:wrap!important;
+    gap:.42rem!important;
+    position:static!important;
+  }
+  .home-heading-controls>*{position:static!important;transform:none!important;margin:0!important;}
+  .home-heading-controls .section-info-button{order:-10;}
+  .home-heading-controls .home-collapse-toggle{margin-left:auto!important;}
+  .home-heading-controls .small-button,
+  .home-heading-controls .icon-button,
+  .home-heading-controls .section-plus,
+  .home-heading-controls .voice-button,
+  .home-heading-controls .section-info-button{
+    width:auto!important;
+    min-width:42px!important;
+    max-width:100%!important;
+  }
+}

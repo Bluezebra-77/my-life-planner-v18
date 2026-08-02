@@ -76,3 +76,7 @@
 ## v53a Patch
 - Monthly weekday-position recurrence for recurring tasks and appointments.
 - Independent Daily Rhythm and Evening Routine resets.
+
+## v53a Final Polish Patch
+- Responsive two-row Home headings on phones.
+- Reliable automatic Lists-search reset.

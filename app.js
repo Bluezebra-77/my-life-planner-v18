@@ -3511,3 +3511,72 @@ saveAppointment=function(){
 // Make the recurring-task advanced rule conspicuous whenever Month(s) is selected.
 const v53aPatchUpdateRecurringRuleControls=updateRecurringRuleControls;
 updateRecurringRuleControls=function(){v53aPatchUpdateRecurringRuleControls();const help=document.querySelector('.recurring-monthly-help');if(help)help.hidden=document.getElementById('recurringTaskUnit')?.value!=='month';};
+
+
+/* ===== v53a Final Polish Patch ===== */
+function v53aPolishHomeHeaders(){
+  document.querySelectorAll('.home-collapsible').forEach(panel=>{
+    const heading=panel.querySelector(':scope > .section-heading,:scope > .focus-heading');
+    if(!heading)return;
+    let controls=heading.querySelector(':scope > .home-heading-controls');
+    if(!controls){
+      controls=document.createElement('div');
+      controls.className='home-heading-controls';
+      heading.appendChild(controls);
+    }
+    const info=heading.querySelector('.section-info-button');
+    if(info&&info.parentElement!==controls)controls.insertBefore(info,controls.firstChild);
+  });
+}
+
+function v53aResetListSearchView(){
+  const status=document.getElementById('listSearchStatus');
+  if(status)status.textContent='';
+  const projectStates=typeof getProjectStepStates==='function'?getProjectStepStates():{};
+  document.querySelectorAll('.managed-list-section').forEach(section=>{
+    section.hidden=false;
+    section.classList.remove('list-search-hidden');
+    section.querySelectorAll('.compact-manage-row,.annual-manage-row,.list-card,.v10-row,.custom-list-card,.custom-preview-item,.step-compact-row,.appointment-card').forEach(row=>{
+      row.hidden=false;
+      row.classList.remove('list-search-hidden');
+    });
+    section.querySelectorAll('.project-steps-group').forEach(group=>{
+      group.hidden=!projectStates[group.dataset.projectId];
+    });
+  });
+}
+
+const v53aFinalFilterMyLists=filterMyLists;
+filterMyLists=function(query=''){
+  const search=document.getElementById('globalListSearch');
+  const raw=String(query??search?.value??'');
+  if(!normaliseSearchText(raw)){
+    if(search&&search.value)search.value='';
+    v53aResetListSearchView();
+    return;
+  }
+  return v53aFinalFilterMyLists(raw);
+};
+
+function v53aInstallSearchReset(){
+  const search=document.getElementById('globalListSearch');
+  if(!search||search.dataset.finalResetReady==='true')return;
+  search.dataset.finalResetReady='true';
+  const sync=()=>{if(!normaliseSearchText(search.value))filterMyLists('');};
+  search.addEventListener('input',sync);
+  search.addEventListener('search',sync);
+  search.addEventListener('change',sync);
+  search.addEventListener('blur',sync);
+}
+
+function v53aFinalPolishRefresh(){
+  v53aPolishHomeHeaders();
+  v53aInstallSearchReset();
+  const search=document.getElementById('globalListSearch');
+  if(search&&!normaliseSearchText(search.value))v53aResetListSearchView();
+}
+const v53aFinalRenderAllBase=renderAll;
+renderAll=function(){v53aFinalRenderAllBase();requestAnimationFrame(v53aFinalPolishRefresh);};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(v53aFinalPolishRefresh,0));
+window.addEventListener('pageshow',v53aFinalPolishRefresh);
+setTimeout(v53aFinalPolishRefresh,50);
