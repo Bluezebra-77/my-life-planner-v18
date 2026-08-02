@@ -72,3 +72,7 @@
 
 ## v53a
 - Home recurring editing, recurring visibility in Today, unified completion history and daily routine reset.
+
+## v53a Patch
+- Monthly weekday-position recurrence for recurring tasks and appointments.
+- Independent Daily Rhythm and Evening Routine resets.

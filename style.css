@@ -1476,3 +1476,17 @@ body.timer-minimised .quick-add-fab{
  .home-heading-controls .info-toggle{position:static!important;transform:none!important}
  .panel{padding:14px}
 }
+
+
+/* ===== v53a patch 1 ===== */
+.recurring-monthly-help{margin:.15rem 0 .65rem;color:var(--muted);font-size:.85rem}
+@media(max-width:600px){
+  .home-collapsible h2{font-size:1.12rem!important;line-height:1.12!important;letter-spacing:-.02em!important}
+  .home-collapsible .section-title-line{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:.35rem!important;width:100%!important}
+  .home-collapsible .section-title-line h2{min-width:0!important;overflow-wrap:anywhere!important}
+  .home-collapsible .section-info-button{position:static!important;inset:auto!important;transform:none!important;justify-self:end!important}
+  .home-collapsible>.section-heading,.home-collapsible>.focus-heading,.v53a-home-heading{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:.45rem!important}
+  .home-heading-controls{grid-column:2!important;grid-row:1!important;align-self:start!important;position:static!important;max-width:none!important}
+  .home-heading-controls>*{position:static!important;transform:none!important}
+  .home-collapsible>.section-heading>div:first-child,.home-collapsible>.focus-heading>div:first-child{grid-column:1!important;min-width:0!important}
+}

@@ -1,40 +1,23 @@
-# My Life Planner v53a — Test Checklist
+# My Life Planner v53a Patch — Test Checklist
 
-## Install and data
-- [ ] Header, About and Developer Dashboard show v53a.
-- [ ] Existing data remains present.
+## Version and data
+- [ ] Header/About show v53a and all data remains present.
 
-## Home
-- [ ] Today — time-sensitive is the first working section.
-- [ ] Needs Attention and Today’s Focus follow.
-- [ ] Every Home section has Show/Hide and remembers its state.
-- [ ] iPhone titles are not covered by information or action buttons.
-- [ ] Due/overdue recurring tasks appear in Today.
-- [ ] Home recurring items open Edit and can be completed.
+## Flexible recurrence
+- [ ] Add recurring task: Month(s) → Weekday position → Second → Thursday.
+- [ ] Add appointment/Zoom meeting using the same second-Thursday rule.
+- [ ] Edit both and confirm the rule fields restore correctly.
+- [ ] Test every 3 weeks and every 2 months.
 
-## Recurrence
-- [ ] Every 3 days and every 3 weeks save correctly.
-- [ ] Every 2 months on the same date saves correctly.
-- [ ] First/second/third/fourth/last weekday monthly rules save correctly.
-- [ ] Every 2 months on the second Thursday calculates correctly.
-- [ ] Editing restores all recurrence fields.
+## Routines
+- [ ] Daily Rhythm has Reset and only its ticks clear.
+- [ ] Evening Routine has Reset and only its ticks clear.
+- [ ] On first open on a new date, both sets of ticks reset.
+- [ ] Evening Routine wording appears consistently.
 
-## Cleaning
-- [ ] Add and Edit show Room/Area input and saved-room picker.
-- [ ] New room names can still be typed.
-- [ ] Area filter, counts, grouping and Unassigned work.
-
-## Editing and menus
-- [ ] Waiting For Edit works on Home and Lists.
-- [ ] Birthday Save and Edit work.
-- [ ] Project steps open Edit when tapped after a search.
-- [ ] Three-dot menus work for all major item types.
-
-## Reflection and routines
-- [ ] Evening Reflection matches today’s activity records in Hidden Statistics.
-- [ ] Gentle close-down Reset unticks routine items.
-- [ ] On the first open of a new day, routine ticks reset automatically.
+## iPhone
+- [ ] No information icon covers a Home title.
+- [ ] Home headings are smaller and controls remain usable.
 
 ## Regression
-- [ ] Convert-as-Move removes Focus only after successful save.
-- [ ] Appointments, to-dos, projects, cleaning, recurring, custom lists, Timeline, backup and restore work.
+- [ ] Today order, recurring visibility, Cleaning by Area, Search editing, Convert-as-Move, Waiting For, birthdays, reflections, Timeline and backup still work.

@@ -1,16 +1,7 @@
-# My Life Planner v53a — Build Report
+# My Life Planner v53a Patch — Build Report
 
-**Baseline:** accepted v53 Corrected Workflow Edition
-**Purpose:** recovery, workflow consistency and stability.
+Baseline: v53a Workflow & Stability.
 
-## Validation
-- JavaScript syntax
-- Service-worker syntax
-- Manifest JSON
-- Duplicate HTML IDs
-- CSS brace balance
-- Version and cache audit
-- Required-file audit
-- ZIP integrity
+Implemented: appointment nth-weekday monthly recurrence, clearer recurring-task monthly controls, two routine reset controls, Evening Routine terminology, and stronger iPhone header layout.
 
-The package root is reduced to 19 files. Historical build documents are preserved in `PROJECT_HISTORY_v52-v53.zip`.
+Validation includes JavaScript syntax, service-worker syntax, manifest JSON, duplicate IDs, CSS brace balance, version/cache consistency, required files and ZIP integrity.

@@ -55,3 +55,6 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 
 ## v53a — Workflow & Stability
 - Restored accepted Home, recurrence, Cleaning by Area, editing, reflection and routine-reset behaviour.
+
+## v53a Patch
+- Restored advanced nth-weekday recurrence for appointments, added routine reset consistency, renamed Evening Routine and completed iPhone header correction.

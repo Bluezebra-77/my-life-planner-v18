@@ -3420,3 +3420,94 @@ function v53aResetRoutinesForNewDay(){const today=localDateKey();const previous=
 function v53aRefresh(){v53aResetRoutinesForNewDay();v53aPlaceHomeSections();v53aInstallHomeControls();v53aAddCleaningRoomPicker();renderRecurringHome();renderTodayReminders();renderProjects();renderEveningReflection();renderHiddenStatistics();}
 const v53aRenderAllBase=renderAll;renderAll=function(){v53aRenderAllBase();v53aRefresh();};
 window.addEventListener('pageshow',v53aRefresh);document.addEventListener('DOMContentLoaded',v53aRefresh);setTimeout(v53aRefresh,0);
+
+
+/* ===== v53a patch 1: recurrence, routines, mobile consistency ===== */
+function resetRoutineGroup(group){
+  const label=group==='evening'?'Evening Routine':'Daily Rhythm';
+  if(!confirm(`Untick all ${label} items for today?`))return;
+  const tasks=group==='evening'?(data.eveningTasks||[]):(data.dailyTasks||[]);
+  tasks.forEach(task=>localStorage.removeItem(storageKey('daily',task.id)));
+  renderAll();showSaved(`${label} reset`);
+}
+
+const v53aPatchNormaliseAppointmentRepeat=normaliseAppointmentRepeat;
+normaliseAppointmentRepeat=function(a={}){
+  const r=v53aPatchNormaliseAppointmentRepeat(a);
+  r.monthlyMode=a.monthlyMode||a.repeatMonthlyMode||'date';
+  r.ordinal=Number(a.ordinal??a.repeatOrdinal??2);
+  r.weekday=Number(a.weekday??a.repeatWeekday??4);
+  return r;
+};
+
+const v53aPatchAdvanceAppointmentDate=advanceAppointmentDate;
+advanceAppointmentDate=function(date,rule){
+  if(rule.unit==='month'&&rule.monthlyMode==='nthWeekday'){
+    const base=new Date(date);const targetMonth=new Date(base.getFullYear(),base.getMonth()+Number(rule.interval||1),1,12);
+    return nthWeekdayOfMonth(targetMonth.getFullYear(),targetMonth.getMonth(),Number(rule.weekday),Number(rule.ordinal))||new Date(targetMonth.getFullYear(),targetMonth.getMonth()+1,0,12);
+  }
+  return v53aPatchAdvanceAppointmentDate(date,rule);
+};
+
+appointmentRepeatDescription=function(a){
+  const r=normaliseAppointmentRepeat(a);if(r.repeat==='none')return'';
+  let text;
+  if(r.unit==='month'&&r.monthlyMode==='nthWeekday'){
+    const ord={1:'first',2:'second',3:'third',4:'fourth','-1':'last'}[String(r.ordinal)]||'second';
+    const day=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][Number(r.weekday)||0];
+    text=Number(r.interval)===1?`every month on the ${ord} ${day}`:`every ${r.interval} months on the ${ord} ${day}`;
+  }else{
+    const unit=r.unit+(r.interval===1?'':'s');text=r.interval===1?`every ${unit}`:`every ${r.interval} ${unit}`;
+  }
+  if(r.endType==='count')text+=` · ${r.count} appointments`;else if(r.endType==='date'&&r.endDate)text+=` · until ${formatDate(r.endDate)}`;
+  return text;
+};
+
+const v53aPatchUpdateAppointmentRepeatControls=updateAppointmentRepeatControls;
+updateAppointmentRepeatControls=function(){
+  v53aPatchUpdateAppointmentRepeatControls();
+  const active=document.getElementById('appointmentRepeat')?.value!=='none';
+  const unit=document.getElementById('appointmentRepeatUnit')?.value;
+  const monthly=active&&unit==='month';
+  const mode=document.getElementById('appointmentMonthlyMode')?.value||'date';
+  const modeLabel=document.getElementById('appointmentMonthlyModeLabel');if(modeLabel)modeLabel.hidden=!monthly;
+  const ordinalLabel=document.getElementById('appointmentOrdinalLabel');if(ordinalLabel)ordinalLabel.hidden=!monthly||mode!=='nthWeekday';
+  const weekdayLabel=document.getElementById('appointmentWeekdayLabel');if(weekdayLabel)weekdayLabel.hidden=!monthly||mode!=='nthWeekday';
+  const summary=document.getElementById('appointmentRepeatSummary');
+  if(summary&&active)summary.textContent='Repeats '+appointmentRepeatDescription({repeat:document.getElementById('appointmentRepeat').value,repeatUnit:unit,repeatInterval:document.getElementById('appointmentRepeatInterval').value,repeatEndType:document.getElementById('appointmentRepeatEnd').value,repeatCount:document.getElementById('appointmentRepeatCount').value,repeatEndDate:document.getElementById('appointmentRepeatEndDate').value,monthlyMode:mode,ordinal:document.getElementById('appointmentOrdinal')?.value,weekday:document.getElementById('appointmentWeekday')?.value})+'.';
+};
+
+const v53aPatchOpenAppointmentDialog=openAppointmentDialog;
+openAppointmentDialog=function(id='',prefillName='',prefillNotes=''){
+  v53aPatchOpenAppointmentDialog(id,prefillName,prefillNotes);
+  const a=(data.appointments||[]).find(x=>String(x.id)===String(id));
+  const date=a?.date?dateOnly(a.date):new Date();
+  const mode=a?.monthlyMode||a?.repeatMonthlyMode||'date';
+  const ordinal=a?.ordinal??a?.repeatOrdinal??Math.ceil(date.getDate()/7);
+  const weekday=a?.weekday??a?.repeatWeekday??date.getDay();
+  const modeEl=document.getElementById('appointmentMonthlyMode');if(modeEl)modeEl.value=mode;
+  const ordEl=document.getElementById('appointmentOrdinal');if(ordEl)ordEl.value=String([1,2,3,4,-1].includes(Number(ordinal))?ordinal:2);
+  const dayEl=document.getElementById('appointmentWeekday');if(dayEl)dayEl.value=String(weekday);
+  updateAppointmentRepeatControls();
+};
+
+const v53aPatchSaveAppointment=saveAppointment;
+saveAppointment=function(){
+  const result=v53aPatchSaveAppointment();
+  if(result){
+    const id=document.getElementById('appointmentId')?.value;
+    // saveAppointment may close the dialog but values remain available.
+    const rec=(data.appointments||[]).find(x=>String(x.id)===String(id))||(data.appointments||[])[0];
+    if(rec&&rec.repeatUnit==='month'){
+      rec.monthlyMode=document.getElementById('appointmentMonthlyMode')?.value||'date';
+      rec.ordinal=rec.monthlyMode==='nthWeekday'?Number(document.getElementById('appointmentOrdinal')?.value||2):null;
+      rec.weekday=rec.monthlyMode==='nthWeekday'?Number(document.getElementById('appointmentWeekday')?.value||4):null;
+      saveData();renderAll();
+    }
+  }
+  return result;
+};
+
+// Make the recurring-task advanced rule conspicuous whenever Month(s) is selected.
+const v53aPatchUpdateRecurringRuleControls=updateRecurringRuleControls;
+updateRecurringRuleControls=function(){v53aPatchUpdateRecurringRuleControls();const help=document.querySelector('.recurring-monthly-help');if(help)help.hidden=document.getElementById('recurringTaskUnit')?.value!=='month';};

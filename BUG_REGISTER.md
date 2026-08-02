@@ -12,7 +12,7 @@
 - Timer and Quick Add overlap on desktop and iPhone
 - Cleaning-list action menu inaccessible in iPhone portrait
 - Converted cleaning task not refreshing its next due date and Needs Attention
-- Waiting For and Gentle close-down missing from Home
+- Waiting For and Evening Routine missing from Home
 - Long Settings screen requiring excessive scrolling
 
 ## Open design review
@@ -59,3 +59,8 @@
 
 ## Corrected in v53a
 - Home order/collapse regressions, mobile heading collisions, missing recurring visibility/editing, missing Cleaning Room/Area selection, search-step editing, reflection count mismatch and routine reset.
+
+## Corrected in v53a Patch
+- Advanced recurrence was not obvious/available for Zoom appointments.
+- Daily Rhythm lacked Reset.
+- iPhone information icons could cover section names.
