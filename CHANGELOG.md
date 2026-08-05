@@ -62,3 +62,7 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 ## v53a Final Polish Patch
 - Rebuilt iPhone Home headings into separate title and controls rows.
 - Clearing Lists search now immediately restores the full Lists view and clears match status.
+
+## v54a — Project Templates
+- Added reusable project workflows and independent project creation from templates.
+- Added optional step-date offsets relative to a project due date.

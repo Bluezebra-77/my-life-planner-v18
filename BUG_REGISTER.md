@@ -68,3 +68,6 @@
 ## Corrected in v53a Final Polish Patch
 - Home titles could collapse into narrow vertical fragments beside controls on iPhone.
 - Clearing Lists search could leave the previous filter and match status active.
+
+## v54a
+- No known regressions introduced; Project Templates are a new isolated local-storage feature.

@@ -80,3 +80,6 @@
 ## v53a Final Polish Patch
 - Responsive two-row Home headings on phones.
 - Reliable automatic Lists-search reset.
+
+## v54a
+- Project Templates: create, edit, delete, save from an existing project and create new project instances.

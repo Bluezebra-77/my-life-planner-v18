@@ -1564,3 +1564,11 @@ body.timer-minimised .quick-add-fab{
 .home-week-date-heading{margin:1rem 0 .45rem;padding-bottom:.35rem;border-bottom:1px solid var(--line,#d8ddd8);font-size:1rem;color:var(--muted,#68766f)}
 .home-week-date-heading:first-child{margin-top:.25rem}
 .timeline-overdue-heading{color:#b42318;border-bottom-color:rgba(180,35,24,.25)}
+
+
+/* v54a project templates */
+.project-section-actions{display:flex;align-items:center;gap:.55rem}.project-section-actions .small-button{width:auto}
+.project-templates-dialog,.project-template-use-dialog{width:min(720px,calc(100vw - 18px));max-height:calc(100dvh - 18px);overflow:auto}
+.template-form{display:grid;gap:14px;padding-top:14px}.template-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line,#d8ddd8);border-radius:15px;background:rgba(255,255,255,.72)}
+.template-card-copy{display:grid;gap:4px;min-width:0}.template-card-copy strong{font-size:1rem}.template-card-copy span{color:var(--muted,#68766f);font-size:.86rem}.template-card-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.template-card-actions button{width:auto;padding:.6rem .75rem}.template-preview{padding:14px;border:1px solid var(--line,#d8ddd8);border-radius:14px;background:rgba(255,255,255,.65)}.template-preview ol{margin:.65rem 0 0;padding-left:1.5rem}.template-preview li{margin:.45rem 0}.template-preview li span{display:block;color:var(--muted,#68766f);font-size:.82rem}
+@media(max-width:600px){.project-section-actions{width:100%;justify-content:flex-end}.template-card{grid-template-columns:1fr}.template-card-actions{justify-content:flex-start}.template-card-actions button{flex:1}.project-templates-dialog .dialog-actions button,.project-template-use-dialog .dialog-actions button{width:auto;flex:1}}

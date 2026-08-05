@@ -1,8 +1,8 @@
 {
-  "name": "My Life Planner V53a Final Polish",
+  "name": "My Life Planner V54a Project Templates",
   "short_name": "Life Planner",
   "description": "A calm personal planner with a unified Timeline, Brain Inbox, lists, projects, routines and appointments.",
-  "start_url": "./index.html?v=53a-final-polish",
+  "start_url": "./index.html?v=54a",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8ff",
@@ -23,7 +23,7 @@
     }
   ],
   "id": "./",
-  "version": "53a-final-polish",
+  "version": "54a",
   "shortcuts": [
     {
       "name": "Brain Inbox",
