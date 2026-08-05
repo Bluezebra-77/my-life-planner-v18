@@ -66,3 +66,6 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 ## v54a — Project Templates
 - Added reusable project workflows and independent project creation from templates.
 - Added optional step-date offsets relative to a project due date.
+
+## v54b — Smart Projects
+- Added dated to-do/project steps to Timeline and mobile-safe project management.

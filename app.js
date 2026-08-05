@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="54a";
+const APP_VERSION="54b";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -3600,7 +3600,7 @@ window.addEventListener('pageshow',v53aFinalPolishRefresh);
 setTimeout(v53aFinalPolishRefresh,50);
 
 
-/* ===== v54a Project Templates ===== */
+/* ===== v54b Project Templates ===== */
 const PROJECT_TEMPLATES_KEY='myLifePlannerProjectTemplates';
 function getProjectTemplates(){try{const value=JSON.parse(localStorage.getItem(PROJECT_TEMPLATES_KEY)||'[]');return Array.isArray(value)?value:[]}catch{return []}}
 function setProjectTemplates(items){localStorage.setItem(PROJECT_TEMPLATES_KEY,JSON.stringify(Array.isArray(items)?items:[]));}
@@ -3620,3 +3620,75 @@ function useProjectTemplate(id){const t=getProjectTemplates().find(x=>String(x.i
 function closeProjectTemplateUse(){document.getElementById('projectTemplateUseDialog')?.close();}
 function renderProjectTemplatePreview(template){const area=document.getElementById('projectTemplatePreview');if(!area)return;area.innerHTML=`<strong>Steps to create</strong><ol>${(template.steps||[]).map(s=>`<li>${escapeHtml(s.name)}${Number.isFinite(Number(s.daysBefore))?` <span>${Number(s.daysBefore)} days before due date</span>`:''}</li>`).join('')}</ol>`;}
 function createProjectFromTemplate(event){event.preventDefault();const t=getProjectTemplates().find(x=>String(x.id)===String(document.getElementById('projectTemplateUseId').value));if(!t)return;const name=document.getElementById('projectTemplateProjectName').value.trim();if(!name)return;const dueDate=document.getElementById('projectTemplateDueDate').value||null;const details=document.getElementById('projectTemplateProjectDetails').value.trim();const project={id:uid(),name,details,tags:[],timingType:dueDate?'date':'none',dueDate,leadDays:7,completed:false,createdAt:new Date().toISOString(),templateId:t.id,steps:(t.steps||[]).map((s,index)=>({id:uid(),name:s.name,details:'',timingType:dueDate&&Number.isFinite(Number(s.daysBefore))?'date':'none',dueDate:dueDate&&Number.isFinite(Number(s.daysBefore))?dateMinusDays(dueDate,s.daysBefore):null,leadDays:0,completed:false,order:index}))};data.projects.push(project);saveData();closeProjectTemplateUse();renderAll();refreshListsImmediately();showAppView('tasks');setTimeout(()=>document.getElementById('projectsListSection')?.scrollIntoView({behavior:'smooth',block:'start'}),50);}
+
+
+/* ===== v54b Smart Projects: dated steps in Timeline and mobile project management ===== */
+TIMELINE_TYPES.todoStep={icon:'☑️',label:'To-do step'};
+TIMELINE_TYPES.projectStep={icon:'📌',label:'Project step'};
+TIMELINE_TYPES.projectMilestone={icon:'🏁',label:'Project deadline'};
+
+function v54bTimelineItems(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const items=[];
+  const add=(item)=>{
+    if(!item||!item.date)return;
+    const parsed=dateOnly(String(item.date).slice(0,10));
+    if(!parsed)return;
+    items.push({...item,date:localDateKey(parsed),name:String(item.name||'Untitled item')});
+  };
+  try{
+    (data.appointments||[]).forEach(a=>{
+      appointmentOccurrences(a,today,365).forEach(o=>add({id:a.id,type:'appointment',name:a.name||a.title,date:o.date,time:a.time||'',detail:[a.endTime&&a.time?`${a.time}–${a.endTime}`:a.time,a.location].filter(Boolean).join(' · '),open:()=>openAppointmentDialog(a.id)}));
+    });
+  }catch(error){console.warn('Timeline appointments skipped',error);}
+  (data.todos||[]).filter(x=>!x.completed).forEach(todo=>{
+    (todo.steps||[]).filter(step=>!step.completed&&step.dueDate).forEach(step=>add({
+      id:`${todo.id}:${step.id}`,type:'todoStep',name:step.name||'Untitled step',date:step.dueDate,
+      detail:`${todo.name||'To-do'}${step.details?' · '+step.details:''}`,
+      open:()=>editTodo(todo.id)
+    }));
+    const due=todo.dueDate||todo.date;
+    if(due)add({id:todo.id,type:'todo',name:todo.name||todo.title,date:due,detail:(todo.steps||[]).length?'Final deadline':(todo.details||todo.notes||''),open:()=>editTodo(todo.id)});
+  });
+  (data.projects||[]).filter(x=>!x.completed).forEach(project=>{
+    (project.steps||[]).filter(step=>!step.completed&&step.dueDate).forEach(step=>add({
+      id:`${project.id}:${step.id}`,type:'projectStep',name:step.name||'Untitled step',date:step.dueDate,
+      detail:`${project.name||'Project'}${step.details?' · '+step.details:''}`,
+      open:()=>editStep(project.id,step.id)
+    }));
+    const due=project.dueDate||project.targetDate||project.date;
+    if(due)add({id:project.id,type:'projectMilestone',name:project.name||project.title,date:due,detail:'Project deadline',open:()=>editProject(project.id)});
+  });
+  (data.cleaningTasks||[]).filter(x=>!x.completed&&(x.nextDue||x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'cleaning',name:x.name||x.title,date:x.nextDue||x.dueDate||x.date,detail:x.room||x.area||'Home',open:()=>editCleaning(x.id)}));
+  (data.recurringTasks||[]).filter(x=>x.status!=='paused'&&x.nextDue).forEach(x=>add({id:x.id,type:'recurring',name:x.name||'Recurring task',date:x.nextDue,detail:recurringPatternLabel(x),open:()=>openRecurringTaskDialog(x.id)}));
+  (data.annualDates||[]).forEach(x=>{try{const d=nextAnnualOccurrence(String(x.monthDay||''));if(d)add({id:x.id,type:'annual',name:x.name||x.title,date:localDateKey(d),detail:x.details||x.notes||'',open:()=>editAnnual(x.id)});}catch(error){console.warn('Timeline annual date skipped',error);}});
+  (data.waiting||[]).filter(x=>!x.completed&&(x.reviewDate||x.dueDate||x.date)).forEach(x=>add({id:x.id,type:'waiting',name:x.name||x.title,date:x.reviewDate||x.dueDate||x.date,detail:x.note||x.details||'Review due',open:()=>editCapture('waiting',x.id)}));
+  return items.sort((a,b)=>`${a.date}${a.time||'99:99'}${a.name}`.localeCompare(`${b.date}${b.time||'99:99'}${b.name}`));
+}
+timelineItems=v54bTimelineItems;
+
+renderProjects=function(){
+  const area=document.getElementById('projectsArea');if(!area)return;area.innerHTML='';
+  const projects=Array.isArray(data.projects)?data.projects:[];
+  if(!projects.length){area.innerHTML='<div class="empty-state">No projects are saved yet.</div>';return;}
+  const openStates=getProjectStepStates();
+  [...projects].sort(sortByDueDate).forEach(project=>{
+    const steps=Array.isArray(project.steps)?project.steps:[];
+    const genuinelyComplete=steps.length>0&&steps.every(step=>step.completed);project.completed=genuinelyComplete;
+    const completedCount=steps.filter(step=>step.completed).length;
+    const nextStep=steps.find(step=>!step.completed);
+    const nextMeta=nextStep?`Next: ${escapeHtml(nextStep.name||'Untitled step')}${nextStep.dueDate?' · '+formatDate(nextStep.dueDate):''}`:(steps.length?'All steps complete':'No steps');
+    const row=document.createElement('div');row.className=`compact-manage-row project-compact-row ${genuinelyComplete?'completed-row':''}`;
+    const projectActions=`<button onclick="closeAnchoredMenu();openAddDialog('step','${project.id}')">Add step</button><button onclick="closeAnchoredMenu();editProject('${project.id}')">Edit project</button><button onclick="closeAnchoredMenu();saveProjectAsTemplate('${project.id}')">Save as template</button><button class="danger-text" onclick="closeAnchoredMenu();deleteProject('${project.id}');refreshListsImmediately()">Delete project</button>`;
+    row.innerHTML=`<button type="button" class="project-expand-button" onclick="toggleProjectSteps('${project.id}')" aria-expanded="${Boolean(openStates[project.id])}" aria-label="${openStates[project.id]?'Hide':'Show'} steps">${openStates[project.id]?'▾':'▸'}</button><button type="button" class="compact-row-main" onclick="toggleProjectSteps('${project.id}')"><span class="compact-row-title">${escapeHtml(project.name||'Untitled project')}</span><span class="compact-row-meta">${steps.length?`${completedCount} of ${steps.length} steps`:'No steps'}${project.dueDate?' · Deadline '+formatDate(project.dueDate):''}</span><span class="compact-row-next">${nextMeta}</span></button>${compactMenu(projectActions,project.name||'project')}`;
+    area.appendChild(row);
+    const group=document.createElement('div');group.className='project-steps-group';group.dataset.projectId=project.id;group.hidden=!openStates[project.id];
+    steps.forEach((step,index)=>{
+      const sr=document.createElement('div');sr.className=`compact-manage-row nested-compact-row project-step-manage-row ${step.completed?'completed-row':''}`;
+      const sa=`<button onclick="closeAnchoredMenu();editStep('${project.id}','${step.id}')">Edit step</button><button onclick="closeAnchoredMenu();toggleStep('${project.id}','${step.id}');refreshListsImmediately()">${step.completed?'Mark active':'Complete step'}</button><button class="danger-text" onclick="closeAnchoredMenu();deleteStep('${project.id}','${step.id}');refreshListsImmediately()">Delete step</button>`;
+      sr.innerHTML=`<button type="button" class="compact-row-main" onclick="editStep('${project.id}','${step.id}')"><span class="compact-row-title">${index+1}. ${escapeHtml(step.name||'Untitled step')}</span><span class="compact-row-meta">${step.dueDate?'Due '+formatDate(step.dueDate):'No date'} · Tap to edit</span></button>${compactMenu(sa,step.name||'project step')}`;
+      group.appendChild(sr);
+    });
+    area.appendChild(group);
+  });
+};

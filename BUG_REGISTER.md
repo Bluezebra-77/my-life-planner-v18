@@ -71,3 +71,7 @@
 
 ## v54a
 - No known regressions introduced; Project Templates are a new isolated local-storage feature.
+
+## Corrected in v54b
+- Timeline omitted dated child steps.
+- Project edit menus could be inaccessible in iPhone portrait.

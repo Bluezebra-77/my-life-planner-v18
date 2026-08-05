@@ -83,3 +83,6 @@
 
 ## v54a
 - Project Templates: create, edit, delete, save from an existing project and create new project instances.
+
+## v54b Smart Projects
+- Dated child steps on Timeline, parent milestones, next-step summaries and iPhone portrait management menus.

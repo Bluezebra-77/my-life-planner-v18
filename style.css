@@ -1572,3 +1572,22 @@ body.timer-minimised .quick-add-fab{
 .template-form{display:grid;gap:14px;padding-top:14px}.template-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line,#d8ddd8);border-radius:15px;background:rgba(255,255,255,.72)}
 .template-card-copy{display:grid;gap:4px;min-width:0}.template-card-copy strong{font-size:1rem}.template-card-copy span{color:var(--muted,#68766f);font-size:.86rem}.template-card-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.template-card-actions button{width:auto;padding:.6rem .75rem}.template-preview{padding:14px;border:1px solid var(--line,#d8ddd8);border-radius:14px;background:rgba(255,255,255,.65)}.template-preview ol{margin:.65rem 0 0;padding-left:1.5rem}.template-preview li{margin:.45rem 0}.template-preview li span{display:block;color:var(--muted,#68766f);font-size:.82rem}
 @media(max-width:600px){.project-section-actions{width:100%;justify-content:flex-end}.template-card{grid-template-columns:1fr}.template-card-actions{justify-content:flex-start}.template-card-actions button{flex:1}.project-templates-dialog .dialog-actions button,.project-template-use-dialog .dialog-actions button{width:auto;flex:1}}
+
+
+/* ===== v54b Smart Projects mobile and Timeline polish ===== */
+.compact-row-next{display:block;margin-top:3px;color:var(--accent);font-size:.78rem;font-weight:750;white-space:normal}
+.timeline-projectStep,.timeline-todoStep{border-left-color:#7b6fa6}
+.timeline-projectMilestone{border-left-color:#b07c35;background:#fffaf0}
+.project-compact-row{width:100%;min-width:0;display:grid!important;grid-template-columns:42px minmax(0,1fr) 44px;align-items:center;gap:6px}
+.project-compact-row>.compact-row-main{width:100%;min-width:0}
+.project-compact-row>.item-menu-anchor{grid-column:3;width:44px;min-width:44px;justify-self:end;margin-left:0!important;display:flex!important;visibility:visible!important}
+.project-compact-row>.item-menu-anchor .item-menu-trigger{display:grid!important;visibility:visible!important}
+.project-step-manage-row{width:100%;min-width:0;display:grid!important;grid-template-columns:minmax(0,1fr) 44px;gap:6px}
+.project-step-manage-row>.item-menu-anchor{grid-column:2;width:44px;min-width:44px;justify-self:end;margin-left:0!important}
+#projectsArea{min-width:0;overflow:visible}
+@media(max-width:560px){
+  .project-compact-row{grid-template-columns:36px minmax(0,1fr) 44px;padding-left:4px;padding-right:2px}
+  .project-compact-row .compact-row-title{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+  .project-steps-group{margin-left:4px;margin-right:0}
+  .project-step-manage-row .compact-row-title{white-space:normal;overflow:visible;text-overflow:clip}
+}
