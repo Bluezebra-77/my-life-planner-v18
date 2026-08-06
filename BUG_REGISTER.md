@@ -75,3 +75,7 @@
 ## Corrected in v54b
 - Timeline omitted dated child steps.
 - Project edit menus could be inaccessible in iPhone portrait.
+
+## Corrected in v54c
+- Newly advanced recurring occurrences were visible in Timeline but missing from Home This Week.
+- Home Brain Inbox preview had no way to reveal captures beyond the first three.

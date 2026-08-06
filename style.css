@@ -1591,3 +1591,8 @@ body.timer-minimised .quick-add-fab{
   .project-steps-group{margin-left:4px;margin-right:0}
   .project-step-manage-row .compact-row-title{white-space:normal;overflow:visible;text-overflow:clip}
 }
+
+
+/* v54c recurring limits and Home preview controls */
+.home-preview-actions{display:flex;justify-content:center;margin-top:.75rem}.home-preview-toggle{width:auto;min-width:150px;padding:.65rem 1rem}.recurring-rule-summary{min-height:1.4em}
+@media(max-width:560px){.home-preview-toggle{width:100%}}
