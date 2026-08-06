@@ -70,5 +70,5 @@ Earlier builds progressively introduced Brain Inbox, Timeline, custom lists, res
 ## v54b — Smart Projects
 - Added dated to-do/project steps to Timeline and mobile-safe project management.
 
-## v54c
+## v54cR
 - Added optional recurring end rules, expandable Home previews and recurring-date refresh across Home and Timeline.

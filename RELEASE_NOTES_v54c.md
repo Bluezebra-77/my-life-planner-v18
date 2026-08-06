@@ -1,4 +1,4 @@
-# My Life Planner v54c — Recurring Limits and Home Previews
+# My Life Planner v54cR — Recurring Limits and Home Previews
 
 - Recurring tasks can continue indefinitely, end on a chosen date, or stop after a chosen number of occurrences.
 - Finished limited recurring tasks become inactive rather than being deleted.

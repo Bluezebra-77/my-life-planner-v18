@@ -1,4 +1,4 @@
-# v54c Build Report
+# v54cR Build Report
 
 **Baseline:** accepted v54b Smart Projects.
 
@@ -9,4 +9,4 @@
 - Home This Week now includes the next active recurring occurrence.
 
 ## Validation
-See TEST_CHECKLIST_v54c.md for device testing.
+See TEST_CHECKLIST_v54cR.md for device testing.

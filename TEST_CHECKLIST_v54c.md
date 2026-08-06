@@ -1,7 +1,7 @@
-# My Life Planner v54c — Test Checklist
+# My Life Planner v54cR — Test Checklist
 
 ## Version and data
-- [ ] Header, About, manifest and update cache show v54c.
+- [ ] Header, About, manifest and update cache show v54cR.
 - [ ] Existing data remains present.
 
 ## Recurring end rules

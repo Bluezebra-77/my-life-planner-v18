@@ -57,7 +57,7 @@ const choicePools = {
   quick: ["Clear one chair or small surface.", "File or shred five pieces of paper.", "Edit one photograph.", "Choose one item for Vinted.", "Set a 10-minute timer and tidy."]
 };
 
-const APP_VERSION="54b";
+const APP_VERSION="54cR";
 const SCHEMA_VERSION = 51;
 const DATABASE_VERSION = "2";
 const MIGRATION_BACKUP_KEY = "lifePlannerMigrationBackups";
@@ -1439,6 +1439,11 @@ if ("serviceWorker" in navigator) {
     }
   });
   navigator.serviceWorker.addEventListener("controllerchange", () => window.location.reload());
+  navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data?.type === "UPDATE_RECOVERY_ACTIVE" && event.data.version === APP_VERSION) {
+      sessionStorage.setItem("myLifePlannerUpdateRecovered", APP_VERSION);
+    }
+  });
 }
 
 applySettings();
@@ -3694,20 +3699,20 @@ renderProjects=function(){
 };
 
 
-/* ===== v54c Recurring limits and expandable Home previews ===== */
+/* ===== v54cR Recurring limits and expandable Home previews ===== */
 const V54C_HOME_INBOX_EXPANDED='myLifePlannerHomeInboxExpanded';
 const V54C_HOME_RECURRING_EXPANDED='myLifePlannerHomeRecurringExpanded';
-function v54cBool(key){return localStorage.getItem(key)==='true';}
-function v54cSetBool(key,value){localStorage.setItem(key,String(Boolean(value)));}
-function v54cEndMode(task){return task?.endMode||'never';}
-function v54cEndingLabel(task){
-  if(v54cEndMode(task)==='date'&&task.endDate)return `Ends ${formatDate(task.endDate)}`;
-  if(v54cEndMode(task)==='count'&&Number(task.endCount)>0)return `${Number(task.completedOccurrences)||0} of ${Number(task.endCount)} occurrences completed`;
+function v54cRBool(key){return localStorage.getItem(key)==='true';}
+function v54cRSetBool(key,value){localStorage.setItem(key,String(Boolean(value)));}
+function v54cREndMode(task){return task?.endMode||'never';}
+function v54cREndingLabel(task){
+  if(v54cREndMode(task)==='date'&&task.endDate)return `Ends ${formatDate(task.endDate)}`;
+  if(v54cREndMode(task)==='count'&&Number(task.endCount)>0)return `${Number(task.completedOccurrences)||0} of ${Number(task.endCount)} occurrences completed`;
   return '';
 }
-const v54cUpdateRecurringBase=updateRecurringRuleControls;
+const v54cRUpdateRecurringBase=updateRecurringRuleControls;
 updateRecurringRuleControls=function(){
-  v54cUpdateRecurringBase();
+  v54cRUpdateRecurringBase();
   const mode=document.getElementById('recurringTaskEndMode')?.value||'never';
   const dateLabel=document.getElementById('recurringEndDateLabel');
   const countLabel=document.getElementById('recurringEndCountLabel');
@@ -3740,7 +3745,7 @@ openRecurringTaskDialog=function(id=''){
   document.getElementById('recurringMonthlyMode').value=task?.monthlyMode||'date';
   document.getElementById('recurringOrdinal').value=String(task?.ordinal??2);
   document.getElementById('recurringWeekday').value=String(task?.weekday??4);
-  document.getElementById('recurringTaskEndMode').value=v54cEndMode(task);
+  document.getElementById('recurringTaskEndMode').value=v54cREndMode(task);
   document.getElementById('recurringTaskEndDate').value=task?.endDate||'';
   document.getElementById('recurringTaskEndCount').value=Math.max(1,Number(task?.endCount)||3);
   document.getElementById('recurringTaskTags').value=tagsInputValue(task);
@@ -3779,26 +3784,26 @@ completeRecurringTask=function(id){
   task.lastCompleted=completedAt.toISOString();
   task.completedOccurrences=(Number(task.completedOccurrences)||0)+1;
   if(typeof v53aLogOnce==='function')v53aLogOnce('recurring',task.name,{itemId:id});else if(typeof v52dLog==='function')v52dLog('recurring',task.name,{itemId:id});
-  if(v54cEndMode(task)==='count'&&task.completedOccurrences>=Math.max(1,Number(task.endCount)||1)){
+  if(v54cREndMode(task)==='count'&&task.completedOccurrences>=Math.max(1,Number(task.endCount)||1)){
     task.status='completed';task.completedAt=completedAt.toISOString();saveData();renderAll();if(typeof renderEveningReflection==='function')renderEveningReflection();if(typeof renderHiddenStatistics==='function')renderHiddenStatistics();return;
   }
   let next=recurringDate(task.nextDue)||recurringDate(localDateKey());const today=recurringDate(localDateKey());
   do{next=addRecurringInterval(next,task.unit,task.interval,task);}while(next<=today);
   const nextKey=recurringDateKey(next);
-  if(v54cEndMode(task)==='date'&&task.endDate&&dateOnly(nextKey)>dateOnly(task.endDate)){
+  if(v54cREndMode(task)==='date'&&task.endDate&&dateOnly(nextKey)>dateOnly(task.endDate)){
     task.status='completed';task.completedAt=completedAt.toISOString();
   }else{task.nextDue=nextKey;task.status='active';}
   saveData();renderAll();if(typeof renderEveningReflection==='function')renderEveningReflection();if(typeof renderHiddenStatistics==='function')renderHiddenStatistics();
 };
 
-const v54cRecurringPatternBase=recurringPatternLabel;
-recurringPatternLabel=function(task){const base=v54cRecurringPatternBase(task);const ending=v54cEndingLabel(task);return ending?`${base} · ${ending}`:base;};
-const v54cRecurringStatusBase=recurringStatus;
-recurringStatus=function(task){if(task?.status==='completed')return{label:'Finished',className:'ongoing'};return v54cRecurringStatusBase(task);};
+const v54cRRecurringPatternBase=recurringPatternLabel;
+recurringPatternLabel=function(task){const base=v54cRRecurringPatternBase(task);const ending=v54cREndingLabel(task);return ending?`${base} · ${ending}`:base;};
+const v54cRRecurringStatusBase=recurringStatus;
+recurringStatus=function(task){if(task?.status==='completed')return{label:'Finished',className:'ongoing'};return v54cRRecurringStatusBase(task);};
 
-function v54cPreviewButton(label,expanded,onclick){return `<button type="button" class="home-preview-toggle secondary-button" onclick="${onclick}">${expanded?'Show less':label}</button>`;}
-function toggleHomeInboxPreview(){v54cSetBool(V54C_HOME_INBOX_EXPANDED,!v54cBool(V54C_HOME_INBOX_EXPANDED));renderInbox();}
-function toggleHomeRecurringPreview(){v54cSetBool(V54C_HOME_RECURRING_EXPANDED,!v54cBool(V54C_HOME_RECURRING_EXPANDED));renderRecurringHome();}
+function v54cRPreviewButton(label,expanded,onclick){return `<button type="button" class="home-preview-toggle secondary-button" onclick="${onclick}">${expanded?'Show less':label}</button>`;}
+function toggleHomeInboxPreview(){v54cRSetBool(V54C_HOME_INBOX_EXPANDED,!v54cRBool(V54C_HOME_INBOX_EXPANDED));renderInbox();}
+function toggleHomeRecurringPreview(){v54cRSetBool(V54C_HOME_RECURRING_EXPANDED,!v54cRBool(V54C_HOME_RECURRING_EXPANDED));renderRecurringHome();}
 
 renderInbox=function(){
   const full=document.getElementById('inboxArea'),preview=document.getElementById('inboxPreviewArea');
@@ -3806,11 +3811,11 @@ renderInbox=function(){
     if(!area)return;area.innerHTML='';
     const fullSorted=[...(data.inbox||[])].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
     const activeOldest=fullSorted.filter(x=>x.status!=='processed').sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
-    const expanded=v54cBool(V54C_HOME_INBOX_EXPANDED);
+    const expanded=v54cRBool(V54C_HOME_INBOX_EXPANDED);
     const items=area===preview?(expanded?activeOldest:activeOldest.slice(0,3)):fullSorted;
     if(!items.length){area.innerHTML='<div class="empty-state">Your Brain Inbox is clear.</div>';return;}
     items.forEach(x=>{const processed=x.status==='processed';const row=makeV10Row({name:x.name,meta:inboxMeta(x),open:()=>editCapture('inbox',x.id)},{complete:false,menu:compactMenu(`<button onclick="closeAnchoredMenu();editCapture('inbox','${x.id}')">Edit</button><button onclick="closeAnchoredMenu();toggleInboxProcessed('${x.id}')">${processed?'Mark as new':'Mark processed'}</button>${x.url?`<button onclick="closeAnchoredMenu();openBrainLink('${x.id}')">Open website</button>`:''}${x.attachment?`<button onclick="closeAnchoredMenu();openBrainAttachment('${x.id}')">Open attachment</button>`:''}<button onclick="closeAnchoredMenu();convertInbox('${x.id}','todo')">Make a to-do</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','project')">Make a project</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','appointment')">Make an appointment</button><button onclick="closeAnchoredMenu();convertInbox('${x.id}','waiting')">Move to Waiting For</button><button class="danger-text" onclick="closeAnchoredMenu();deleteCapture('inbox','${x.id}')">Delete</button>`,x.name)});if(processed)row.classList.add('processed-inbox-row');area.appendChild(row);});
-    if(area===preview&&activeOldest.length>3){const wrap=document.createElement('div');wrap.className='home-preview-actions';wrap.innerHTML=v54cPreviewButton(`Show all ${activeOldest.length}`,expanded,'toggleHomeInboxPreview()');area.appendChild(wrap);}
+    if(area===preview&&activeOldest.length>3){const wrap=document.createElement('div');wrap.className='home-preview-actions';wrap.innerHTML=v54cRPreviewButton(`Show all ${activeOldest.length}`,expanded,'toggleHomeInboxPreview()');area.appendChild(wrap);}
   });
 };
 
@@ -3819,14 +3824,14 @@ renderRecurringHome=function(){
   const today=recurringDate(localDateKey());
   const all=(data.recurringTasks||[]).filter(t=>t.status==='active'&&t.nextDue&&recurringDate(t.nextDue)<=today).sort((a,b)=>String(a.nextDue).localeCompare(String(b.nextDue)));
   if(!all.length){area.innerHTML='<div class="empty-state">No recurring responsibilities are due.</div>';return;}
-  const expanded=v54cBool(V54C_HOME_RECURRING_EXPANDED),tasks=expanded?all:all.slice(0,3);
+  const expanded=v54cRBool(V54C_HOME_RECURRING_EXPANDED),tasks=expanded?all:all.slice(0,3);
   tasks.forEach(task=>{const st=recurringStatus(task);const row=makeV10Row({name:task.name,meta:`${recurringPatternLabel(task)} · ${st.label}`,dueDate:task.nextDue,action:()=>completeRecurringTask(task.id),open:()=>openRecurringTaskDialog(task.id)},{menu:compactMenu(`<button onclick="closeAnchoredMenu();openRecurringTaskDialog('${task.id}')">Edit</button><button onclick="closeAnchoredMenu();completeRecurringTask('${task.id}')">Complete</button><button onclick="closeAnchoredMenu();toggleRecurringPause('${task.id}')">Pause</button>`,task.name)});area.appendChild(row);});
-  if(all.length>3){const wrap=document.createElement('div');wrap.className='home-preview-actions';wrap.innerHTML=v54cPreviewButton(`Show all ${all.length}`,expanded,'toggleHomeRecurringPreview()');area.appendChild(wrap);}
+  if(all.length>3){const wrap=document.createElement('div');wrap.className='home-preview-actions';wrap.innerHTML=v54cRPreviewButton(`Show all ${all.length}`,expanded,'toggleHomeRecurringPreview()');area.appendChild(wrap);}
 };
 
-const v54cWeeklyBase=getWeeklyItems;
+const v54cRWeeklyBase=getWeeklyItems;
 getWeeklyItems=function(){
-  const items=v54cWeeklyBase();const today=new Date();today.setHours(12,0,0,0);const end=new Date(today);end.setDate(end.getDate()+7);
+  const items=v54cRWeeklyBase();const today=new Date();today.setHours(12,0,0,0);const end=new Date(today);end.setDate(end.getDate()+7);
   const keys=new Set(items.map(i=>`${i.itemType}:${i.id}:${i.dueDate}`));
   (data.recurringTasks||[]).filter(t=>t.status==='active'&&t.nextDue).forEach(t=>{
     const due=dateOnly(t.nextDue);const key=`recurring:${t.id}:${t.nextDue}`;
@@ -3835,16 +3840,16 @@ getWeeklyItems=function(){
   return items.sort((a,b)=>dateOnly(a.dueDate)-dateOnly(b.dueDate));
 };
 
-const v54cOpenReminderBase=openReminderItem;
-openReminderItem=function(item){if(item?.itemType==='recurring')return openRecurringTaskDialog(item.id);return v54cOpenReminderBase(item);};
-const v54cCompletionForBase=completionFor;
-completionFor=function(item){if(item?.itemType==='recurring')return()=>completeRecurringTask(item.id);return v54cCompletionForBase(item);};
+const v54cROpenReminderBase=openReminderItem;
+openReminderItem=function(item){if(item?.itemType==='recurring')return openRecurringTaskDialog(item.id);return v54cROpenReminderBase(item);};
+const v54cRCompletionForBase=completionFor;
+completionFor=function(item){if(item?.itemType==='recurring')return()=>completeRecurringTask(item.id);return v54cRCompletionForBase(item);};
 
 
-const v54cTimelineBase=timelineItems;
+const v54cRTimelineBase=timelineItems;
 timelineItems=function(){
   const activeRecurring=new Set((data.recurringTasks||[]).filter(t=>t.status==='active').map(t=>String(t.id)));
-  return v54cTimelineBase().filter(item=>item.type!=='recurring'||activeRecurring.has(String(item.id)));
+  return v54cRTimelineBase().filter(item=>item.type!=='recurring'||activeRecurring.has(String(item.id)));
 };
 
 recurringTaskCard=function(task){
@@ -3854,5 +3859,5 @@ recurringTaskCard=function(task){
   return row;
 };
 
-function v54cRefresh(){renderRecurringTasks();renderRecurringHome();renderInbox();renderWeekly();renderTodayReminders();renderTimeline();}
-setTimeout(v54cRefresh,80);
+function v54cRRefresh(){renderRecurringTasks();renderRecurringHome();renderInbox();renderWeekly();renderTodayReminders();renderTimeline();}
+setTimeout(v54cRRefresh,80);

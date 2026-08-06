@@ -87,6 +87,6 @@
 ## v54b Smart Projects
 - Dated child steps on Timeline, parent milestones, next-step summaries and iPhone portrait management menus.
 
-## v54c
+## v54cR
 - Recurring tasks may continue, end on a date, or end after a set number of occurrences.
 - Home Brain Inbox and Recurring Tasks previews expand on demand.
